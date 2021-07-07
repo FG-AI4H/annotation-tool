@@ -1,0 +1,24 @@
+package org.fgai4h.ap.domain.campaign;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonRootName;
+import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
+
+import java.util.UUID;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+@JsonRootName(value = "actor")
+@Relation(collectionRelation = "campaign")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class CampaignModel extends RepresentationModel<CampaignModel> {
+
+    public UUID campaignUUID;
+    public String name;
+    public String description;
+}
