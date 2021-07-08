@@ -1,6 +1,7 @@
 package org.fgai4h.ap.domain.campaign;
 
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +24,13 @@ public class CampaignModelAssembler extends RepresentationModelAssemblerSupport<
                 methodOn(CampaignController.class)
                         .getCampaignById(entity.getCampaignUUID()))
                 .withSelfRel());
+
+        // If PAID_FOR is valid, add a link to the `pay()` method
+        if (!"PAID".equals(entity.getName())) {
+            campaignModel.add(linkTo(
+                    methodOn(CampaignController.class).pay(entity.getCampaignUUID()))
+                            .withRel(IanaLinkRelations.PAYMENT));
+        }
 
         campaignModel.setCampaignUUID(entity.getCampaignUUID());
         campaignModel.setName(entity.getName());
