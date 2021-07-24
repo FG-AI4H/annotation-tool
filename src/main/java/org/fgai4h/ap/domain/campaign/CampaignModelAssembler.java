@@ -22,6 +22,7 @@ public class CampaignModelAssembler extends RepresentationModelAssemblerSupport<
 
         campaignModel.add(linkTo(
                 methodOn(CampaignController.class)
+
                         .getCampaignById(entity.getCampaignUUID()))
                 .withSelfRel());
 

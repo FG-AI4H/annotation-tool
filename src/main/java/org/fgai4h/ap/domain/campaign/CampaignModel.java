@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-@JsonRootName(value = "actor")
+@JsonRootName(value = "campaign")
 @Relation(collectionRelation = "campaign")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CampaignModel extends RepresentationModel<CampaignModel> {
