@@ -1,0 +1,12 @@
+[
+  {
+    "_class": "org.fgai4h.ap.domain.task.TaskEntity",
+    "kind": "apple",
+    "readOnly": false
+  },
+  {
+    "_class": "org.fgai4h.ap.domain.task.TaskEntity",
+    "kind": "guava",
+    "readOnly": false
+  }
+]

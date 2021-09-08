@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.fgai4h.ap.domain.user.Annotator;
+import org.fgai4h.ap.domain.user.AnnotatorEntity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -36,7 +36,7 @@ public class AnnotationEntity implements Serializable {
     @Basic(fetch = FetchType.LAZY)
     private byte[] data;
 
-    private Annotator annotator;
+    private AnnotatorEntity annotator;
 
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime submittedAt;

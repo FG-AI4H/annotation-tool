@@ -11,7 +11,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Annotator extends User implements Serializable {
+public class AnnotatorEntity extends UserEntity implements Serializable {
 
     private String expertise;
 }

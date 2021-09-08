@@ -6,7 +6,6 @@ import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 
-import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -14,17 +13,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-@JsonRootName(value = "task")
-@Relation(collectionRelation = "task")
+@JsonRootName(value = "annotationTask")
+@Relation(collectionRelation = "annotationTask")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TaskModel extends RepresentationModel<TaskModel> {
+public class AnnotationTaskModel extends RepresentationModel<AnnotationTaskModel> {
 
-    private UUID taskUUID;
+    private UUID annotationTaskUUID;
     private String kind;
-    private Boolean readOnly;
-    private List<AnnotationTaskModel> annotationTasks;
-    private List<SampleModel> samples;
-    private List<AnnotationModel> annotations;
-
-
+    private String title;
+    private String description;
 }

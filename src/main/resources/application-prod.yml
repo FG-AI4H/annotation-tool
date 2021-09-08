@@ -1,0 +1,19 @@
+spring:
+  data:
+    rest:
+      base-path: /api
+
+  security:
+    oauth2:
+      client:
+        registration:
+          cognito:
+            clientId: 75n5jtgqafrue02lr8prk0kn3c
+            clientSecret: 1sgfpgrg3cgkmhcq0inn6ga6sag5couic8h78f9gu1dod6m00o27
+            scope: openid
+            redirect-uri: https://annotation.ai4h.net/login/oauth2/code/cognito
+            clientName: fg-ai4h-oc-prod
+        provider:
+          cognito:
+            issuerUri: https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_1cFVgcU36
+            user-name-attribute: cognito:username

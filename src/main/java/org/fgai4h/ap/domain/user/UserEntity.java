@@ -15,7 +15,7 @@ import java.util.UUID;
 @Entity
 @Table(name="user")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class User implements Serializable {
+public abstract class UserEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

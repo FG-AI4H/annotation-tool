@@ -38,11 +38,9 @@ public class TaskEntity implements Serializable {
     private List<AnnotationTaskEntity> annotationTasks;
 
     @OneToMany(mappedBy="task")
-    @OrderBy("name ASC")
     private List<SampleEntity> samples;
 
     @OneToMany(mappedBy="task")
-    @OrderBy("name ASC")
     private List<AnnotationEntity> annotations;
 
 
