@@ -1,0 +1,6 @@
+{
+  "authSelections": "userPoolOnly",
+  "resourceName": "frontend1ba21453",
+  "serviceType": "imported",
+  "region": "eu-central-1"
+}

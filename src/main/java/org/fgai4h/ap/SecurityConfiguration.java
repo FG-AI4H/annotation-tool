@@ -1,3 +1,5 @@
+package org.fgai4h.ap;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -11,11 +13,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests(authz -> authz.mvcMatchers("/")
                         .permitAll()
-                        .anyRequest()
-                        .authenticated())
-                .oauth2Login()
-                .and()
-                .logout()
-                .logoutSuccessUrl("/");
+                        //.anyRequest()
+
+                        //.authenticated()
+                );
+                //.oauth2Login()
+                //.and()
+                //.logout()
+                //.logoutSuccessUrl("/");
+
+        http.cors();
     }
+
 }
