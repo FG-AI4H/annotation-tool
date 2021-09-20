@@ -23,7 +23,7 @@ public class AnnotationModel extends RepresentationModel<AnnotationModel>{
     private UUID annotationUUID;
     private AnnotationTaskModel annotationTask;
     private AnnotationStatus status;
-    private byte[] data;
+    private String[] data;
     private AnnotatorModel annotator;
     private LocalDateTime submittedAt;
     private TaskModel task;

@@ -1,5 +1,6 @@
 package org.fgai4h.ap.domain.task;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,11 +35,12 @@ public class AnnotationEntity implements Serializable {
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    private byte[] data;
+    private String[] data;
 
     private AnnotatorEntity annotator;
 
     @Column(columnDefinition = "TIMESTAMP")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private LocalDateTime submittedAt;
 
     @ManyToOne

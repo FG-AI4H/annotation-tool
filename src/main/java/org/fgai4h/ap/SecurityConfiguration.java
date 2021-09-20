@@ -24,6 +24,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 //.logout()
                 //.logoutSuccessUrl("/");
 
+        http.headers().frameOptions().disable();
         http.cors();
     }
 

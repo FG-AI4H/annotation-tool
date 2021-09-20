@@ -18,6 +18,7 @@ public class AnnotationTaskModelAssembler extends RepresentationModelAssemblerSu
     public AnnotationTaskModel toModel(AnnotationTaskEntity entity) {
         AnnotationTaskModel annotationTaskModel = instantiateModel(entity);
 
+
         annotationTaskModel.add(linkTo(
                 methodOn(TaskController.class)
                         .getAnnotationTaskById(entity.getAnnotationTaskUUID()))
