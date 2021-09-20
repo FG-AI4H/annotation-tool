@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
-import { Button, Container, Form, FormGroup, Input, Label } from 'reactstrap';
+import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
 import AppNavbar from './AppNavbar';
+import { Link,withRouter } from 'react-router-dom';
+import Form from "react-bootstrap/Form";
 
 class TaskEdit extends Component {
 
@@ -28,8 +30,13 @@ class TaskEdit extends Component {
 
     handleChange(event) {
         const target = event.target;
-        const value = target.value;
+        let value = target.value;
         const name = target.name;
+
+        if(target.type === 'checkbox'){
+            value = target.checked;
+        }
+
         let item = {...this.state.item};
         item[name] = value;
         this.setState({item});
@@ -39,8 +46,8 @@ class TaskEdit extends Component {
         event.preventDefault();
         const {item} = this.state;
 
-        await fetch('/tasks' + (item.id ? '/' + item.id : ''), {
-            method: (item.id) ? 'PUT' : 'POST',
+        await fetch('/tasks' + (item.taskUUID ? '/' + item.taskUUID : ''), {
+            method: (item.taskUUID) ? 'PUT' : 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -52,27 +59,30 @@ class TaskEdit extends Component {
 
     render() {
         const {item} = this.state;
-        const title = <h2>{item.id ? 'Edit Task' : 'Add Task'}</h2>;
+        const title = <h2>{item.taskUUID ? 'Edit Task' : 'Add Task'}</h2>;
 
         return <div>
             <AppNavbar/>
-            <Container>
+            <Container className={'pt-5'}>
                 {title}
                 <Form onSubmit={this.handleSubmit}>
-                    <FormGroup>
-                        <Label for="name">Name</Label>
-                        <Input type="text" name="name" id="name" value={item.name || ''}
-                               onChange={this.handleChange} autoComplete="name"/>
-                    </FormGroup>
-                    <FormGroup>
-                        <Label for="email">Email</Label>
-                        <Input type="text" name="email" id="email" value={item.email || ''}
-                               onChange={this.handleChange} autoComplete="email"/>
-                    </FormGroup>
-                    <FormGroup>
+                    <Form.Group className={'py-2'}>
+                        <Form.Label htmlFor="kind">Kind</Form.Label>
+                        <Form.Select name="kind" id="kind" value={item.kind || ''} onChange={this.handleChange}>
+                            <option>Open this select menu</option>
+                            <option value="create">Create</option>
+                            <option value="correct">Correct</option>
+                        </Form.Select>
+                    </Form.Group>
+
+                    <Form.Group className={'py-2'}>
+                        <Form.Check type={"checkbox"} label={"Read only"} name="readOnly" id="readOnly" checked={item.readOnly} onChange={this.handleChange}/>
+                    </Form.Group>
+
+                    <Form.Group>
                         <Button color="primary" type="submit">Save</Button>{' '}
-                        <Button color="secondary" tag={Link} to="/tasks">Cancel</Button>
-                    </FormGroup>
+                        <Link to="/tasks"><Button color="secondary" >Cancel</Button></Link>
+                    </Form.Group>
                 </Form>
             </Container>
         </div>

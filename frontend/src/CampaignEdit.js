@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
-import { Button, Container, Form, FormGroup, Input, Label } from 'reactstrap';
+import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
 import AppNavbar from './AppNavbar';
+import { Link,withRouter } from 'react-router-dom';
+import Form from "react-bootstrap/Form";
 
 class CampaignEdit extends Component {
 
@@ -59,20 +61,20 @@ class CampaignEdit extends Component {
             <Container>
                 {title}
                 <Form onSubmit={this.handleSubmit}>
-                    <FormGroup>
-                        <Label for="name">Name</Label>
-                        <Input type="text" name="name" id="name" value={item.name || ''}
+                    <Form.Group>
+                        <Form.Label for="name">Name</Form.Label>
+                        <Form.Control type="text" name="name" id="name" value={item.name || ''}
                                onChange={this.handleChange} autoComplete="name"/>
-                    </FormGroup>
-                    <FormGroup>
-                        <Label for="email">Email</Label>
-                        <Input type="text" name="email" id="email" value={item.email || ''}
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label for="email">Email</Form.Label>
+                        <Form.Control type="text" name="email" id="email" value={item.email || ''}
                                onChange={this.handleChange} autoComplete="email"/>
-                    </FormGroup>
-                    <FormGroup>
+                    </Form.Group>
+                    <Form.Group>
                         <Button color="primary" type="submit">Save</Button>{' '}
                         <Button color="secondary" tag={Link} to="/campaigns">Cancel</Button>
-                    </FormGroup>
+                    </Form.Group>
                 </Form>
             </Container>
         </div>

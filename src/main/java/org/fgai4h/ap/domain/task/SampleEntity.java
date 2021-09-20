@@ -30,7 +30,7 @@ public class SampleEntity implements Serializable {
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    private byte data;
+    private String data;
 
     @ManyToOne
     private TaskEntity task;

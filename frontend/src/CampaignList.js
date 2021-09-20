@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import { Button, ButtonGroup, Container, Table } from 'reactstrap';
+import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
 import AppNavbar from './AppNavbar';
 import { Link } from 'react-router-dom';
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+import Table from "react-bootstrap/Table";
 
 class CampaignList extends Component {
 
@@ -43,8 +46,8 @@ class CampaignList extends Component {
                 <td>{campaign.description}</td>
                 <td>
                     <ButtonGroup>
-                        <Button size="sm" color="primary" tag={Link} to={"/campaigns/" + campaign.campaignUUID}>Edit</Button>
-                        <Button size="sm" color="danger" onClick={() => this.remove(campaign.campaignUUID)}>Delete</Button>
+                        <Button size="sm" variant="primary" tag={Link} to={"/campaigns/" + campaign.campaignUUID}>Edit</Button>
+                        <Button size="sm" variant="danger" onClick={() => this.remove(campaign.campaignUUID)}>Delete</Button>
                     </ButtonGroup>
                 </td>
             </tr>
@@ -53,9 +56,9 @@ class CampaignList extends Component {
         return (
             <div>
                 <AppNavbar/>
-                <Container fluid>
-                    <div className="float-right">
-                        <Button color="success" tag={Link} to="/campaigns/new">Add Campaign</Button>
+                <Container className={'pt-5'}>
+                    <div className="float-end">
+                        <Button variant="success" tag={Link} to="/campaigns/new">Add Campaign</Button>
                     </div>
                     <h3>Campaigns</h3>
                     <Table className="mt-4">

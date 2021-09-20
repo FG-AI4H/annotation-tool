@@ -5,6 +5,9 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Container from 'react-bootstrap/Container';
 
 import {Link} from 'react-router-dom';
+import {Auth, Sign} from "aws-amplify";
+import {AmplifySignOut} from "@aws-amplify/ui-react";
+import {FaUser} from "react-icons/all";
 
 
 export default class AppNavbar extends Component {
@@ -20,13 +23,31 @@ export default class AppNavbar extends Component {
         });
     }
 
+    componentDidMount() {
+        Auth.currentAuthenticatedUser({
+            bypassCache: false
+        }).then(data => this.setState({ username: data.username, ...data.attributes, }))
+            .catch(err => console.log(err));
+    }
+
+    async signOut() {
+        try {
+            await Auth.signOut();
+        } catch (error) {
+            console.log('error signing out: ', error);
+        }
+    }
+
     render() {
+
+        const {username, isLoading} = this.state;
+
         return  <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
             <Container>
                 <Navbar.Brand as={Link} to="/">
                     <img
                         alt=""
-                        src="logo192.png"
+                        src="/logo192.png"
                         width="30"
                         height="30"
                         className="d-inline-block align-top"
@@ -48,10 +69,14 @@ export default class AppNavbar extends Component {
                         </NavDropdown>
                     </Nav>
                     <Nav>
-                        <Nav.Link as={Link} to="/about">About us</Nav.Link>
-                        <Nav.Link eas={Link} to="/join">
-                            Join the team
-                        </Nav.Link>
+                        <Nav.Link><FaUser/></Nav.Link>
+                        <NavDropdown title={username} id="collasible-nav-dropdown">
+                            <NavDropdown.Item as={Link} to="/profile">Profile</NavDropdown.Item>
+                        </NavDropdown>
+                    </Nav>
+                    <Nav>
+
+                        <Nav.Link><AmplifySignOut/></Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
             </Container>

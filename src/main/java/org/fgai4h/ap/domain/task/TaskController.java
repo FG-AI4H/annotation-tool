@@ -1,14 +1,18 @@
 package org.fgai4h.ap.domain.task;
 
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class TaskController {
@@ -25,9 +29,9 @@ public class TaskController {
     ;
 
     public TaskController(TaskRepository taskRepository, TaskModelAssembler taskModelAssembler,
-                          AnnotationRepository annotationRepository,AnnotationModelAssembler annotationModelAssembler,
-                          SampleRepository sampleRepository,SampleModelAssembler sampleModelAssembler,
-                          AnnotationTaskRepository annotationTaskRepository,AnnotationTaskModelAssembler annotationTaskModelAssembler) {
+                          AnnotationRepository annotationRepository, AnnotationModelAssembler annotationModelAssembler,
+                          SampleRepository sampleRepository, SampleModelAssembler sampleModelAssembler,
+                          AnnotationTaskRepository annotationTaskRepository, AnnotationTaskModelAssembler annotationTaskModelAssembler) {
         this.taskRepository = taskRepository;
         this.taskModelAssembler = taskModelAssembler;
         this.annotationRepository = annotationRepository;
@@ -40,8 +44,7 @@ public class TaskController {
 
 
     @GetMapping("/tasks")
-    public ResponseEntity<CollectionModel<TaskModel>> getAllTasks()
-    {
+    public ResponseEntity<CollectionModel<TaskModel>> getAllTasks() {
         List<TaskEntity> taskEntities = taskRepository.findAll();
         return new ResponseEntity<>(
                 taskModelAssembler.toCollectionModel(taskEntities),
@@ -49,13 +52,28 @@ public class TaskController {
     }
 
     @GetMapping("/tasks/{id}")
-    public ResponseEntity<TaskModel> getTaskById(@PathVariable("id") UUID id)
-    {
+    public ResponseEntity<TaskModel> getTaskById(@PathVariable("id") UUID id) {
         return taskRepository.findById(id)
                 .map(taskModelAssembler::toModel)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @PutMapping("/tasks/{id}")
+    public ResponseEntity<?> updateTask(@RequestBody TaskEntity task, @PathVariable UUID id){
+        TaskEntity taskToUpdate = task;
+        taskToUpdate.setTaskUUID(id);
+        taskRepository.save(taskToUpdate);
+
+        Link newlyCreatedLink = linkTo(methodOn(TaskController.class).getTaskById(id)).withSelfRel();
+
+        try {
+            return ResponseEntity.noContent().location(new URI(newlyCreatedLink.getHref())).build();
+        } catch (URISyntaxException e) {
+            return ResponseEntity.badRequest().body("Unable to update " + taskToUpdate);
+        }
+    }
+
 
     @GetMapping("/annotations/{id}")
     public ResponseEntity<AnnotationModel> getAnnotationById(@PathVariable("id") UUID id) {
