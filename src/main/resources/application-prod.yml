@@ -3,6 +3,15 @@ spring:
     rest:
       base-path: /api
 
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:mysql://fg-ai4h-db.cluster-cllejqtoj5fh.eu-central-1.rds.amazonaws.com:3306/fg_ai4h
+    username: springuser
+    password: password
+    driver-class-name: com.mysql.jdbc.Driver
+
   security:
     oauth2:
       client:
@@ -17,3 +26,5 @@ spring:
           cognito:
             issuerUri: https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_1cFVgcU36
             user-name-attribute: cognito:username
+
+

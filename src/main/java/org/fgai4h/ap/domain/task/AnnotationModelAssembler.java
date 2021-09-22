@@ -33,7 +33,6 @@ public class AnnotationModelAssembler extends RepresentationModelAssemblerSuppor
         annotationModel.setData(entity.getData());
         annotationModel.setStatus(entity.getStatus());
         annotationModel.setSubmittedAt(entity.getSubmittedAt());
-        annotationModel.setTask(taskModelAssembler.toModel(entity.getTask()));
         return annotationModel;
     }
 
