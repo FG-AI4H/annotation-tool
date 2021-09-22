@@ -26,6 +26,5 @@ public class AnnotationModel extends RepresentationModel<AnnotationModel>{
     private String[] data;
     private AnnotatorModel annotator;
     private LocalDateTime submittedAt;
-    private TaskModel task;
 
 }

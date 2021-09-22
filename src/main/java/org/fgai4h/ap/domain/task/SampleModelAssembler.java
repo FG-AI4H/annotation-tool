@@ -25,7 +25,6 @@ public class SampleModelAssembler extends RepresentationModelAssemblerSupport<Sa
 
         sampleModel.setSampleUUID(entity.getSampleUUID());
         sampleModel.setData(entity.getData());
-        sampleModel.setTask(taskModelAssembler.toModel(entity.getTask()));
         sampleModel.setTitle(entity.getTitle());
 
         return sampleModel;

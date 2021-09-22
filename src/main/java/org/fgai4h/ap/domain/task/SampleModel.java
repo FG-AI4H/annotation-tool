@@ -21,5 +21,4 @@ public class SampleModel extends RepresentationModel<SampleModel> {
     private UUID sampleUUID;
     private String title;
     private String data;
-    private TaskModel task;
 }

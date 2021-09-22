@@ -61,7 +61,6 @@ public class TaskModelAssembler extends RepresentationModelAssemblerSupport<Task
                 .sampleUUID(sample.getSampleUUID())
                         .data(sample.getData())
                         .title(sample.getTitle())
-                        .task(toModel(sample.getTask()))
                         .build()
                         .add(linkTo(methodOn(TaskController.class).getSampleById(sample.getSampleUUID()))
                         .withSelfRel())
