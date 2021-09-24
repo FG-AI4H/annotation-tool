@@ -1,6 +1,5 @@
 package org.fgai4h.ap.domain.task;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +10,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -33,14 +33,12 @@ public class AnnotationEntity implements Serializable {
 
     private AnnotationStatus status;
 
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    private String[] data;
+    @OneToMany(mappedBy = "annotationEntity")
+    private List<AnnotationDataEntity> annotationDataList;
 
     private AnnotatorEntity annotator;
 
     @Column(columnDefinition = "TIMESTAMP")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private LocalDateTime submittedAt;
 
     @ManyToOne

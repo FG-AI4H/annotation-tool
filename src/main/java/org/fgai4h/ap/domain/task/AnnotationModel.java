@@ -8,6 +8,7 @@ import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -23,7 +24,7 @@ public class AnnotationModel extends RepresentationModel<AnnotationModel>{
     private UUID annotationUUID;
     private AnnotationTaskModel annotationTask;
     private AnnotationStatus status;
-    private String[] data;
+    private List<AnnotationDataModel> data;
     private AnnotatorModel annotator;
     private LocalDateTime submittedAt;
 

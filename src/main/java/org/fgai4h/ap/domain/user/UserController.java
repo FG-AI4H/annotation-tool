@@ -4,9 +4,11 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class UserController {
@@ -26,5 +28,13 @@ public class UserController {
         return new ResponseEntity<>(
                 annotatorModelAssembler.toCollectionModel(annotatorEntities),
                 HttpStatus.OK);
+    }
+
+    @GetMapping("/annotators/{id}")
+    public ResponseEntity<AnnotatorModel> getAnnotatorById(@PathVariable("id") UUID id) {
+        return annotatorRepository.findById(id)
+                .map(annotatorModelAssembler::toModel)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

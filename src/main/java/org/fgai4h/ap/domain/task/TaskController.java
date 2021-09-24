@@ -74,6 +74,14 @@ public class TaskController {
         }
     }
 
+    @GetMapping("/annotations")
+    public ResponseEntity<CollectionModel<AnnotationModel>> getAllAnnotations() {
+        List<AnnotationEntity> annotationEntities = annotationRepository.findAll();
+        return new ResponseEntity<>(
+                annotationModelAssembler.toCollectionModel(annotationEntities),
+                HttpStatus.OK);
+    }
+
 
     @GetMapping("/annotations/{id}")
     public ResponseEntity<AnnotationModel> getAnnotationById(@PathVariable("id") UUID id) {
@@ -89,6 +97,14 @@ public class TaskController {
                 .map(sampleModelAssembler::toModel)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/annotationtasks")
+    public ResponseEntity<CollectionModel<AnnotationTaskModel>> getAllAnnotationTask() {
+        List<AnnotationTaskEntity> annotationTaskEntities = annotationTaskRepository.findAll();
+        return new ResponseEntity<>(
+                annotationTaskModelAssembler.toCollectionModel(annotationTaskEntities),
+                HttpStatus.OK);
     }
 
     @GetMapping("/annotationtasks/{id}")

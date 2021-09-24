@@ -7,7 +7,8 @@ spring:
     hibernate:
       ddl-auto: none
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/fg_ai4h
+    #url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/fg_ai4h
+    url: jdbc:mysql://fg-ai4h-db.cluster-cllejqtoj5fh.eu-central-1.rds.amazonaws.com:3306/fg_ai4h
     username: springuser
     password: password
     driver-class-name: com.mysql.jdbc.Driver

@@ -1,10 +1,11 @@
 package org.fgai4h.ap.domain.user;
 
-import org.fgai4h.ap.domain.task.AnnotationTaskEntity;
-import org.fgai4h.ap.domain.task.AnnotationTaskModel;
-import org.fgai4h.ap.domain.task.TaskController;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
+
+import static java.util.Objects.isNull;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class AnnotatorModelAssembler extends RepresentationModelAssemblerSupport<AnnotatorEntity, AnnotatorModel> {
@@ -15,6 +16,20 @@ public class AnnotatorModelAssembler extends RepresentationModelAssemblerSupport
 
     @Override
     public AnnotatorModel toModel(AnnotatorEntity entity) {
-        return null;
+        if(isNull(entity)){
+            return null;
+        }
+
+        AnnotatorModel annotatorModel = instantiateModel(entity);
+
+        annotatorModel.add(linkTo(
+                methodOn(UserController.class)
+                        .getAnnotatorById(entity.getUserUUID()))
+                .withSelfRel());
+
+        annotatorModel.setUserUUID(entity.getUserUUID());
+        annotatorModel.setExpertise(entity.getExpertise());
+
+        return annotatorModel;
     }
 }

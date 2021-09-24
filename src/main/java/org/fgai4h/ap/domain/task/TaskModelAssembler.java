@@ -22,6 +22,9 @@ public class TaskModelAssembler extends RepresentationModelAssemblerSupport<Task
     public TaskModel toModel(TaskEntity entity) {
         TaskModel taskModel = instantiateModel(entity);
 
+        AnnotationModelAssembler annotationModelAssembler = new AnnotationModelAssembler();
+        AnnotationTaskModelAssembler annotationTaskModelAssembler = new AnnotationTaskModelAssembler();
+
         taskModel.add(linkTo(
                 methodOn(TaskController.class)
                         .getTaskById(entity.getTaskUUID()))
@@ -30,27 +33,13 @@ public class TaskModelAssembler extends RepresentationModelAssemblerSupport<Task
         taskModel.setTaskUUID(entity.getTaskUUID());
         taskModel.setKind(entity.getKind());
         taskModel.setReadOnly(entity.getReadOnly());
-        taskModel.setAnnotationTasks(toAnnotationTaskModel(entity.getAnnotationTasks()));
+        taskModel.setAnnotationTasks(annotationTaskModelAssembler.toAnnotationTaskModel(entity.getAnnotationTasks()));
         taskModel.setSamples(toSampleModel(entity.getSamples()));
-        taskModel.setAnnotations(toAnnotationModel(entity.getAnnotations()));
+        taskModel.setAnnotations(annotationModelAssembler.toAnnotationModel(entity.getAnnotations()));
         return taskModel;
     }
 
-    private List<AnnotationModel> toAnnotationModel(List<AnnotationEntity> annotations) {
-        if (annotations.isEmpty())
-            return Collections.emptyList();
 
-        return annotations.stream()
-                .map(annotation -> AnnotationModel.builder()
-                        .annotationUUID(annotation.getAnnotationUUID())
-                        .data(annotation.getData())
-                        .build()
-                        .add(linkTo(
-                                methodOn(TaskController.class)
-                                        .getAnnotationById(annotation.getAnnotationUUID()))
-                                .withSelfRel()))
-                .collect(Collectors.toList());
-    }
 
     private List<SampleModel> toSampleModel(List<SampleEntity> samples) {
         if (samples.isEmpty())
@@ -68,27 +57,11 @@ public class TaskModelAssembler extends RepresentationModelAssemblerSupport<Task
 
     }
 
-    private List<AnnotationTaskModel> toAnnotationTaskModel(List<AnnotationTaskEntity> annotationTasks) {
-        if (annotationTasks.isEmpty())
-            return Collections.emptyList();
-
-        return annotationTasks.stream()
-                .map(annotationTask -> AnnotationTaskModel.builder()
-                        .annotationTaskUUID(annotationTask.getAnnotationTaskUUID())
-                        .title(annotationTask.getTitle())
-                        .kind(annotationTask.getKind())
-                        .description(annotationTask.getDescription())
-                        .build()
-                        .add(linkTo(methodOn(TaskController.class).getAnnotationTaskById(annotationTask.getAnnotationTaskUUID()))
-                                .withSelfRel())
-                ).collect(Collectors.toList());
-    }
-
     @Override
     public CollectionModel<TaskModel> toCollectionModel(Iterable<? extends TaskEntity> entities){
         CollectionModel<TaskModel> taskModels = super.toCollectionModel(entities);
 
-        //taskModels.add(linkTo(methodOn(AnnotationController.class).getAllAnnotation()).withSelfRel());
+        taskModels.add(linkTo(methodOn(TaskController.class).getAllTasks()).withSelfRel());
 
         return taskModels;
     }

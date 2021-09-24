@@ -20,7 +20,7 @@ public class AnnotationBackendApplication {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/oauth2/authorization/cognito").allowedOrigins("http://localhost:3000");
+                registry.addMapping("/oauth2/authorization/cognito").allowedOrigins("*");
             }
         };
     }

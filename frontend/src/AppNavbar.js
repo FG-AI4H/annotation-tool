@@ -47,8 +47,7 @@ export default class AppNavbar extends Component {
                 <Navbar.Brand as={Link} to="/">
                     <img
                         alt=""
-                        src="/logo192.png"
-                        width="30"
+                        src="/AI4H_logo_blue_transparent.png"
                         height="30"
                         className="d-inline-block align-top"
                     />{' '}
@@ -60,13 +59,7 @@ export default class AppNavbar extends Component {
                     <Nav className="me-auto">
                         <Nav.Link as={Link} to="/annotation">Annotation</Nav.Link>
                         <Nav.Link as={Link} to="/dashboard">Data Store</Nav.Link>
-                        <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
-                            <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                            <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-                            <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-                            <NavDropdown.Divider />
-                            <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-                        </NavDropdown>
+                        <Nav.Link as={Link} to="/benchmark">Benchmarking</Nav.Link>
                     </Nav>
                     <Nav>
                         <Nav.Link><FaUser/></Nav.Link>
