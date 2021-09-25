@@ -15,13 +15,13 @@ class CampaignList extends Component {
     }
 
     componentDidMount() {
-        fetch('/campaigns')
+        fetch('https://annotation.ai4h.net/campaigns')
             .then(response => response.json())
             .then(data => this.setState({campaigns: data._embedded.campaign}));
     }
 
     async remove(id) {
-        await fetch(`/campaigns/${id}`, {
+        await fetch(`https://annotation.ai4h.net/campaigns/${id}`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',

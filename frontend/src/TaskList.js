@@ -18,13 +18,13 @@ class TaskList extends Component {
 
     componentDidMount() {
         this.setState({ isLoading: true });
-        fetch('/tasks')
+        fetch('https://annotation.ai4h.net/tasks')
             .then(response => response.json())
             .then(data => this.setState({tasks: data._embedded.task, isLoading: false}));
     }
 
     async remove(id) {
-        await fetch(`/tasks/${id}`, {
+        await fetch(`https://annotation.ai4h.net/tasks/${id}`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',

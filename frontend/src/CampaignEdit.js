@@ -28,7 +28,7 @@ class CampaignEdit extends Component {
 
     async componentDidMount() {
         if (this.props.match.params.id !== 'new') {
-            const campaign = await (await fetch(`/campaigns/${this.props.match.params.id}`)).json();
+            const campaign = await (await fetch(`https://annotation.ai4h.net/campaigns/${this.props.match.params.id}`)).json();
             this.setState({item: campaign});
         }
     }
@@ -46,7 +46,7 @@ class CampaignEdit extends Component {
         event.preventDefault();
         const {item} = this.state;
 
-        await fetch('/campaigns' + (item.campaignUUID ? '/' + item.campaignUUID : ''), {
+        await fetch('https://annotation.ai4h.net/campaigns' + (item.campaignUUID ? '/' + item.campaignUUID : ''), {
             method: (item.campaignUUID) ? 'PUT' : 'POST',
             headers: {
                 'Accept': 'application/json',

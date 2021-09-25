@@ -26,7 +26,7 @@ class TaskEdit extends Component {
 
     async componentDidMount() {
         if (this.props.match.params.id !== 'new') {
-            const task = await (await fetch(`/tasks/${this.props.match.params.id}`)).json();
+            const task = await (await fetch(`https://annotation.ai4h.net/tasks/${this.props.match.params.id}`)).json();
             this.setState({item: task});
         }
     }
@@ -49,7 +49,7 @@ class TaskEdit extends Component {
         event.preventDefault();
         const {item} = this.state;
 
-        await fetch('/tasks' + (item.taskUUID ? '/' + item.taskUUID : ''), {
+        await fetch('https://annotation.ai4h.net/tasks' + (item.taskUUID ? '/' + item.taskUUID : ''), {
             method: (item.taskUUID) ? 'PUT' : 'POST',
             headers: {
                 'Accept': 'application/json',

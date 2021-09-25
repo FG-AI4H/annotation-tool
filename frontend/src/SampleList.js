@@ -18,7 +18,7 @@ class SampleList extends Component {
 
 
     async remove(id) {
-        await fetch(`/samples/${id}`, {
+        await fetch(`https://annotation.ai4h.net/samples/${id}`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',

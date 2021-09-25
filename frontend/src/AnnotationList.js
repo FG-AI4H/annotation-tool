@@ -16,7 +16,7 @@ class AnnotationList extends Component {
 
 
     async remove(id) {
-        await fetch(`/annotations/${id}`, {
+        await fetch(`https://annotation.ai4h.net/annotations/${id}`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
