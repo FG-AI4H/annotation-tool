@@ -15,5 +15,84 @@ code {
 :root {
   --amplify-primary-color: #00a5e3;
   --amplify-primary-tint: #00a5e3;
-  --amplify-primary-shade: #00a5e3y§;
+  --amplify-primary-shade: #00a5e3y;
+}
+
+h1,h2,h3,h4,h5,label{
+  color: white;
+}
+
+.card h5{
+  color: #282c34;
+}
+
+.loading {
+  position: fixed;
+  z-index: 999;
+  overflow: show;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 50px;
+  height: 50px;
+}
+
+body {
+  background: rgb(99, 39, 120)
+}
+
+.form-control:focus {
+  box-shadow: none;
+  border-color: #00a5e3
+}
+
+.profile-button {
+  background: rgb(99, 39, 120);
+  box-shadow: none;
+  border: none
+}
+
+.profile-button:hover {
+  background: #682773
+}
+
+.profile-button:focus {
+  background: #682773;
+  box-shadow: none
+}
+
+.profile-button:active {
+  background: #682773;
+  box-shadow: none
+}
+
+.back:hover {
+  color: #682773;
+  cursor: pointer
+}
+
+.labels {
+  font-size: 11px
+}
+
+.experience {
+  color: #fff;
+}
+
+.add-experience {
+  color: #fff;
+  background: #00a5e3;
+}
+
+.add-experience:hover {
+  background: #BA68C8;
+  color: #fff;
+  cursor: pointer;
+  border: solid 1px #BA68C8
+}
+
+.panel-wrapper{
+  height: 300px;
 }

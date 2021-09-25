@@ -4,6 +4,9 @@ import Container from "react-bootstrap/Container";
 import AppNavbar from './AppNavbar';
 import { Link,withRouter } from 'react-router-dom';
 import Form from "react-bootstrap/Form";
+import AnnotationTaskList from "./AnmnotationTaskList";
+import SampleList from "./SampleList";
+import AnnotationList from "./AnnotationList";
 
 class TaskEdit extends Component {
 
@@ -79,9 +82,14 @@ class TaskEdit extends Component {
                         <Form.Check type={"checkbox"} label={"Read only"} name="readOnly" id="readOnly" checked={item.readOnly} onChange={this.handleChange}/>
                     </Form.Group>
 
+                    <AnnotationTaskList tasks={item.annotationTasks}/>
+                    <SampleList samples={item.samples}/>
+                    <AnnotationList annotations={item.annotations}/>
+
                     <Form.Group>
                         <Button color="primary" type="submit">Save</Button>{' '}
-                        <Link to="/tasks"><Button color="secondary" >Cancel</Button></Link>
+                        <Link to="/tasks"><Button color="secondary" >Cancel</Button></Link>{' '}
+                        <Button variant="success" onClick={()=> window.open("https://dev.visian.org/?origin=who&taskId=" + item.taskUUID, "_blank")}>Annotate</Button>
                     </Form.Group>
                 </Form>
             </Container>

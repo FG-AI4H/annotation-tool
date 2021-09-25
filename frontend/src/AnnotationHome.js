@@ -20,7 +20,7 @@ class AnnotationHome extends Component {
                         <Col><h1 className="header">Welcome To The FG-AI4H Annotation Tool</h1></Col>
                     </Row>
                     <Row>
-                        <Col><p>Please choose an option</p></Col>
+                        <Col><h5>Please choose an option</h5></Col>
                     </Row>
                     <CardGroup className={'gap-3'}>
                     <Card style={{ width: '18rem' }} >

@@ -59,7 +59,7 @@ export default class AppNavbar extends Component {
                     <Nav className="me-auto">
                         <Nav.Link as={Link} to="/annotation">Annotation</Nav.Link>
                         <Nav.Link as={Link} to="/dashboard">Data Store</Nav.Link>
-                        <Nav.Link as={Link} to="/benchmark">Benchmarking</Nav.Link>
+                        <Nav.Link as={Link} to="/benchmark">Evaluation</Nav.Link>
                     </Nav>
                     <Nav>
                         <Nav.Link><FaUser/></Nav.Link>

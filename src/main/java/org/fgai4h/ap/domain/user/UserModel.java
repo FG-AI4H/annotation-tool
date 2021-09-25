@@ -18,4 +18,5 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserModel extends RepresentationModel<UserModel> {
     private UUID userUUID;
+    private String username;
 }

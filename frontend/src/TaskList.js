@@ -6,19 +6,21 @@ import { Link } from 'react-router-dom';
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Table from "react-bootstrap/Table";
 import {FaRedo, FaThumbsUp} from 'react-icons/fa';
+import Loader from "react-loader-spinner";
 
 class TaskList extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {tasks: []};
+        this.state = {tasks: [], isLoading: false};
         this.remove = this.remove.bind(this);
     }
 
     componentDidMount() {
+        this.setState({ isLoading: true });
         fetch('/tasks')
             .then(response => response.json())
-            .then(data => this.setState({tasks: data._embedded.task}));
+            .then(data => this.setState({tasks: data._embedded.task, isLoading: false}));
     }
 
     async remove(id) {
@@ -38,7 +40,13 @@ class TaskList extends Component {
         const {tasks, isLoading} = this.state;
 
         if (isLoading) {
-            return <p>Loading...</p>;
+            return (<div className="loading"><Loader
+                type="Puff"
+                color="#00a5e3"
+                height={100}
+                width={100}
+                timeout={3000} //3 secs
+            /></div>);
         }
 
         const taskList = tasks.map(task => {
@@ -49,8 +57,8 @@ class TaskList extends Component {
                 <td>{task.annotationTasks[0].description}</td>
                 <td>
                     <ButtonGroup >
-                        <Link to={"/tasks/" + task.taskUUID}><Button size="sm" variant="primary">Edit</Button></Link>
-                        <Button size="sm" variant="danger" onClick={() => this.remove(task.taskUUID)}>Delete</Button>
+                        <Link to={"/tasks/" + task.taskUUID}><Button size="sm" variant="primary">Edit</Button></Link>{' '}
+                        <Button size="sm" variant="danger" onClick={() => this.remove(task.taskUUID)}>Delete</Button>{' '}
                         <Button size="sm" variant="success" onClick={()=> window.open("https://dev.visian.org/?origin=who&taskId=" + task.taskUUID, "_blank")}>Annotate</Button>
                     </ButtonGroup>
                 </td>
@@ -62,7 +70,7 @@ class TaskList extends Component {
                 <AppNavbar/>
                 <Container className={'pt-5'}>
                     <div className={'float-end'}>
-                        <Button variant={'light'} onClick={() => this.componentDidMount()}><FaRedo /></Button>
+                        <Button variant={'light'} onClick={() => this.componentDidMount()}><FaRedo /></Button>{' '}
                         <Button variant="success" tag={Link} to="/tasks/new">Add Task</Button>
                     </div>
                     <h3>Tasks</h3>

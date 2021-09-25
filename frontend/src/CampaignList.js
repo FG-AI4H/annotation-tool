@@ -46,7 +46,7 @@ class CampaignList extends Component {
                 <td>{campaign.description}</td>
                 <td>
                     <ButtonGroup>
-                        <Button size="sm" variant="primary" tag={Link} to={"/campaigns/" + campaign.campaignUUID}>Edit</Button>
+                        <Link to={"/campaigns/" + campaign.campaignUUID}><Button size="sm" variant="primary">Edit</Button></Link>{' '}
                         <Button size="sm" variant="danger" onClick={() => this.remove(campaign.campaignUUID)}>Delete</Button>
                     </ButtonGroup>
                 </td>

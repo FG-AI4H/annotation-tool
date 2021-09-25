@@ -29,6 +29,7 @@ public class AnnotatorModelAssembler extends RepresentationModelAssemblerSupport
 
         annotatorModel.setUserUUID(entity.getUserUUID());
         annotatorModel.setExpertise(entity.getExpertise());
+        annotatorModel.setUsername(entity.getUsername());
 
         return annotatorModel;
     }

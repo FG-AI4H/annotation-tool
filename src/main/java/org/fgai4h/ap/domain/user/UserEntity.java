@@ -24,4 +24,6 @@ public abstract class UserEntity implements Serializable {
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(columnDefinition = "BINARY(16)")
     private UUID userUUID;
+
+    private String username;
 }
