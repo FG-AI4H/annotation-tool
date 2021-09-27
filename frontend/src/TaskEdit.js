@@ -49,7 +49,7 @@ class TaskEdit extends Component {
         event.preventDefault();
         const {item} = this.state;
 
-        await fetch('https://annotation.ai4h.net/tasks' + (item.taskUUID ? '/' + item.taskUUID : ''), {
+        await fetch('https://annotation.ai4h.net/tasks' + (item.taskUUID ? '/' + item.taskUUID + '/next' : ''), {
             method: (item.taskUUID) ? 'PUT' : 'POST',
             headers: {
                 'Accept': 'application/json',

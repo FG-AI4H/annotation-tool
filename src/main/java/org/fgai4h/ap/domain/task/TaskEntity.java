@@ -40,7 +40,7 @@ public class TaskEntity implements Serializable {
     @OneToMany(mappedBy="task")
     private List<SampleEntity> samples;
 
-    @OneToMany(mappedBy="task")
+    @OneToMany(mappedBy="task", cascade=CascadeType.ALL)
     private List<AnnotationEntity> annotations;
 
 

@@ -18,7 +18,8 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CampaignModel extends RepresentationModel<CampaignModel> {
 
-    public UUID campaignUUID;
-    public String name;
-    public String description;
+    private UUID campaignUUID;
+    private String name;
+    private String description;
+    private String status;
 }

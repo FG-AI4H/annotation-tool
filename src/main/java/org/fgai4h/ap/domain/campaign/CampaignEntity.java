@@ -26,7 +26,8 @@ public class CampaignEntity implements Serializable
     @Column(columnDefinition = "BINARY(16)")
     private UUID campaignUUID;
 
-    public String name;
-    public String description;
+    private String name;
+    private String description;
+    private String status;
 
 }

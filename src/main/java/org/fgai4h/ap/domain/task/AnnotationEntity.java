@@ -29,6 +29,7 @@ public class AnnotationEntity implements Serializable {
     @Column(columnDefinition = "BINARY(16)")
     private UUID annotationUUID;
 
+    @OneToOne(cascade = CascadeType.ALL)
     private AnnotationTaskEntity annotationTask;
 
     private AnnotationStatus status;
@@ -36,6 +37,7 @@ public class AnnotationEntity implements Serializable {
     @OneToMany(mappedBy = "annotationEntity")
     private List<AnnotationDataEntity> annotationDataList;
 
+    @OneToOne(cascade = CascadeType.ALL)
     private AnnotatorEntity annotator;
 
     @Column(columnDefinition = "TIMESTAMP")

@@ -29,13 +29,14 @@ public class CampaignModelAssembler extends RepresentationModelAssemblerSupport<
         // If PAID_FOR is valid, add a link to the `pay()` method
         if (!"PAID".equals(entity.getName())) {
             campaignModel.add(linkTo(
-                    methodOn(CampaignController.class).pay(entity.getCampaignUUID()))
+                    methodOn(CampaignController.class).start(entity.getCampaignUUID()))
                             .withRel(IanaLinkRelations.PAYMENT));
         }
 
         campaignModel.setCampaignUUID(entity.getCampaignUUID());
         campaignModel.setName(entity.getName());
         campaignModel.setDescription(entity.getDescription());
+        campaignModel.setStatus(entity.getStatus());
         return campaignModel;
     }
 

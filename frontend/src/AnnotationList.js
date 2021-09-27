@@ -43,7 +43,7 @@ class AnnotationList extends Component {
                     month: "long",
                     day: "2-digit"
                 }).format(Date.parse(annotation.submittedAt))}</td>
-                <td>jdoe</td>
+                <td>{annotation.annotator.username}</td>
                 <td>
                     <ButtonGroup >
                         <Link to={"/annotations/" + annotation.annotationUUID}><Button size="sm" variant="primary">Edit</Button></Link>{' '}

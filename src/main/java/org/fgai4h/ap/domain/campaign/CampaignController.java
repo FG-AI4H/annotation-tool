@@ -43,12 +43,12 @@ public class CampaignController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/campaigns/{id}/pay")
-    ResponseEntity<?> pay(@PathVariable UUID id) {
+    @PostMapping("/campaigns/{id}/start")
+    ResponseEntity<?> start(@PathVariable UUID id) {
 
         CampaignEntity campaign = campaignRepository.findById(id).orElseThrow(() -> new CampaignNotFoundException(id));
 
-        campaign.setName("PAID");
+        campaign.setStatus("STARTED");
         return ResponseEntity.ok(campaignRepository.save(campaign));
     }
 

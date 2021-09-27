@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -66,6 +67,30 @@ public class TaskController {
         taskRepository.save(taskToUpdate);
 
         Link newlyCreatedLink = linkTo(methodOn(TaskController.class).getTaskById(id)).withSelfRel();
+
+        try {
+            return ResponseEntity.noContent().location(new URI(newlyCreatedLink.getHref())).build();
+        } catch (URISyntaxException e) {
+            return ResponseEntity.badRequest().body("Unable to update " + taskToUpdate);
+        }
+    }
+
+    @PutMapping("/tasks/{id}/next")
+    public ResponseEntity<?> updateTaskNext(@RequestBody TaskEntity task, @PathVariable UUID id){
+        TaskEntity taskToUpdate = task;
+        taskToUpdate.setSamples(null);
+
+        for (Iterator<AnnotationEntity> it = task.getAnnotations().iterator(); it.hasNext(); ) {
+            AnnotationEntity annotationEntity = it.next();
+            annotationEntity.setAnnotationTask(null);
+            annotationEntity.setTask(task);
+        }
+
+        taskToUpdate.setTaskUUID(id);
+        taskRepository.save(taskToUpdate);
+
+        UUID nextTaskId = UUID.fromString("b4009387-4d48-49b6-be2a-8ad50df03307");
+        Link newlyCreatedLink = linkTo(methodOn(TaskController.class).getTaskById(nextTaskId)).withSelfRel();
 
         try {
             return ResponseEntity.noContent().location(new URI(newlyCreatedLink.getHref())).build();

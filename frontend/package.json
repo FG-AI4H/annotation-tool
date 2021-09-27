@@ -50,5 +50,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://annotation.ai4h.net"
+  "proxy": "http://localhost:8080"
 }
