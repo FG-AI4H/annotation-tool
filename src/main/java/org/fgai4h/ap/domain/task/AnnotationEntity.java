@@ -34,7 +34,7 @@ public class AnnotationEntity implements Serializable {
 
     private AnnotationStatus status;
 
-    @OneToMany(mappedBy = "annotationEntity")
+    @OneToMany(mappedBy = "annotationEntity", cascade=CascadeType.ALL)
     private List<AnnotationDataEntity> annotationDataList;
 
     @OneToOne(cascade = CascadeType.ALL)
