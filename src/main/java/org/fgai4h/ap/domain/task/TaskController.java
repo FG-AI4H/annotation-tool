@@ -84,6 +84,11 @@ public class TaskController {
             AnnotationEntity annotationEntity = it.next();
             annotationEntity.setAnnotationTask(null);
             annotationEntity.setTask(task);
+
+            for (Iterator<AnnotationDataEntity> itd = annotationEntity.getAnnotationDataList().iterator(); itd.hasNext(); ) {
+                AnnotationDataEntity annotationDataEntity = itd.next();
+                annotationDataEntity.setAnnotationEntity(annotationEntity);
+            }
         }
 
         taskToUpdate.setTaskUUID(id);
