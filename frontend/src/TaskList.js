@@ -31,7 +31,7 @@ class TaskList extends Component {
                 'Content-Type': 'application/json'
             }
         }).then(() => {
-            let updatedTasks = [...this.state.tasks].filter(i => i.id !== id);
+            let updatedTasks = [...this.state.tasks].filter(i => i.taskUUID !== id);
             this.setState({tasks: updatedTasks});
         });
     }

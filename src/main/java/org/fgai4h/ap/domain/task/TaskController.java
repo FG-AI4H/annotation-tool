@@ -121,6 +121,11 @@ public class TaskController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @DeleteMapping("/annotations/{id}")
+    public void deleteAnnotationById(@PathVariable("id") UUID id) {
+        annotationRepository.deleteById(id);
+    }
+
     @GetMapping("/samples/{id}")
     public ResponseEntity<SampleModel> getSampleById(@PathVariable("id") UUID id) {
         return sampleRepository.findById(id)

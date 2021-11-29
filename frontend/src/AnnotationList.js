@@ -14,22 +14,25 @@ class AnnotationList extends Component {
         this.remove = this.remove.bind(this);
     }
 
+    componentDidMount() {
+        this.setState({annotations: this.props.annotations});
+    }
 
     async remove(id) {
-        await fetch(`https://annotation.ai4h.net/annotations/${id}`, {
+        await fetch(`http://localhost:8080/annotations/${id}`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
         }).then(() => {
-            let updatedTasks = [...this.state.annotations].filter(i => i.id !== id);
+            let updatedTasks = [...this.props.annotations].filter(i => i.annotationUUID !== id);
             this.setState({annotations: updatedTasks});
         });
     }
 
     render() {
-        const annotations = this.props.annotations;
+        const annotations = this.state.annotations;
 
         if(!annotations){
             return (<div></div>)
