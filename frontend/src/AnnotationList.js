@@ -18,6 +18,12 @@ class AnnotationList extends Component {
         this.setState({annotations: this.props.annotations});
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.annotations !== this.props.annotations) {
+            this.setState({annotations: this.props.annotations});
+        }
+    }
+
     async remove(id) {
         await fetch(`http://localhost:8080/annotations/${id}`, {
             method: 'DELETE',
