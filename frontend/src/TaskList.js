@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import AppNavbar from './AppNavbar';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Table from "react-bootstrap/Table";
-import {FaRedo, FaThumbsUp} from 'react-icons/fa';
+import {FaRedo} from 'react-icons/fa';
 import Loader from "react-loader-spinner";
 
 class TaskList extends Component {

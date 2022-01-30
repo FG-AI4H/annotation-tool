@@ -1,14 +1,5 @@
 import React from "react";
-import {
-    BarChart,
-    Bar,
-    XAxis,
-    YAxis,
-    ResponsiveContainer,
-    Tooltip,
-    Label,
-    LabelList
-} from "recharts";
+import {Bar, BarChart, Label, LabelList, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
 
 const renderCustomizedLabel = (props) => {
     const { content, ...rest } = props;

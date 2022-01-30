@@ -20,7 +20,7 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AnnotatorModel extends RepresentationModel<AnnotatorModel> {
 
-    private UUID userUUID;
+    private UUID annotatorUUID;
 
     private String username;
     private String expertise;

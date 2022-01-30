@@ -7,7 +7,6 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.UUID;
 
 @Data
@@ -15,8 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name="user")
-@Inheritance(strategy = InheritanceType.JOINED)
-public abstract class UserEntity implements Serializable {
+public class UserEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -26,10 +24,10 @@ public abstract class UserEntity implements Serializable {
     @Column(columnDefinition = "BINARY(16)")
     private UUID userUUID;
 
-    private String username;
+    @ManyToOne
+    @JoinColumn(name = "annotator_role_annotator_uuid")
+    private AnnotatorEntity annotatorRole;
 
-    private Date birthdate;
-    private String timezone;
-    private String email;
+    private String idpID;
 
 }

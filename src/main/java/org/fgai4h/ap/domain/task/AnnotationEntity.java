@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.fgai4h.ap.domain.user.AnnotatorEntity;
+import org.fgai4h.ap.domain.user.UserEntity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -38,7 +38,7 @@ public class AnnotationEntity implements Serializable {
     private List<AnnotationDataEntity> annotationDataList;
 
     @OneToOne(cascade = CascadeType.ALL)
-    private AnnotatorEntity annotator;
+    private UserEntity annotator;
 
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime submittedAt;

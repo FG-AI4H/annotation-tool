@@ -1,6 +1,6 @@
 package org.fgai4h.ap.domain.task;
 
-import org.fgai4h.ap.domain.user.AnnotatorModelAssembler;
+import org.fgai4h.ap.domain.user.UserModelAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,7 @@ public class AnnotationModelAssembler extends RepresentationModelAssemblerSuppor
     @Override
     public AnnotationModel toModel(AnnotationEntity entity) {
         AnnotationTaskModelAssembler annotationTaskModelAssembler = new AnnotationTaskModelAssembler();
-        AnnotatorModelAssembler annotatorModelAssembler = new AnnotatorModelAssembler();
+        UserModelAssembler userModelAssembler = new UserModelAssembler();
 
         AnnotationModel annotationModel = instantiateModel(entity);
 
@@ -33,7 +33,7 @@ public class AnnotationModelAssembler extends RepresentationModelAssemblerSuppor
 
         annotationModel.setAnnotationUUID(entity.getAnnotationUUID());
         annotationModel.setAnnotationTask(annotationTaskModelAssembler.toModel(entity.getAnnotationTask()));
-        annotationModel.setAnnotator(annotatorModelAssembler.toModel(entity.getAnnotator()));
+        annotationModel.setAnnotator(userModelAssembler.toModel(entity.getAnnotator()));
         annotationModel.setData(toAnnotationDataModel(entity.getAnnotationDataList()));
         annotationModel.setStatus(entity.getStatus());
         annotationModel.setSubmittedAt(entity.getSubmittedAt());
@@ -54,7 +54,7 @@ public class AnnotationModelAssembler extends RepresentationModelAssemblerSuppor
         if (annotations.isEmpty())
             return Collections.emptyList();
 
-        AnnotatorModelAssembler annotatorModelAssembler = new AnnotatorModelAssembler();
+        UserModelAssembler userModelAssembler = new UserModelAssembler();
         AnnotationTaskModelAssembler annotationTaskModelAssembler = new AnnotationTaskModelAssembler();
 
         return annotations.stream()
@@ -64,7 +64,7 @@ public class AnnotationModelAssembler extends RepresentationModelAssemblerSuppor
                         .status(annotation.getStatus())
                         .submittedAt(annotation.getSubmittedAt())
                         .annotationTask(annotationTaskModelAssembler.toModel(annotation.getAnnotationTask()))
-                        .annotator(annotatorModelAssembler.toModel(annotation.getAnnotator()))
+                        .annotator(userModelAssembler.toModel(annotation.getAnnotator()))
                         .build()
                         .add(linkTo(
                                 methodOn(TaskController.class)

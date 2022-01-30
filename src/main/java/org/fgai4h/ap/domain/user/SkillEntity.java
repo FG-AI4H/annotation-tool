@@ -14,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "skill_entity")
+@Table(name = "skill")
 public class SkillEntity {
 
     @Id

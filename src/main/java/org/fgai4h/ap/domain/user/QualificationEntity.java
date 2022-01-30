@@ -15,7 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "qualification_entity")
+@Table(name = "qualification")
 public class QualificationEntity {
 
     @Id

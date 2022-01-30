@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Table from "react-bootstrap/Table";
-import {FaRedo, FaThumbsUp} from 'react-icons/fa';
 
 class AnnotationList extends Component {
 

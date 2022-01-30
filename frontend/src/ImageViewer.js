@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import { installViewer } from '@ohif/viewer'
+import {installViewer} from '@ohif/viewer'
 import Container from "react-bootstrap/Container";
 import AppNavbar from "./AppNavbar";
 

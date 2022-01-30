@@ -24,12 +24,11 @@ public class AnnotatorModelAssembler extends RepresentationModelAssemblerSupport
 
         annotatorModel.add(linkTo(
                 methodOn(UserController.class)
-                        .getAnnotatorById(entity.getUserUUID()))
+                        .getAnnotatorById(entity.getAnnotatorUUID()))
                 .withSelfRel());
 
-        annotatorModel.setUserUUID(entity.getUserUUID());
+        annotatorModel.setAnnotatorUUID(entity.getAnnotatorUUID());
         annotatorModel.setExpertise(entity.getExpertise());
-        annotatorModel.setUsername(entity.getUsername());
 
         return annotatorModel;
     }

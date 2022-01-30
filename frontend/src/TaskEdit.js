@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import AppNavbar from './AppNavbar';
-import { Link,withRouter } from 'react-router-dom';
+import {Link, withRouter} from 'react-router-dom';
 import Form from "react-bootstrap/Form";
 import AnnotationTaskList from "./AnmnotationTaskList";
 import SampleList from "./SampleList";

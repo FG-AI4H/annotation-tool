@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import React, {useEffect, useState} from 'react'
+import {makeStyles, withStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -21,9 +21,9 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Box from '@material-ui/core/Box';
 import axios from 'axios';
-import { API, graphqlOperation } from 'aws-amplify'
-import { createDataset } from './graphql/mutations'
-import { listDatasets } from './graphql/queries'
+import {API, graphqlOperation} from 'aws-amplify'
+import {createDataset} from './graphql/mutations'
+import {listDatasets} from './graphql/queries'
 import uuid from 'react-uuid'
 import Auth from '@aws-amplify/auth';
 

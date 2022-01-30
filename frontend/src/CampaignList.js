@@ -1,10 +1,13 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import AppNavbar from './AppNavbar';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Table from "react-bootstrap/Table";
+import {Auth} from "aws-amplify";
+import CampaignClient from "./api/CampaignClient";
+import {FaRedo} from "react-icons/fa";
 
 class CampaignList extends Component {
 
@@ -15,22 +18,34 @@ class CampaignList extends Component {
     }
 
     componentDidMount() {
-        fetch('https://annotation.ai4h.net/campaigns')
-            .then(response => response.json())
-            .then(data => this.setState({campaigns: data._embedded.campaign}));
+        this.setState({isLoading: true});
+        Auth.currentAuthenticatedUser({
+            bypassCache: false
+        }).then(response => {
+            const client = new CampaignClient(response.signInUserSession.accessToken.jwtToken);
+            client.fetchCampaignList()
+                .then(
+                    response =>
+                        this.setState(
+                            {campaigns: response?.data._embedded.campaign, isLoading: false}
+                        ));
+        }).catch(err => console.log(err));
+
     }
 
     async remove(id) {
-        await fetch(`https://annotation.ai4h.net/campaigns/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        }).then(() => {
-            let updatedCampaigns = [...this.state.campaigns].filter(i => i.id !== id);
-            this.setState({campaigns: updatedCampaigns});
-        });
+        Auth.currentAuthenticatedUser({
+            bypassCache: false
+        }).then(response => {
+            const client = new CampaignClient(response.signInUserSession.accessToken.jwtToken);
+            client.removeCampaign(id)
+                .then(
+                    response => {
+                        let updatedCampaigns = [...this.state.campaigns].filter(i => i.campaignUUID !== id);
+                        this.setState({campaigns: updatedCampaigns});
+                    });
+        }).catch(err => console.log(err));
+
     }
 
     render() {
@@ -58,7 +73,8 @@ class CampaignList extends Component {
                 <AppNavbar/>
                 <Container className={'pt-5'}>
                     <div className="float-end">
-                        <Button variant="success" tag={Link} to="/campaigns/new">Add Campaign</Button>
+                        <Button variant={'light'} onClick={() => this.componentDidMount()}><FaRedo /></Button>{' '}
+                        <Link to={"/campaigns/new"}><Button variant="success">Add Campaign</Button></Link>
                     </div>
                     <h3>Campaigns</h3>
                     <Table className="mt-4">
