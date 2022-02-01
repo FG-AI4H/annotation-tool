@@ -39,6 +39,9 @@ class App extends React.Component {
 
                 <Route path='/annotation' exact={true} component={AnnotationHome}/>
                 <Route path='/tasks' exact={true} component={TaskList}/>
+                  <Route path='/myTasks' exact={true} render={(props) => (
+                      <TaskList {...props} me={true} />
+                  )}/>
                 <Route path='/tasks/:id' component={TaskEdit}/>
                 <Route path='/campaigns' exact={true} component={CampaignList}/>
                 <Route path='/campaigns/:id' component={CampaignEdit}/>

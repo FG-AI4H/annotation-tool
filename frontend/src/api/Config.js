@@ -5,8 +5,10 @@ class Config {
     MESSAGE_URL = `${this.SCHEME}://${this.HOST}:${this.PORT}/api/v1/messages`;
     USER_URL = `${this.SCHEME}://${this.HOST}:${this.PORT}/api/v1/users`;
     CAMPAIGN_URL = `${this.SCHEME}://${this.HOST}:${this.PORT}/api/v1/campaigns`;
+    TASK_URL = `${this.SCHEME}://${this.HOST}:${this.PORT}/api/v1/tasks`;
     ACCESS_TOKEN = "accessToken";
     EXPIRATION = "expiration";
+
 
     defaultHeaders() {
         return {

@@ -89,6 +89,7 @@ class CampaignList extends Component {
                         {campaignList}
                         </tbody>
                     </Table>
+                    <Link to="/annotation"><Button color="secondary" >Back</Button></Link>
                 </Container>
             </div>
         );

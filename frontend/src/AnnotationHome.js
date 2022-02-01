@@ -22,34 +22,48 @@ class AnnotationHome extends Component {
                     <Row>
                         <Col><h5>Please choose an option</h5></Col>
                     </Row>
-                    <CardGroup className={'gap-3'}>
-                    <Card style={{ width: '18rem' }} >
+                    <Row xs={1} md={2} className="g-4">
+                        <Col>
+                    <Card>
 
                         <Card.Header as="h5">Campaigns</Card.Header>
                         <Card.Body>
 
                             <Card.Text>
-                                Some quick example text to build on the card title and make up the bulk of
-                                the card's content.
+                                Manage annotation campaigns.
                             </Card.Text>
                             <Link to="/campaigns"><Button variant="primary">Campaigns</Button></Link>
                         </Card.Body>
                     </Card>
+                        </Col>
+<Col>
+                    <Card>
 
-                    <Card style={{ width: '18rem' }}>
-
-                        <Card.Header as="h5">Tasks</Card.Header>
+                        <Card.Header as="h5">My Tasks</Card.Header>
                         <Card.Body>
 
                             <Card.Text>
-                                Some quick example text to build on the card title and make up the bulk of
-                                the card's content.
+                                View all my tasks and work on them.
                             </Card.Text>
-                            <Link to="/tasks"><Button variant="primary">Tasks</Button></Link>
+                            <Link to="/myTasks"><Button variant="primary">My Tasks</Button></Link>
                         </Card.Body>
                     </Card>
-                    </CardGroup>
+</Col>
+                    <Col>
 
+                        <Card>
+
+                            <Card.Header as="h5">Tasks</Card.Header>
+                            <Card.Body>
+
+                                <Card.Text>
+                                    List all tasks and get statistics about them    .
+                                </Card.Text>
+                                <Link to="/tasks"><Button variant="primary">Tasks</Button></Link>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                    </Row>
                 </Container>
             </div>
         );

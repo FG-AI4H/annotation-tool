@@ -44,7 +44,7 @@ class UserListComponent extends Component {
         }
 
         const userList = users.map(user => {
-            return <tr key={user.userUUID}>
+            return <tr key={user.idpID}>
                 <td style={{whiteSpace: 'nowrap'}}>{user.username}</td>
                 <td style={{whiteSpace: 'nowrap'}}>{user.email}</td>
                 <td>

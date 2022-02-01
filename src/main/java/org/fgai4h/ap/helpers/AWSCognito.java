@@ -45,26 +45,17 @@ public class AWSCognito {
     }
 
     // Shows how to list users by using a filter.
-    public static void listUsersFilter(CognitoIdentityProviderClient cognitoClient, String userPoolId ) {
+    public static AdminGetUserResponse getUserByUsername(CognitoIdentityProviderClient cognitoClient, String userPoolId, String username ) {
 
         try {
-            // List only users with specific email.
-            String filter = "email = \"tblue@noserver.com\"";
 
-            ListUsersRequest usersRequest = ListUsersRequest.builder()
-                    .userPoolId(userPoolId)
-                    .filter(filter)
-                    .build();
-
-            ListUsersResponse response = cognitoClient.listUsers(usersRequest);
-            response.users().forEach(user -> {
-                        System.out.println("User with filter applied " + user.username() + " Status " + user.userStatus() + " Created " + user.userCreateDate() );
-                    }
-            );
+            AdminGetUserRequest adminGetUserRequest = AdminGetUserRequest.builder().username(username).userPoolId(userPoolId).build();
+            return cognitoClient.adminGetUser(adminGetUserRequest);
 
         } catch (CognitoIdentityProviderException e){
             System.err.println(e.awsErrorDetails().errorMessage());
             System.exit(1);
         }
+        return null;
     }
 }

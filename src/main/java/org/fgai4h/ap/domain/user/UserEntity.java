@@ -29,5 +29,6 @@ public class UserEntity implements Serializable {
     private AnnotatorEntity annotatorRole;
 
     private String idpID;
+    private String username;
 
 }

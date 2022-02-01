@@ -8,11 +8,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminGetUserResponse;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -55,8 +59,16 @@ public class UserController {
         List<UserType> awsUsers = AWSCognito.getAllUsers(cognitoClient,"eu-central-1_1cFVgcU36") ;
         cognitoClient.close();
 
+        CollectionModel<UserModel> userModelCollection = userModelAWSAssembler.toCollectionModel(awsUsers);
+        Iterator<UserModel> iterator = userModelCollection.iterator();
+        while(iterator.hasNext()) {
+            UserModel next = iterator.next();
+            UserEntity userEntity = userRepository.findByIdpId(next.getIdpID());
+            next.setUserUUID(userEntity.getUserUUID());
+        }
+
         return new ResponseEntity<>(
-                userModelAWSAssembler.toCollectionModel(awsUsers),
+                userModelCollection,
                 HttpStatus.OK);
     }
 
@@ -83,7 +95,26 @@ public class UserController {
 
     @GetMapping("/api/v1/users/{id}")
     public ResponseEntity<UserModel> getUserById(@PathVariable("id") UUID id) {
-        return null;
+        Optional<UserModel> user = userRepository.findById(id).map(userModelAssembler::toModel);
+
+        if (user.isPresent()) {
+
+            CognitoIdentityProviderClient cognitoClient = CognitoIdentityProviderClient.builder()
+                    .region(Region.EU_CENTRAL_1)
+                    .build();
+
+            AdminGetUserResponse awsUser = AWSCognito.getUserByUsername(cognitoClient, "eu-central-1_1cFVgcU36", user.get().getUsername());
+            cognitoClient.close();
+            for (AttributeType attribute : awsUser.userAttributes()) {
+                switch (attribute.name()){
+                    case "email": user.get().setEmail(attribute.value());
+                }
+            }
+        }
+
+        return user.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+
     }
 
     @GetMapping("/annotators/{id}")

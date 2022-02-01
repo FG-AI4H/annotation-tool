@@ -6,6 +6,10 @@ import Button from "react-bootstrap/Button";
 import {Link, withRouter} from "react-router-dom";
 import {Auth} from "aws-amplify";
 import UserClient from "./api/UserClient";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Card from "react-bootstrap/Card";
+import CardGroup from "react-bootstrap/CardGroup";
 
 class UserEdit extends Component {
 
@@ -93,17 +97,47 @@ class UserEdit extends Component {
             <AppNavbar/>
             <Container className={'pt-5'}>
                 {title}
-                <Form onSubmit={this.handleSubmit}>
-                    <Form.Group className={'py-2'}>
-                        <Form.Label htmlFor="kind">Username</Form.Label>
-                        <Form.Control type="text" name="username" id="username" value={item.username} onChange={this.handleChange}/>
-                    </Form.Group>
+                <Row>
+                    <Col>
+                        <Form onSubmit={this.handleSubmit}>
+                            <Form.Group className={'py-2'}>
+                                <Form.Label htmlFor="kind">Username</Form.Label>
+                                <Form.Control type="text" name="username" id="username" value={item.username} onChange={this.handleChange}/>
+                            </Form.Group>
 
-                    <Form.Group>
-                        <Button color="primary" type="submit">Save</Button>{' '}
-                        <Link to="/users"><Button color="secondary" >Cancel</Button></Link>{' '}
-                    </Form.Group>
-                </Form>
+                            <Form.Group className={'py-2'}>
+                                <Form.Label htmlFor="kind">Email</Form.Label>
+                                <Form.Control type="text" name="email" id="email" value={item.email} onChange={this.handleChange}/>
+                            </Form.Group>
+
+                            <Form.Group>
+                                <Button color="primary" type="submit">Save</Button>{' '}
+                                <Link to="/userManagement"><Button color="secondary" >Cancel</Button></Link>{' '}
+                            </Form.Group>
+                        </Form>
+                    </Col>
+                </Row>
+                <Row className={'pt-5'}>
+                    <Col>
+                        <h3>Roles</h3>
+
+                        <Row className={'gap-3'}>
+                            <Col >
+                                <h4>Annotation Platform</h4>
+                                <Form.Check type="checkbox" name="annotation_annotator_role" id="annotation_annotator_role" label="Annotator" onChange={this.handleChange}/>
+                                <Form.Check type="checkbox" name="annotation_reviewer_role" id="annotation_reviewer_role" label="Reviewer" onChange={this.handleChange}/>
+                                <Form.Check type="checkbox" name="annotation_manager_role" id="annotation_manager_role" label="Campaign Manager" onChange={this.handleChange}/>
+                                <Form.Check type="checkbox" name="annotation_admin_role" id="annotation_admin_role" label="Admin" onChange={this.handleChange}/>
+                            </Col>
+                            <Col>
+
+                                <h4>Data Platform</h4>
+                                <Form.Check type="checkbox" name="data_admin_role" id="data_admin_role" label="Admin" onChange={this.handleChange}/>
+                            </Col>
+                        </Row>
+
+                    </Col>
+                </Row>
             </Container>
         </div>
     }

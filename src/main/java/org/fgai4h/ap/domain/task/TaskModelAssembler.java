@@ -1,5 +1,6 @@
 package org.fgai4h.ap.domain.task;
 
+import org.fgai4h.ap.domain.user.UserModelAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,7 @@ public class TaskModelAssembler extends RepresentationModelAssemblerSupport<Task
 
         AnnotationModelAssembler annotationModelAssembler = new AnnotationModelAssembler();
         AnnotationTaskModelAssembler annotationTaskModelAssembler = new AnnotationTaskModelAssembler();
+        UserModelAssembler userModelAssembler = new UserModelAssembler();
 
         taskModel.add(linkTo(
                 methodOn(TaskController.class)
@@ -36,6 +38,7 @@ public class TaskModelAssembler extends RepresentationModelAssemblerSupport<Task
         taskModel.setAnnotationTasks(annotationTaskModelAssembler.toAnnotationTaskModel(entity.getAnnotationTasks()));
         taskModel.setSamples(toSampleModel(entity.getSamples()));
         taskModel.setAnnotations(annotationModelAssembler.toAnnotationModel(entity.getAnnotations()));
+        taskModel.setAssignee(userModelAssembler.toModel(entity.getAssignee()));
         return taskModel;
     }
 

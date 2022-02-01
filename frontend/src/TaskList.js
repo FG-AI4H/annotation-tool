@@ -7,6 +7,10 @@ import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Table from "react-bootstrap/Table";
 import {FaRedo} from 'react-icons/fa';
 import Loader from "react-loader-spinner";
+import {Auth} from "aws-amplify";
+import UserClient from "./api/UserClient";
+import TaskClient from "./api/TaskClient";
+import CampaignClient from "./api/CampaignClient";
 
 class TaskList extends Component {
 
@@ -18,26 +22,47 @@ class TaskList extends Component {
 
     componentDidMount() {
         this.setState({ isLoading: true });
-        fetch('https://annotation.ai4h.net/tasks')
-            .then(response => response.json())
-            .then(data => this.setState({tasks: data._embedded.task, isLoading: false}));
+
+        Auth.currentAuthenticatedUser({
+            bypassCache: false
+        }).then(response => {
+            const client = new TaskClient(response.signInUserSession.accessToken.jwtToken);
+            if(this.props.me){
+                client.fetchMyTaskList()
+                    .then(
+                        response =>
+                            this.setState(
+                                {tasks:  response?.data._embedded ? response?.data._embedded?.task : [], isLoading: false}
+                            ));
+            }
+            else {
+                client.fetchTaskList()
+                    .then(
+                        response =>
+                            this.setState(
+                                {tasks:  response?.data._embedded ? response?.data._embedded?.task : [], isLoading: false}
+                            ));
+            }
+        }).catch(err => console.log(err));
     }
 
     async remove(id) {
-        await fetch(`https://annotation.ai4h.net/tasks/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        }).then(() => {
-            let updatedTasks = [...this.state.tasks].filter(i => i.taskUUID !== id);
-            this.setState({tasks: updatedTasks});
-        });
+        Auth.currentAuthenticatedUser({
+            bypassCache: false
+        }).then(response => {
+            const client = new TaskClient(response.signInUserSession.accessToken.jwtToken);
+            client.removeTask(id)
+                .then(
+                    response => {
+                        let updatedTasks = [...this.state.tasks].filter(i => i.taskUUID !== id);
+                        this.setState({tasks: updatedTasks});
+                    });
+        }).catch(err => console.log(err));
     }
 
     render() {
         const {tasks, isLoading} = this.state;
+        const {me} = this.props;
 
         if (isLoading) {
             return (<div className="loading"><Loader
@@ -69,11 +94,15 @@ class TaskList extends Component {
             <div>
                 <AppNavbar/>
                 <Container className={'pt-5'}>
-                    <div className={'float-end'}>
-                        <Button variant={'light'} onClick={() => this.componentDidMount()}><FaRedo /></Button>{' '}
-                        <Button variant="success" tag={Link} to="/tasks/new">Add Task</Button>
-                    </div>
-                    <h3>Tasks</h3>
+
+                        <div className={'float-end'}>
+                            <Button variant={'light'} onClick={() => this.componentDidMount()}><FaRedo /></Button>{' '}
+                            {!me &&
+                                <Button variant="success" tag={Link} to="/tasks/new">Add Task</Button>
+                            }
+                        </div>
+
+                    <h3>{me ? 'My Tasks' : 'Tasks'}</h3>
                     <Table className="mt-4">
                         <thead>
                         <tr>
@@ -85,9 +114,11 @@ class TaskList extends Component {
                         </tr>
                         </thead>
                         <tbody>
-                        {taskList}
+                        {taskList.length > 0 ? taskList : <tr><td colSpan={5}>No task available</td></tr>
+                        }
                         </tbody>
                     </Table>
+                    <Link to="/annotation"><Button color="secondary" >Back</Button></Link>
                 </Container>
             </div>
         );
