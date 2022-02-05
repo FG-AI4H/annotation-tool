@@ -27,4 +27,7 @@ public class UserModel extends RepresentationModel<UserModel> {
     private String timezone;
     private String email;
 
+    private AnnotatorModel annotatorRole;
+    private ReviewerModel reviewerRole;
+
 }

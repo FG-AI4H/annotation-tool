@@ -29,7 +29,29 @@ public class AnnotatorModelAssembler extends RepresentationModelAssemblerSupport
 
         annotatorModel.setAnnotatorUUID(entity.getAnnotatorUUID());
         annotatorModel.setExpertise(entity.getExpertise());
+        annotatorModel.setExpectedSalary(entity.getExpectedSalary());
+        annotatorModel.setSelfAssessment(entity.getSelfAssessment());
+        annotatorModel.setStudyCountry(entity.getStudyCountry());
+        annotatorModel.setWorkCountry(entity.getWorkCountry());
+        annotatorModel.setYearsInPractice(entity.getYearsInPractice());
+        annotatorModel.setDegree(entity.getDegree());
 
         return annotatorModel;
+    }
+
+    public AnnotatorEntity toEntity(AnnotatorModel annotatorRole) {
+
+        AnnotatorEntity annotatorEntity = new AnnotatorEntity();
+
+        annotatorEntity.setAnnotatorUUID(annotatorRole.getAnnotatorUUID());
+        annotatorEntity.setExpertise(annotatorRole.getExpertise());
+        annotatorEntity.setExpectedSalary(annotatorRole.getExpectedSalary());
+        annotatorEntity.setSelfAssessment(annotatorRole.getSelfAssessment());
+        annotatorEntity.setStudyCountry(annotatorRole.getStudyCountry());
+        annotatorEntity.setWorkCountry(annotatorRole.getWorkCountry());
+        annotatorEntity.setYearsInPractice(annotatorRole.getYearsInPractice());
+        annotatorEntity.setDegree(annotatorRole.getDegree());
+
+        return annotatorEntity;
     }
 }

@@ -15,19 +15,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-@JsonRootName(value = "annotator")
-@Relation(collectionRelation = "annotator")
+@JsonRootName(value = "reviewer")
+@Relation(collectionRelation = "reviewer")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class AnnotatorModel extends RepresentationModel<AnnotatorModel> {
+public class ReviewerModel extends RepresentationModel<ReviewerModel> {
 
-    private UUID annotatorUUID;
-    private String username;
-
-    private String expertise;
-    private Integer yearsInPractice;
-    private Float expectedSalary;
-    private String workCountry;
-    private String studyCountry;
-    private Integer selfAssessment;
-    private String degree;
+    private UUID reviewerUUID;
 }

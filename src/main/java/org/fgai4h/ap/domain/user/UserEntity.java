@@ -24,9 +24,13 @@ public class UserEntity implements Serializable {
     @Column(columnDefinition = "BINARY(16)")
     private UUID userUUID;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "annotator_role_annotator_uuid")
     private AnnotatorEntity annotatorRole;
+
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "reviewer_role_ID")
+    private ReviewerEntity reviewerRole;
 
     private String idpID;
     private String username;

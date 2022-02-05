@@ -20,6 +20,8 @@ public class UserModelAssembler extends RepresentationModelAssemblerSupport<User
             return null;
         }
 
+        AnnotatorModelAssembler annotatorModelAssembler = new AnnotatorModelAssembler();
+        ReviewerModelAssembler reviewerModelAssembler = new ReviewerModelAssembler();
         UserModel userModel = instantiateModel(entity);
 
         userModel.add(linkTo(
@@ -30,8 +32,27 @@ public class UserModelAssembler extends RepresentationModelAssemblerSupport<User
         userModel.setUserUUID(entity.getUserUUID());
         userModel.setIdpID(entity.getIdpID());
         userModel.setUsername(entity.getUsername());
+        userModel.setAnnotatorRole(annotatorModelAssembler.toModel(entity.getAnnotatorRole()));
+
+        userModel.setReviewerRole(reviewerModelAssembler.toModel(entity.getReviewerRole()));
 
         return userModel;
+    }
+
+    public  UserEntity toEntity(UserModel model){
+
+        AnnotatorModelAssembler annotatorModelAssembler = new AnnotatorModelAssembler();
+
+        UserEntity useEntity = new UserEntity();
+
+        useEntity.setUserUUID(model.getUserUUID());
+        useEntity.setIdpID(model.getIdpID());
+        useEntity.setUsername(model.getUsername());
+        if(model.getAnnotatorRole() != null) {
+            useEntity.setAnnotatorRole(annotatorModelAssembler.toEntity(model.getAnnotatorRole()));
+        }
+        return useEntity;
+
     }
 }
 

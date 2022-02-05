@@ -26,7 +26,9 @@ public class AnnotatorEntity implements Serializable {
     private Integer yearsInPractice;
     private Float expectedSalary;
     private String workCountry;
+    private String studyCountry;
     private Integer selfAssessment;
+    private String degree;
 
     @OneToMany(mappedBy = "annotatorEntity")
     private List<QualificationEntity> qualifications = new java.util.ArrayList<>();

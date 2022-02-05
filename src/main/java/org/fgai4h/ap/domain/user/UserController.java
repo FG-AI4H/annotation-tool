@@ -27,16 +27,20 @@ public class UserController {
 
     private final UserRepository userRepository;
     private final AnnotatorRepository annotatorRepository;
+    private final ReviewerRepository reviewerRepository;
     private final UserModelAssembler userModelAssembler;
     private final UserModelAWSAssembler userModelAWSAssembler;
     private final AnnotatorModelAssembler annotatorModelAssembler;
+    private final ReviewerModelAssembler reviewerModelAssembler;
 
-    public UserController(UserRepository userRepository, UserModelAssembler userModelAssembler, AnnotatorRepository annotatorRepository, AnnotatorModelAssembler annotatorModelAssembler,UserModelAWSAssembler userModelAWSAssembler){
+    public UserController(UserRepository userRepository, UserModelAssembler userModelAssembler, AnnotatorRepository annotatorRepository, AnnotatorModelAssembler annotatorModelAssembler,UserModelAWSAssembler userModelAWSAssembler, ReviewerModelAssembler reviewerModelAssembler, ReviewerRepository reviewerRepository){
         this.userRepository = userRepository;
         this.userModelAssembler = userModelAssembler;
         this.annotatorRepository = annotatorRepository;
         this.annotatorModelAssembler = annotatorModelAssembler;
         this.userModelAWSAssembler = userModelAWSAssembler;
+        this.reviewerModelAssembler = reviewerModelAssembler;
+        this.reviewerRepository = reviewerRepository;
     }
 
     @GetMapping("/annotators")
@@ -64,7 +68,14 @@ public class UserController {
         while(iterator.hasNext()) {
             UserModel next = iterator.next();
             UserEntity userEntity = userRepository.findByIdpId(next.getIdpID());
+
+            // If user exists in local DB
+            if(userEntity == null){
+                userEntity = userRepository.save(userModelAssembler.toEntity(next));
+            }
+
             next.setUserUUID(userEntity.getUserUUID());
+
         }
 
         return new ResponseEntity<>(
@@ -88,9 +99,16 @@ public class UserController {
     }
 
     @PostMapping("/api/v1/users")
-    public ResponseEntity<UserModel> addUser(@RequestBody UserEntity newUser){
+    public ResponseEntity<?> addUser(@RequestBody UserEntity newUser){
+        newUser = userRepository.save(newUser);
 
-        return null;
+        Link newlyCreatedLink = linkTo(methodOn(UserController.class).getUserById(newUser.getUserUUID())).withSelfRel();
+
+        try {
+            return ResponseEntity.noContent().location(new URI(newlyCreatedLink.getHref())).build();
+        } catch (URISyntaxException e) {
+            return ResponseEntity.badRequest().body("Unable to create " + newUser);
+        }
     }
 
     @GetMapping("/api/v1/users/{id}")
@@ -121,6 +139,13 @@ public class UserController {
     public ResponseEntity<AnnotatorModel> getAnnotatorById(@PathVariable("id") UUID id) {
         return annotatorRepository.findById(id)
                 .map(annotatorModelAssembler::toModel)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    public ResponseEntity<ReviewerModel> getReviewerById(@PathVariable("id") UUID id) {
+        return reviewerRepository.findById(id)
+                .map(reviewerModelAssembler::toModel)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
