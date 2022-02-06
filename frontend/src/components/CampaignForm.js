@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {Auth} from "aws-amplify";
 import CampaignClient from "../api/CampaignClient";
 import Alert from '@mui/material/Alert';
-import {Button, FormControl, InputLabel, MenuItem, Select, Snackbar, Stack, TextField} from "@mui/material";
+import {Button, FormControl, Snackbar, Stack, TextField} from "@mui/material";
 import {Link as RouterLink} from "react-router-dom";
 
 class CampaignForm extends Component {
