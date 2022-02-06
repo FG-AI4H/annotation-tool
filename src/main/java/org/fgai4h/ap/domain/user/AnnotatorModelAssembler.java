@@ -1,7 +1,12 @@
 package org.fgai4h.ap.domain.user;
 
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -53,5 +58,33 @@ public class AnnotatorModelAssembler extends RepresentationModelAssemblerSupport
         annotatorEntity.setDegree(annotatorRole.getDegree());
 
         return annotatorEntity;
+    }
+
+    public List<AnnotatorModel> toAnnotatorModel(List<AnnotatorEntity> annotators) {
+        if (annotators.isEmpty())
+            return Collections.emptyList();
+
+        return annotators.stream()
+                .map(annotator-> AnnotatorModel.builder()
+                        .annotatorUUID(annotator.getAnnotatorUUID())
+                        .degree(annotator.getDegree())
+                        .expertise(annotator.getExpertise())
+                        .expectedSalary(annotator.getExpectedSalary())
+                        .selfAssessment(annotator.getSelfAssessment())
+                        .studyCountry(annotator.getStudyCountry())
+                        .workCountry(annotator.getWorkCountry())
+                        .yearsInPractice(annotator.getYearsInPractice())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public CollectionModel<AnnotatorModel> toCollectionModel(Iterable<? extends AnnotatorEntity> entities)
+    {
+        CollectionModel<AnnotatorModel> annotatorModels = super.toCollectionModel(entities);
+
+        annotatorModels.add(linkTo(methodOn(UserController.class).getAllAnnotators()).withSelfRel());
+
+        return annotatorModels;
     }
 }

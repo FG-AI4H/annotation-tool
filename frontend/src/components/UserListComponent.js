@@ -1,11 +1,9 @@
 import React, {Component} from "react";
-import Table from "react-bootstrap/Table";
-import ButtonGroup from "react-bootstrap/ButtonGroup";
-import {Link} from "react-router-dom";
-import Button from "react-bootstrap/Button";
+import {Link as RouterLink, Link} from "react-router-dom";
 import {Auth} from "aws-amplify";
 import UserClient from "../api/UserClient";
 import Loader from "react-loader-spinner";
+import {Button, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 
 class UserListComponent extends Component {
 
@@ -44,32 +42,38 @@ class UserListComponent extends Component {
         }
 
         const userList = users.map(user => {
-            return <tr key={user.idpID}>
-                <td style={{whiteSpace: 'nowrap'}}>{user.username}</td>
-                <td style={{whiteSpace: 'nowrap'}}>{user.email}</td>
-                <td>
-                    <ButtonGroup >
-                        <Link to={"/users/" + user.userUUID}><Button size="sm" variant="primary">Edit</Button></Link>{' '}
-                    </ButtonGroup>
-                </td>
-            </tr>
+            return <TableRow key={user.idpID} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                <TableCell style={{whiteSpace: 'nowrap'}}>{user.username}</TableCell>
+                <TableCell style={{whiteSpace: 'nowrap'}}>{user.email}</TableCell>
+                <TableCell>
+                    <Stack direction={"row"} spacing={2} justifyContent="flex-end">
+                        <Button component={RouterLink} size="small" to={"/users/" + user.userUUID}>Edit</Button>
+                    </Stack>
+
+                </TableCell>
+            </TableRow>
+
+
         });
 
         return (
             <>
                 <h3>{title}</h3>
-                <Table className="mt-4">
-                    <thead>
-                    <tr>
-                        <th width="45%">Username</th>
-                        <th width="45%">Email</th>
-                        <th width="10%">Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {userList}
-                    </tbody>
-                </Table>
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell width={"45%"}>Username</TableCell>
+                                <TableCell width={"45%"}>Email</TableCell>
+                                <TableCell width={"10%"} align={"right"}>Actions</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {userList}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+
             </>
         );
     }

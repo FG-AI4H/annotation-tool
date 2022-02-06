@@ -1,12 +1,24 @@
 import React, {Component} from 'react';
-import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import AppNavbar from './AppNavbar';
-import {Link, withRouter} from 'react-router-dom';
-import Form from "react-bootstrap/Form";
+import {Link as RouterLink, Link, withRouter} from 'react-router-dom';
 import AnnotationTaskList from "./AnmnotationTaskList";
 import SampleList from "./SampleList";
 import AnnotationList from "./AnnotationList";
+import {Auth} from "aws-amplify";
+import TaskClient from "./api/TaskClient";
+import {
+    Autocomplete, Button, ButtonGroup,
+    Checkbox,
+    FormControl,
+    FormControlLabel,
+    FormGroup,
+    InputLabel,
+    MenuItem,
+    Select, Snackbar, Stack,
+    TextField
+} from "@mui/material";
+import Alert from "@mui/material/Alert";
 
 class TaskEdit extends Component {
 
@@ -18,17 +30,42 @@ class TaskEdit extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            item: this.emptyItem
+            item: this.emptyItem,
+            updated: false
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleClose = this.handleClose.bind(this);
     }
 
     async componentDidMount() {
+
+        this.setState({ isLoading: true});
         if (this.props.match.params.id !== 'new') {
-            const task = await (await fetch(`https://annotation.ai4h.net/tasks/${this.props.match.params.id}`)).json();
-            this.setState({item: task});
+            Auth.currentAuthenticatedUser({
+                bypassCache: false
+            }).then(response => {
+                const client = new TaskClient(response.signInUserSession.accessToken.jwtToken);
+
+                client.fetchTaskById(this.props.match.params.id)
+                    .then(
+                        response =>
+                            this.setState(
+                                {item: response.data, isLoading: false}
+                            ));
+
+            }).catch(err => console.log(err));
         }
+    }
+
+    handleClose(event, reason){
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState(
+            {updated: false}
+        );
     }
 
     handleChange(event) {
@@ -49,49 +86,89 @@ class TaskEdit extends Component {
         event.preventDefault();
         const {item} = this.state;
 
-        await fetch('https://annotation.ai4h.net/tasks' + (item.taskUUID ? '/' + item.taskUUID + '/next' : ''), {
-            method: (item.taskUUID) ? 'PUT' : 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(item),
-        });
+        Auth.currentAuthenticatedUser({
+            bypassCache: false
+        }).then(response => {
+            const client = new TaskClient(response.signInUserSession.accessToken.jwtToken);
+
+            client.updateTask(item)
+                .then(
+                    response => this.setState(
+                        {updated: true}
+                    )
+                );
+
+        }).catch(err => console.log(err));
+
+
         this.props.history.push('/tasks');
     }
 
     render() {
-        const {item} = this.state;
+        const {item, updated} = this.state;
         const title = <h2>{item.taskUUID ? 'Edit Task' : 'Add Task'}</h2>;
 
         return <div>
+            <Snackbar open={updated} autoHideDuration={6000} onClose={this.handleClose} anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right'
+            }}>
+                <Alert severity="success" sx={{ width: '100%' }} onClose={this.handleClose}>
+                    Campaign updated successfully!
+                </Alert>
+            </Snackbar>
             <AppNavbar/>
             <Container className={'pt-5'}>
                 {title}
-                <Form onSubmit={this.handleSubmit}>
-                    <Form.Group className={'py-2'}>
-                        <Form.Label htmlFor="kind">Kind</Form.Label>
-                        <Form.Select name="kind" id="kind" value={item.kind || ''} onChange={this.handleChange}>
-                            <option>Open this select menu</option>
-                            <option value="create">Create</option>
-                            <option value="correct">Correct</option>
-                        </Form.Select>
-                    </Form.Group>
 
-                    <Form.Group className={'py-2'}>
-                        <Form.Check type={"checkbox"} label={"Read only"} name="readOnly" id="readOnly" checked={item.readOnly} onChange={this.handleChange}/>
-                    </Form.Group>
+                <FormControl fullWidth sx={{ mt: 5 }}>
+                        <InputLabel id="kind-label">Kind</InputLabel>
+                        <Select
+                            id="kind"
+                            name="kind"
+                            value={item.kind || ''}
+                            label="Kind"
+                            onChange={this.handleChange}
+                        >
+                            <MenuItem value={"create"}>Create</MenuItem>
+                            <MenuItem value={"correct"}>Correct</MenuItem>
+                        </Select>
+                </FormControl>
+
+                <FormControl fullWidth>
+                    <FormControlLabel control={<Checkbox name="readOnly" id="readOnly" checked={item.readOnly} onChange={this.handleChange}/>} label="Read only" />
+                </FormControl>
+
+                <FormControl fullWidth>
+                    <Autocomplete
+                        disablePortal
+                        id="combo-box-demo"
+                        options={item?.campaign?.annotators}
+                        getOptionLabel={(option) => option.username}
+                        sx={{ width: 300 }}
+                        renderInput={(params) => <TextField {...params} label="Assignee" />}
+                    />
+                </FormControl>
+
+
+
 
                     <AnnotationTaskList tasks={item.annotationTasks}/>
                     <SampleList samples={item.samples}/>
                     <AnnotationList annotations={item.annotations}/>
 
-                    <Form.Group>
-                        <Button color="primary" type="submit">Save</Button>{' '}
-                        <Link to="/tasks"><Button color="secondary" >Cancel</Button></Link>{' '}
-                        <Button variant="success" onClick={()=> window.open("https://dev.visian.org/?origin=who&taskId=" + item.taskUUID, "_blank")}>Annotate</Button>
-                    </Form.Group>
-                </Form>
+                <FormGroup sx={{ mt: 5 }}>
+
+                    <Stack direction="row" spacing={2}>
+                        <Button color="primary" onClick={e => this.handleSubmit(e)}>Save</Button>
+                        <Button component={RouterLink} color="secondary" to={"/tasks"}>Cancel</Button>
+                        <Button color="success" onClick={()=> window.open("https://dev.visian.org/?origin=who&taskId=" + item.taskUUID, "_blank")}>Annotate</Button>
+                    </Stack>
+
+                </FormGroup>
+
+
+
             </Container>
         </div>
     }

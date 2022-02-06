@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.Principal;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -53,9 +54,8 @@ public class TaskController {
     }
 
     @GetMapping("/api/v1/tasks/me")
-    public ResponseEntity<CollectionModel<TaskModel>> getMyTasks() {
-        UUID userUUID = UUID.fromString("0501611704E14C7089297C685C93AB8F");
-        List<TaskEntity> taskEntities = taskRepository.findMyTasks(userUUID);
+    public ResponseEntity<CollectionModel<TaskModel>> getMyTasks(Principal principal) {
+        List<TaskEntity> taskEntities = taskRepository.findMyTasks(principal.getName());
         return new ResponseEntity<>(
                 taskModelAssembler.toCollectionModel(taskEntities),
                 HttpStatus.OK);

@@ -13,7 +13,6 @@ class TaskClient {
 
         return callApiWithToken(this.accessToken, this.config.TASK_URL)
             .then(([response, json]) => {
-                console.log("Response JSON: " + JSON.stringify(json));
                 if (!response.ok) {
                     return { success: false, error: json };
                 }
@@ -29,7 +28,6 @@ class TaskClient {
 
         return callApiWithToken(this.accessToken, this.config.TASK_URL + "/me")
             .then(([response, json]) => {
-                console.log("Response JSON: " + JSON.stringify(json));
                 if (!response.ok) {
                     return { success: false, error: json };
                 }
@@ -46,7 +44,6 @@ class TaskClient {
 
         return callApiWithToken(this.accessToken, `${this.config.TASK_URL}/${taskId}`)
             .then(([response, json]) => {
-                console.log("Response JSON: " + JSON.stringify(json));
                 if (!response.ok) {
                     return { success: false, error: json };
                 }
@@ -61,6 +58,21 @@ class TaskClient {
         console.log("Creating task");
 
         return postApiWithToken(this.accessToken, this.config.TASK_URL,task,"POST")
+            .then(([response]) => {
+                if (!response.ok) {
+                    return { success: false, error: response };
+                }
+                return { success: true, data: response };
+            })
+            .catch((e) => {
+                this.handleError(e);
+            });
+    }
+
+    async updateTask(task) {
+        console.log("Updating task");
+
+        return postApiWithToken(this.accessToken, `${this.config.TASK_URL}/${task.taskUUID}`,task,"PUT")
             .then(([response]) => {
                 if (!response.ok) {
                     return { success: false, error: response };

@@ -3,6 +3,10 @@ package org.fgai4h.ap.domain.user;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static java.util.Objects.isNull;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -29,5 +33,16 @@ public class ReviewerModelAssembler extends RepresentationModelAssemblerSupport<
 
 
         return reviewerModel;
+    }
+
+    public List<ReviewerModel> toReviewerModel(List<ReviewerEntity> reviewers) {
+        if (reviewers.isEmpty())
+            return Collections.emptyList();
+
+        return reviewers.stream()
+                .map(reviewer-> ReviewerModel.builder()
+                        .reviewerUUID(reviewer.getReviewerUUID())
+                        .build())
+                .collect(Collectors.toList());
     }
 }

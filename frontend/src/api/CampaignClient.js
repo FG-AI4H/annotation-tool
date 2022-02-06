@@ -13,7 +13,6 @@ class CampaignClient {
 
         return callApiWithToken(this.accessToken, this.config.CAMPAIGN_URL)
             .then(([response, json]) => {
-                console.log("Response JSON: " + JSON.stringify(json));
                 if (!response.ok) {
                     return { success: false, error: json };
                 }
@@ -30,7 +29,6 @@ class CampaignClient {
 
         return callApiWithToken(this.accessToken, `${this.config.CAMPAIGN_URL}/${campaignId}`)
             .then(([response, json]) => {
-                console.log("Response JSON: " + JSON.stringify(json));
                 if (!response.ok) {
                     return { success: false, error: json };
                 }

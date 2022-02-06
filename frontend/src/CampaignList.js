@@ -1,13 +1,22 @@
 import React, {Component} from 'react';
-import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
 import AppNavbar from './AppNavbar';
-import {Link} from 'react-router-dom';
-import ButtonGroup from "react-bootstrap/ButtonGroup";
-import Table from "react-bootstrap/Table";
 import {Auth} from "aws-amplify";
 import CampaignClient from "./api/CampaignClient";
 import {FaRedo} from "react-icons/fa";
+import {
+    Button, Container,
+    IconButton,
+    Paper,
+    Stack,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow
+} from "@mui/material";
+import {Link as RouterLink} from "react-router-dom";
+import Loader from "react-loader-spinner";
 
 class CampaignList extends Component {
 
@@ -52,44 +61,55 @@ class CampaignList extends Component {
         const {campaigns, isLoading} = this.state;
 
         if (isLoading) {
-            return <p>Loading...</p>;
+            return (<div className="loading"><Loader
+                type="Puff"
+                color="#00a5e3"
+                height={100}
+                width={100}
+                timeout={3000} //3 secs
+            /></div>);
         }
 
         const campaignList = campaigns.map(campaign => {
-            return <tr key={campaign.campaignUUID}>
-                <td style={{whiteSpace: 'nowrap'}}>{campaign.name}</td>
-                <td>{campaign.description}</td>
-                <td>
-                    <ButtonGroup>
-                        <Link to={"/campaigns/" + campaign.campaignUUID}><Button size="sm" variant="primary">Edit</Button></Link>{' '}
-                        <Button size="sm" variant="danger" onClick={() => this.remove(campaign.campaignUUID)}>Delete</Button>
-                    </ButtonGroup>
-                </td>
-            </tr>
+            return <TableRow key={campaign.campaignUUID} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                <TableCell style={{whiteSpace: 'nowrap'}}>{campaign.name}</TableCell>
+                <TableCell>{campaign.description}</TableCell>
+                <TableCell>
+                    <Stack direction={"row"} spacing={2} justifyContent="flex-end">
+                        <Button component={RouterLink} size="small" color="primary" to={"/campaigns/" + campaign.campaignUUID}>Edit</Button>
+                        <Button size="small" color="warning" onClick={() => this.remove(campaign.campaignUUID)}>Delete</Button>
+                    </Stack>
+                </TableCell>
+
+            </TableRow>
+
         });
 
         return (
             <div>
                 <AppNavbar/>
-                <Container className={'pt-5'}>
+                <Container sx={{ mt: 5 }}>
                     <div className="float-end">
-                        <Button variant={'light'} onClick={() => this.componentDidMount()}><FaRedo /></Button>{' '}
-                        <Link to={"/campaigns/new"}><Button variant="success">Add Campaign</Button></Link>
+                        <IconButton onClick={() => this.componentDidMount()}><FaRedo /></IconButton>{' '}
+                        <Button component={RouterLink} color="success" to={"/campaigns/new"}>Add Campaign</Button>
                     </div>
                     <h3>Campaigns</h3>
-                    <Table className="mt-4">
-                        <thead>
-                        <tr>
-                            <th width="30%">Name</th>
-                            <th width="30%">Description</th>
-                            <th width="40%">Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {campaignList}
-                        </tbody>
-                    </Table>
-                    <Link to="/annotation"><Button color="secondary" >Back</Button></Link>
+                    <TableContainer component={Paper}>
+                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell width="30%">Name</TableCell>
+                                    <TableCell width="30%">Description</TableCell>
+                                    <TableCell width="40%" align={"right"}>Actions</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {campaignList}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+
+                   <Button component={RouterLink} color="secondary" to="/annotation">Back</Button>
                 </Container>
             </div>
         );

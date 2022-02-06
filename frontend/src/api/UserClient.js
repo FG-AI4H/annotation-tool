@@ -13,7 +13,6 @@ class UserClient {
 
         return callApiWithToken(this.accessToken, this.config.USER_URL)
             .then(([response, json]) => {
-                console.log("Response JSON: " + JSON.stringify(json));
                 if (!response.ok) {
                     return { success: false, error: json };
                 }
@@ -30,7 +29,6 @@ class UserClient {
 
         return callApiWithToken(this.accessToken, `${this.config.USER_URL}/${userId}`)
             .then(([response, json]) => {
-                console.log("Response JSON: " + JSON.stringify(json));
                 if (!response.ok) {
                     return { success: false, error: json };
                 }
@@ -46,7 +44,6 @@ class UserClient {
 
         return postApiWithToken(this.accessToken, `${this.config.USER_URL}/${user.userUUID}`,user,"PUT")
             .then(([response, json]) => {
-                console.log("Response JSON: " + JSON.stringify(json));
                 if (!response.ok) {
                     return { success: false, error: json };
                 }
@@ -62,7 +59,6 @@ class UserClient {
 
         return postApiWithToken(this.accessToken, this.config.USER_URL,user,"POST")
             .then(([response, json]) => {
-                console.log("Response JSON: " + JSON.stringify(json));
                 if (!response.ok) {
                     return { success: false, error: json };
                 }

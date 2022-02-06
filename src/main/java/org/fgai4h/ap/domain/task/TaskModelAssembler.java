@@ -1,5 +1,6 @@
 package org.fgai4h.ap.domain.task;
 
+import org.fgai4h.ap.domain.campaign.CampaignModelAssembler;
 import org.fgai4h.ap.domain.user.UserModelAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
@@ -26,6 +27,7 @@ public class TaskModelAssembler extends RepresentationModelAssemblerSupport<Task
         AnnotationModelAssembler annotationModelAssembler = new AnnotationModelAssembler();
         AnnotationTaskModelAssembler annotationTaskModelAssembler = new AnnotationTaskModelAssembler();
         UserModelAssembler userModelAssembler = new UserModelAssembler();
+        CampaignModelAssembler campaignModelAssembler = new CampaignModelAssembler();
 
         taskModel.add(linkTo(
                 methodOn(TaskController.class)
@@ -39,6 +41,7 @@ public class TaskModelAssembler extends RepresentationModelAssemblerSupport<Task
         taskModel.setSamples(toSampleModel(entity.getSamples()));
         taskModel.setAnnotations(annotationModelAssembler.toAnnotationModel(entity.getAnnotations()));
         taskModel.setAssignee(userModelAssembler.toModel(entity.getAssignee()));
+        taskModel.setCampaign(campaignModelAssembler.toModel(entity.getCampaign()));
         return taskModel;
     }
 

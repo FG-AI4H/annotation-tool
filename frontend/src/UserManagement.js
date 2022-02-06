@@ -1,8 +1,7 @@
 import React, {Component} from "react";
 import UserList from "./UserList";
-import Button from "react-bootstrap/Button";
-import {Link} from "react-router-dom";
-import Container from "@material-ui/core/Container";
+import {Link as RouterLink, Link} from "react-router-dom";
+import {Button} from "@mui/material";
 
 class UserManagement extends Component {
 
@@ -11,7 +10,7 @@ class UserManagement extends Component {
             <>
                 <UserList/>
                 <div className="container">
-                    <Link to="/admin"><Button color="secondary" >Back</Button></Link>
+                   <Button component={RouterLink} color="secondary" to={"/admin"}>Back</Button>
                 </div>
             </>
         );

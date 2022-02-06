@@ -1,13 +1,11 @@
 import React, {Component} from 'react';
 import './App.css';
 import AppNavbar from './AppNavbar';
-import {Link} from 'react-router-dom';
-import Button from "react-bootstrap/Button";
+import {Link as RouterLink, Link} from 'react-router-dom';
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Card from "react-bootstrap/Card";
-import CardGroup from "react-bootstrap/CardGroup";
+import {Button, Card, CardActions, CardContent, Typography} from "@mui/material";
 
 
 class AnnotationHome extends Component {
@@ -25,42 +23,51 @@ class AnnotationHome extends Component {
                     <Row xs={1} md={2} className="g-4">
                         <Col>
                     <Card>
-
-                        <Card.Header as="h5">Campaigns</Card.Header>
-                        <Card.Body>
-
-                            <Card.Text>
+                        <CardContent>
+                            <Typography gutterBottom variant="h5" component="div">
+                                Campaigns
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
                                 Manage annotation campaigns.
-                            </Card.Text>
-                            <Link to="/campaigns"><Button variant="primary">Campaigns</Button></Link>
-                        </Card.Body>
+                            </Typography>
+
+                        </CardContent>
+                        <CardActions>
+                            <Button component={RouterLink} variant="primary" to="/campaigns">Campaigns</Button>
+                        </CardActions>
                     </Card>
                         </Col>
-<Col>
-                    <Card>
+                        <Col>
+                            <Card>
+                                <CardContent>
+                                    <Typography gutterBottom variant="h5" component="div">
+                                        My Tasks
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        View all my tasks and work on them.
+                                    </Typography>
 
-                        <Card.Header as="h5">My Tasks</Card.Header>
-                        <Card.Body>
-
-                            <Card.Text>
-                                View all my tasks and work on them.
-                            </Card.Text>
-                            <Link to="/myTasks"><Button variant="primary">My Tasks</Button></Link>
-                        </Card.Body>
-                    </Card>
-</Col>
+                                </CardContent>
+                                <CardActions>
+                                    <Button component={RouterLink} variant="primary" to="/myTasks">My Tasks</Button>
+                                </CardActions>
+                            </Card>
+                        </Col>
                     <Col>
 
                         <Card>
+                            <CardContent>
+                                <Typography gutterBottom variant="h5" component="div">
+                                    Tasks
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                    List all tasks and get statistics about them.
+                                </Typography>
 
-                            <Card.Header as="h5">Tasks</Card.Header>
-                            <Card.Body>
-
-                                <Card.Text>
-                                    List all tasks and get statistics about them    .
-                                </Card.Text>
-                                <Link to="/tasks"><Button variant="primary">Tasks</Button></Link>
-                            </Card.Body>
+                            </CardContent>
+                            <CardActions>
+                                <Button component={RouterLink} variant="primary" to="/tasks">Tasks</Button>
+                            </CardActions>
                         </Card>
                     </Col>
                     </Row>

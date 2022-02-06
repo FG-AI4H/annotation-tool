@@ -3,10 +3,8 @@ import AppNavbar from "./AppNavbar";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "@material-ui/core/Container";
-import Card from "react-bootstrap/Card";
-import {Link} from "react-router-dom";
-import Button from "react-bootstrap/Button";
-import CardGroup from "react-bootstrap/CardGroup";
+import {Button, Card, CardActions, CardContent, CardMedia, Typography} from "@mui/material";
+import { Link as RouterLink, MemoryRouter } from 'react-router-dom';
 
 class AdminHome extends Component {
     render() {
@@ -21,19 +19,21 @@ class AdminHome extends Component {
                         <Col><h5>Please choose an option</h5></Col>
                     </Row>
 
-                    <CardGroup className={'gap-3'}>
-                        <Card style={{ width: '18rem' }} >
+                    <Card sx={{ maxWidth: 345 }}>
+                        <CardContent>
+                            <Typography gutterBottom variant="h5" component="div">
+                                Users & Groups
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                Manage users and groups, assign roles and more.
+                            </Typography>
 
-                            <Card.Header as="h5">Users & Groups</Card.Header>
-                            <Card.Body>
+                        </CardContent>
+                        <CardActions>
 
-                                <Card.Text>
-                                    Manage users and groups, assign roles and more.
-                                </Card.Text>
-                                <Link to="/userManagement"><Button variant="primary">User management</Button></Link>
-                            </Card.Body>
-                        </Card>
-                    </CardGroup>
+                           <Button component={RouterLink} color="primary" to="/userManagement">User management</Button>
+                        </CardActions>
+                    </Card>
 
                 </Container>
             </>

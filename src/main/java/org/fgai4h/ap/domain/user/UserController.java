@@ -74,6 +74,8 @@ public class UserController {
                 userEntity = userRepository.save(userModelAssembler.toEntity(next));
             }
 
+            next.setAnnotatorRole(annotatorModelAssembler.toModel(userEntity.getAnnotatorRole()));
+            next.setReviewerRole(reviewerModelAssembler.toModel(userEntity.getReviewerRole()));
             next.setUserUUID(userEntity.getUserUUID());
 
         }
