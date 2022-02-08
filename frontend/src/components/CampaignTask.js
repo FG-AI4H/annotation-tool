@@ -1,30 +1,19 @@
-import React, {Component} from "react";
+import React, {Component, useState} from "react";
 import Alert from "@mui/material/Alert";
-import {Snackbar} from "@mui/material";
+import {InputLabel, MenuItem, Select, Snackbar, Typography} from "@mui/material";
 import {Auth} from "aws-amplify";
 import CampaignClient from "../api/CampaignClient";
+import {Col, Row} from "react-bootstrap";
+import {FormControl} from "@material-ui/core";
 
-class CampaignTask extends Component {
+const CampaignTask = (props) => {
 
-    constructor(props) {
-        super(props);
-        this.state = {isLoading: false, campaign: {}, updated: false};
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.handleClose = this.handleClose.bind(this);
-    }
+    const [campaign, setCampaign] = useState(props.campaign);
+    const [updated, setUpdated] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    componentDidMount() {
-        this.setState({campaign: this.props.campaign});
-    }
 
-    componentDidUpdate(prevProps) {
-        if (prevProps.campaign !== this.props.campaign) {
-            this.setState({campaign: this.props.campaign});
-        }
-    }
-
-    handleClose(event, reason){
+    function handleClose(event, reason){
         if (reason === 'clickaway') {
             return;
         }
@@ -34,7 +23,7 @@ class CampaignTask extends Component {
         );
     }
 
-    handleChange(event) {
+    function handleChange(event) {
         const target = event.target;
         const value = target.value;
         const name = target.name;
@@ -43,12 +32,10 @@ class CampaignTask extends Component {
             value = target.checked;
         }
 
-        let campaign = {...this.state.campaign};
         campaign[name] = value;
-        this.setState({campaign: campaign});
     }
 
-    async handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
         const {campaign} = this.state;
 
@@ -56,43 +43,48 @@ class CampaignTask extends Component {
             bypassCache: false
         }).then(response => {
             const client = new CampaignClient(response.signInUserSession.accessToken.jwtToken);
-            if(campaign.campaignUUID) {
+
                 client.updateCampaign(campaign)
                     .then(
-                        response => this.setState(
-                            {updated: true}
-                        ))
-            }
-            else{
-                client.addCampaign(campaign)
-                    .then(
-                        response => {
-                            this.setState(
-                                {campaign: response?.data, isLoading: false}
-                            );
+                        response => setUpdated(true))
 
-                        });
-            }
         }).catch(err => console.log(err));
 
     }
 
-    render() {
-        const {campaign, updated} = this.state;
+    return (
+        <div>
+            <Snackbar open={updated} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right'
+            }}>
+                <Alert severity="success" sx={{ width: '100%' }} onClose={handleClose}>
+                    Campaign updated successfully!
+                </Alert>
+            </Snackbar>
 
-        return (
-            <div>
-                <Snackbar open={updated} autoHideDuration={6000} onClose={this.handleClose} anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right'
-                }}>
-                    <Alert severity="success" sx={{ width: '100%' }} onClose={this.handleClose}>
-                        Campaign updated successfully!
-                    </Alert>
-                </Snackbar>
+            <Row className='mt-5'>
+                <Col>
+                    <Typography gutterBottom variant="h5" component="div">Define your tasks</Typography>
+                    <FormControl fullWidth>
+                        <InputLabel >Task type</InputLabel>
+                        <Select
+                            id="taskType"
+                            value={campaign.kind}
+                            label="Task type"
+                            onChange={handleChange}
+                        >
+                            <MenuItem value={"3DIS"}>3D Image Segmentation</MenuItem>
+                            <MenuItem value={"2DIS"}>2D Image Segmentation</MenuItem>
+                            <MenuItem value={"TS"}>Time Series</MenuItem>
+                        </Select>
+                    </FormControl>
 
-            </div>
-        );
-    }
+                </Col>
+            </Row>
+
+        </div>
+    );
+
 }
 export default CampaignTask;

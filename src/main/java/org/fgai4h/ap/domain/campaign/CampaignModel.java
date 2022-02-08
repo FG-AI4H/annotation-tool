@@ -24,6 +24,7 @@ public class CampaignModel extends RepresentationModel<CampaignModel> {
     private String name;
     private String description;
     private String status;
+    private String[] datasets;
 
     private List<UserModel> annotators;
     private List<UserModel> reviewers;

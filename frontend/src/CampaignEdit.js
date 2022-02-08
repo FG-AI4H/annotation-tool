@@ -89,7 +89,7 @@ const CampaignEdit = (props) => {
                         <CampaignUsers campaign={item}/>
                     </Tab>
                     <Tab eventKey="data" title="Dataset">
-                        <CampaignData/>
+                        <CampaignData campaign={item}/>
                     </Tab>
                     <Tab eventKey="tasks" title="Tasks">
                         <CampaignTask campaign={item}/>

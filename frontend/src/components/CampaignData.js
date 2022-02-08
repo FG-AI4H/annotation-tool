@@ -5,7 +5,7 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import {API, graphqlOperation} from 'aws-amplify'
+import {API, Auth, graphqlOperation} from 'aws-amplify'
 import {listDatasets} from '../graphql/queries'
 import {Col, Row} from "react-bootstrap";
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -16,12 +16,14 @@ import {
     CircularProgress,
     FilledInput,
     FormControl,
-    InputLabel,
-    Modal, Stack,
+    InputLabel, Link,
+    Modal, Paper, Snackbar, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
     TextField,
     Typography
 } from "@mui/material";
 import {Link as RouterLink} from "react-router-dom";
+import CampaignClient from "../api/CampaignClient";
+import Alert from "@mui/material/Alert";
 
 const modalMode = Object.freeze({ _EDIT: 'edit', _READ: 'read' })
 
@@ -69,6 +71,8 @@ const initialState = {
 
 export default function Datasets(props) {
 
+    const [campaign, setCampaign] = useState(props.campaign);
+    const [updated, setUpdated] = useState(false);
     const [datasets, setDatasets] = useState();
     const [formState, setFormState] = useState(initialState);
     const [open, setOpen] = useState(false);
@@ -132,6 +136,30 @@ export default function Datasets(props) {
     const handleModalClose = () => {
         setOpen(false);
     };
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+
+        Auth.currentAuthenticatedUser({
+            bypassCache: false
+        }).then(response => {
+            const client = new CampaignClient(response.signInUserSession.accessToken.jwtToken);
+
+            client.updateCampaign(campaign)
+                .then(
+                    response => setUpdated(true))
+
+        }).catch(err => console.log(err));
+
+    }
+
+    function handleClose(event, reason){
+        if (reason === 'clickaway') {
+            return;
+        }
+        setUpdated(false);
+
+    }
 
     const style = {
         position: 'absolute',
@@ -505,28 +533,93 @@ export default function Datasets(props) {
         }
     ]
 
+
+
+    const datasetList = campaign.datasets?.map(datasetId => {
+        const dataset = datasets?.find((dataset) => dataset.id === datasetId);
+
+        if(dataset) {
+            return <TableRow key={datasetId} sx={{'&:last-child td, &:last-child th': {border: 0}}}>
+                <TableCell style={{whiteSpace: 'nowrap'}}><Link
+                    onClick={viewDataset(dataset)}>{dataset.name}</Link></TableCell>
+                <TableCell style={{whiteSpace: 'nowrap'}}>{dataset.description}</TableCell>
+
+                <TableCell>
+                    <Stack direction="row" spacing={2}>
+                        <Button size="small" color="warning"
+                                onClick={() => removeSelectDataset(datasetId)}>Remove</Button>
+                    </Stack>
+                </TableCell>
+            </TableRow>
+        }
+        else {
+            return <TableRow sx={{'&:last-child td, &:last-child th': {border: 0}}}>
+                <TableCell colSpan={3} style={{whiteSpace: 'nowrap'}}>No dataset selected</TableCell>
+            </TableRow>
+        }
+
+    });
+
+    function removeSelectDataset(datasetId) {
+        let updatedDatasets = [...campaign.datasets].filter(i => i !== datasetId);
+        campaign.datasets = updatedDatasets;
+    }
+
+    function handleRowSelected(selections) {
+        campaign.datasets = selections;
+    }
+
     return (
         <React.Fragment>
 
-
+            <Snackbar open={updated} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right'
+            }}>
+                <Alert severity="success" sx={{ width: '100%' }} onClose={handleClose}>
+                    Campaign updated successfully!
+                </Alert>
+            </Snackbar>
 
             <Row className='mt-5'>
                 <Col>
-                    <h3>Available datasets</h3>
+                    <Typography gutterBottom variant="h5" component="div">Available datasets</Typography>
 
                     <DataGrid
                         autoHeight
                         rows={datasets}
                         columns={columns}
-
+                        onSelectionModelChange={handleRowSelected}
                         checkboxSelection
                     />
+                </Col>
+            </Row>
 
+            <Row className='mt-5'>
+                <Col>
+                    <Typography gutterBottom variant="h5" component="div">Selected datasets</Typography>
+                    <TableContainer component={Paper}>
+                        <Table aria-label="simple table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell width="30%">Name</TableCell>
+                                    <TableCell width="80%">Description</TableCell>
+                                    <TableCell align={"right"} width="10%">Actions</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {datasetList}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
 
                 </Col>
             </Row>
 
-
+            <Stack direction="row" spacing={2}>
+                <Button color="primary" onClick={e => handleSubmit(e)}>Save</Button>
+                <Button component={RouterLink} color="secondary" to="/campaigns">Cancel</Button>
+            </Stack>
 
             <Modal
                 open={open}
@@ -536,8 +629,6 @@ export default function Datasets(props) {
             >
                 {modalBody}
             </Modal>
-
-
         </React.Fragment>
     );
 }
