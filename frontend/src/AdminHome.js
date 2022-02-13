@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import AppNavbar from "./AppNavbar";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import {Button, Card, CardActions, CardContent, CardMedia, Container, Grid, Typography} from "@mui/material";
+import {Button, Card, CardActions, CardContent, Container, Typography} from "@mui/material";
 import { Link as RouterLink, MemoryRouter } from 'react-router-dom';
 
 class AdminHome extends Component {
@@ -37,7 +37,6 @@ class AdminHome extends Component {
                         </Card>
                         </Col>
                     </Row>
-
                 </Container>
             </>
         );
