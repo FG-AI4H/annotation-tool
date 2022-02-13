@@ -91,7 +91,7 @@ class TaskList extends Component {
                 <TableCell align={"right"}>
                     <Stack direction={"row"} spacing={2} justifyContent="flex-end">
                         <Button component={RouterLink} size="small" color="primary" to={"/tasks/" + task.taskUUID}>Edit</Button>
-                        <Button size="small" color="warning" onClick={() => this.remove(task.taskUUID)}>Delete</Button>
+                        <Button size="small" color="error" onClick={() => this.remove(task.taskUUID)}>Delete</Button>
                         <Button size="small" color="success" onClick={()=> window.open("https://dev.visian.org/?origin=who&taskId=" + task.taskUUID, "_blank")}>Annotate</Button>
                     </Stack>
                 </TableCell>

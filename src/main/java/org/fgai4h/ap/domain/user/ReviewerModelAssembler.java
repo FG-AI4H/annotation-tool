@@ -45,4 +45,11 @@ public class ReviewerModelAssembler extends RepresentationModelAssemblerSupport<
                         .build())
                 .collect(Collectors.toList());
     }
+
+    public ReviewerEntity toEntity(ReviewerModel reviewerRole) {
+        ReviewerEntity entity = new ReviewerEntity();
+        entity.setReviewerUUID(reviewerRole.getReviewerUUID());
+
+        return entity;
+    }
 }

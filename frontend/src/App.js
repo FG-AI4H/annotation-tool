@@ -4,7 +4,7 @@ import {withAuthenticator} from '@aws-amplify/ui-react';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
 import Home from './Home';
-import Dashboard from './Dashboard';
+import DataStoreHome from './DataStoreHome';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import TaskList from './TaskList';
 import TaskEdit from "./TaskEdit";
@@ -44,7 +44,7 @@ class App extends React.Component {
 
               <Switch>
                 <Route path='/' exact={true} component={Home}/>
-                <Route path='/dashboard' exact={true} component={Dashboard}/>
+                <Route path='/dashboard' exact={true} component={DataStoreHome}/>
 
                 <Route path='/annotation' exact={true} component={AnnotationHome}/>
                 <Route path='/tasks' exact={true} component={TaskList}/>

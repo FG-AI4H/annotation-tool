@@ -182,7 +182,7 @@ export default function Datasets(props) {
             </Typography>
             <form noValidate autoComplete="off">
 
-                <TextField fullWidth sx={{ mt: 5 }}
+                <TextField fullWidth margin={"normal"}
                            label="Name"
                            required
                            value={formState.name}
@@ -191,7 +191,7 @@ export default function Datasets(props) {
                            disabled={readOnlyMode}
                 />
 
-                <TextField fullWidth sx={{ mt: 5 }}
+                <TextField fullWidth margin={"normal"}
                     label="Description"
                     multiline
                     required
@@ -437,7 +437,7 @@ export default function Datasets(props) {
                 {readOnlyMode ?
                     <div>
 
-                            <TextField fullWidth sx={{ mt: 5 }}
+                            <TextField fullWidth margin={"normal"}
                                 required
                                 label="Storage Location"
                                 id="component-filled2"
@@ -546,7 +546,7 @@ export default function Datasets(props) {
 
                 <TableCell>
                     <Stack direction="row" spacing={2}>
-                        <Button size="small" color="warning"
+                        <Button size="small" color="error"
                                 onClick={() => removeSelectDataset(datasetId)}>Remove</Button>
                     </Stack>
                 </TableCell>

@@ -1,65 +1,72 @@
-import React, {Component} from "react";
+import React, {Component, useEffect, useState} from "react";
 import AppNavbar from "./AppNavbar";
 import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import {Link, withRouter} from "react-router-dom";
-import {Auth} from "aws-amplify";
+import {Link as RouterLink, Link, withRouter} from "react-router-dom";
+import {API, Auth, graphqlOperation} from "aws-amplify";
 import UserClient from "./api/UserClient";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import {Tab, Tabs} from "react-bootstrap";
 import {FaPlus} from "react-icons/fa";
+import {
+    Button,
+    Checkbox,
+    FormControl,
+    FormControlLabel,
+    IconButton,
+    InputLabel, MenuItem,
+    Select,
+    Stack,
+    TextField
+} from "@mui/material";
+import Loader from "react-loader-spinner";
 
-class UserEdit extends Component {
+const UserEdit = (props) => {
 
-    emptyItem = {
+    const emptyItem = {
         name: '',
         email: ''
     };
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            item: this.emptyItem,
-            isLoading: false
-        };
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
+    const [item, setItem] = useState(emptyItem);
+    const [isLoading, setIsLoading] = useState(false);
 
-    async componentDidMount() {
-        if (this.props.match.params.id !== 'new') {
-            this.setState({isLoading: true});
-            Auth.currentAuthenticatedUser({
-                bypassCache: false
-            }).then(response => {
+    //Load at page load
+    useEffect(() => {
+        setIsLoading(true);
+        Auth.currentAuthenticatedUser({
+            bypassCache: false
+        }).then(response => {
+            if (props.match.params.id !== 'new') {
                 const client = new UserClient(response.signInUserSession.accessToken.jwtToken);
-                client.fetchUserById(this.props.match.params.id)
+                client.fetchUserById(props.match.params.id)
                     .then(
                         response => {
 
-                            let item = response?.data;
-                            item.annotation_annotator_role = item.annotatorRole != undefined
-                            item.yearsInPractice = item.annotatorRole?.yearsInPractice
-                            item.degree = item.annotatorRole?.degree
-                            item.workCountry = item.annotatorRole?.workCountry
-                            item.studyCountry = item.annotatorRole?.studyCountry
-                            item.selfAssessment = item.annotatorRole?.selfAssessment
-                            item.expectedSalary = item.annotatorRole?.expectedSalary
+                            let user = response?.data;
+                            user.annotation_annotator_role = user.annotatorRole != undefined
+                            user.yearsInPractice = user.annotatorRole?.yearsInPractice
+                            user.degree = user.annotatorRole?.degree
+                            user.workCountry = user.annotatorRole?.workCountry
+                            user.studyCountry = user.annotatorRole?.studyCountry
+                            user.selfAssessment = user.annotatorRole?.selfAssessment
+                            user.expectedSalary = user.annotatorRole?.expectedSalary
 
 
-                            item.annotation_reviewer_role = item.reviewerRole != undefined
-                            this.setState(
-                                {item: item, isLoading: false}
-                            )
+                            user.annotation_reviewer_role = user.reviewerRole != undefined
+                            user.annotation_supervisor_role = user.supervisorRole != undefined
+
+                            setItem(user);
+                            setIsLoading(false);
                         });
+            }
 
-            }).catch(err => console.log(err));
-        }
-    }
+        }).catch(err => console.log(err));
 
-    handleChange(event) {
+    }, [props.match.params.id])
+
+
+    function handleChange(event) {
         const target = event.target;
         let value = target.value;
         const name = target.name;
@@ -68,14 +75,13 @@ class UserEdit extends Component {
             value = target.checked;
         }
 
-        let item = {...this.state.item};
-        item[name] = value;
-        this.setState({item});
+        let user = {...item};
+        user[name] = value;
+        setItem(user);
     }
 
-    async handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
-        const {item} = this.state;
 
         if(item.annotation_annotator_role){
             item.annotatorRole = {
@@ -92,6 +98,11 @@ class UserEdit extends Component {
 
             }
         }
+        if(item.annotation_supervisor_role){
+            item.supervisorRole = {
+
+            }
+        }
 
         Auth.currentAuthenticatedUser({
             bypassCache: false
@@ -100,188 +111,250 @@ class UserEdit extends Component {
             if(item.userUUID) {
                 client.updateUser(item)
                     .then(
-                        response =>
-                            this.setState(
-                                {item: response?.data, isLoading: false}
-                            ));
+                        response => setItem(response?.data)
+                        );
             }
             else{
                 client.addUser(item)
                     .then(
-                        response =>
-                            this.setState(
-                                {item: response?.data, isLoading: false}
-                            ));
+                            response => setItem(response?.data));
             }
         }).catch(err => console.log(err));
 
 
-        this.props.history.push('/userManagement');
+        props.history.push('/userManagement');
     }
 
-    render() {
-        const {item} = this.state;
+    if (isLoading) {
+        return (<div className="loading"><Loader
+            type="Puff"
+            color="#00a5e3"
+            height={100}
+            width={100}
+            timeout={3000} //3 secs
+        /></div>);
+    }
 
-        const title = <h2>{item.userUUID ? 'Edit User' : 'Add User'}</h2>;
+    return (
+        <div>
+        <AppNavbar/>
+        <Container className={'pt-5'}>
+            <h2>{item.userUUID ? 'Edit User' : 'Add User'}</h2>
+            <Row>
+                <Col>
+                    <FormControl fullWidth margin={"normal"} >
+                        <TextField
+                            id="username"
+                            name="username"
+                            value={item.username || ''}
+                            label="Username"
+                            onChange={handleChange}
+                        />
+                    </FormControl>
 
-        return <div>
-            <AppNavbar/>
-            <Container className={'pt-5'}>
-                {title}
-                <Row>
-                    <Col>
-                        <Form onSubmit={this.handleSubmit}>
-                            <Form.Group className={'py-2'}>
-                                <Form.Label htmlFor="kind">Username</Form.Label>
-                                <Form.Control type="text" name="username" id="username" value={item.username} onChange={this.handleChange}/>
-                            </Form.Group>
+                    <FormControl fullWidth margin={"normal"} >
+                        <TextField
+                            type={"email"}
+                            id="email"
+                            name="email"
+                            value={item.email || ''}
+                            label="Email"
+                            onChange={handleChange}
+                        />
+                    </FormControl>
 
-                            <Form.Group className={'py-2'}>
-                                <Form.Label htmlFor="kind">Email</Form.Label>
-                                <Form.Control type="text" name="email" id="email" value={item.email} onChange={this.handleChange}/>
-                            </Form.Group>
+                    <Stack direction="row" spacing={2}>
+                        <Button color="primary" onClick={e => handleSubmit(e)}>Save</Button>
+                        <Button component={RouterLink} color="secondary" to="/userManagement">Back</Button>
+                    </Stack>
 
-                            <Form.Group>
-                                <Button color="primary" type="submit">Save</Button>{' '}
-                                <Link to="/userManagement"><Button color="secondary" >Back</Button></Link>{' '}
-                            </Form.Group>
-                        </Form>
-                    </Col>
-                </Row>
-                <Row className={'pt-5'}>
-                    <Col>
-                        <h3>Roles</h3>
+                </Col>
+            </Row>
+            <Row className={'pt-5'}>
+                <Col>
+                    <h3>Roles</h3>
 
-                        <Row className={'gap-3'}>
-                            <Col >
-                                <h4>Annotation Platform</h4>
-                                <Form.Check checked={item.annotation_annotator_role} type="checkbox" name="annotation_annotator_role" id="annotation_annotator_role" label="Annotator" onChange={this.handleChange}/>
-                                <Form.Check checked={item.annotation_reviewer_role} type="checkbox" name="annotation_reviewer_role" id="annotation_reviewer_role" label="Reviewer" onChange={this.handleChange}/>
-                                <Form.Check checked={item.annotation_supervisor_role} type="checkbox" name="annotation_supervisor_role" id="annotation_supervisor_role" label="Supervisor" onChange={this.handleChange}/>
-                                <Form.Check checked={item.annotation_manager_role} type="checkbox" name="annotation_manager_role" id="annotation_manager_role" label="Campaign Manager" onChange={this.handleChange}/>
-                                <Form.Check checked={item.annotation_admin_role} type="checkbox" name="annotation_admin_role" id="annotation_admin_role" label="Admin" onChange={this.handleChange}/>
-                            </Col>
-                            <Col>
+                    <Row className={'gap-3'}>
+                        <Col >
+                            <h4>Annotation Platform</h4>
+                            <FormControl fullWidth margin={"normal"}>
+                                <FormControlLabel control={<Checkbox name="annotation_annotator_role" id="annotation_annotator_role" checked={item.annotation_annotator_role} onChange={handleChange}/>} label="Annotator" />
+                                <FormControlLabel control={<Checkbox name="annotation_reviewer_role" id="annotation_reviewer_role" checked={item.annotation_reviewer_role} onChange={handleChange}/>} label="Reviewer" />
+                                <FormControlLabel control={<Checkbox name="annotation_supervisor_role" id="annotation_supervisor_role" checked={item.annotation_supervisor_role} onChange={handleChange}/>} label="Supervisor" />
+                                <FormControlLabel control={<Checkbox name="annotation_manager_role" id="annotation_manager_role" checked={item.annotation_manager_role} onChange={handleChange}/>} label="Campaign Manager" />
+                                <FormControlLabel control={<Checkbox name="annotation_admin_role" id="annotation_admin_role" checked={item.annotation_admin_role} onChange={handleChange}/>} label="Admin" />
+                            </FormControl>
+
+                        </Col>
+                        <Col>
 
 
-                                <h4>Data Platform</h4>
-                                <Form.Check checked={item.data_admin_role} type="checkbox" name="data_admin_role" id="data_admin_role" label="Admin" onChange={this.handleChange}/>
-                            </Col>
-                        </Row>
+                            <h4>Data Platform</h4>
+                            <FormControl fullWidth>
+                                <FormControlLabel control={<Checkbox name="data_admin_role" id="data_admin_role" checked={item.data_admin_role} onChange={handleChange}/>} label="Admin" />
+                            </FormControl>
+                        </Col>
+                    </Row>
 
-                    </Col>
-                </Row>
-                <Row className={'pt-5'}>
-                    <Col>
-                        <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example" className="mb-3">
-                            <Tab eventKey="profile" title="Profile">
+                </Col>
+            </Row>
+            <Row className={'pt-5'}>
+                <Col>
+                    <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example" className="mb-3">
+                        <Tab eventKey="profile" title="Profile">
+                            <Row>
+                                <Col>
+                                    <FormControl fullWidth margin={"normal"} >
+                                        <TextField
+                                            type={"date"}
+                                            id="birthdate"
+                                            name="birthdate"
+                                            value={item.birthdate}
+                                            label="Birthdate"
+                                            onChange={handleChange}
+                                        />
+                                    </FormControl>
+
+                                </Col>
+                                <Col>
+
+                                </Col>
+                            </Row>
+
+
+                        </Tab>
+                        {(item.annotation_annotator_role || item.annotation_reviewer_role || item.annotation_supervisor_role || item.annotation_manager_role || item.annotation_admin_role) &&
+                            <Tab eventKey="annotation_annotator_role" title="Annotation Platform">
                                 <Row>
                                     <Col>
-                                        <Form.Group className={'py-2'}>
-                                            <Form.Label htmlFor="birthdate">Birthdate</Form.Label>
-                                            <Form.Control type="date" name="birthdate" id="birthdate" value={item.birthdate} onChange={this.handleChange}/>
-                                        </Form.Group>
+                                        <FormControl fullWidth margin={"normal"}>
+                                            <InputLabel id="kind-label">Degree</InputLabel>
+                                            <Select
+                                                id="degree"
+                                                name="degree"
+                                                value={item.degree}
+                                                label="Kind"
+                                                onChange={handleChange}
+                                            >
+                                                <MenuItem value={"1"}>Associate</MenuItem>
+                                                <MenuItem value={"2"}>Bachelor</MenuItem>
+                                                <MenuItem value={"3"}>Master</MenuItem>
+                                                <MenuItem value={"4"}>Doctoral</MenuItem>
+                                            </Select>
+                                        </FormControl>
+
+
+
                                     </Col>
                                     <Col>
+                                        <TextField fullWidth margin={"normal"}
+                                            id="studyCountry"
+                                            name="studyCountry"
+                                            value={item.studyCountry}
+                                            label="Study Country"
+                                            onChange={handleChange}
+                                        />
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col>
+                                        <TextField fullWidth margin={"normal"}
+                                            id="workCountry"
+                                            name="workCountry"
+                                            value={item.studyCountry}
+                                            label="Working Country"
+                                            onChange={handleChange}
+                                        />
+                                    </Col>
+                                    <Col>
+                                        <TextField fullWidth margin={"normal"}
+                                            type={"number"}
+                                            id="yearsInPractice"
+                                            name="yearsInPractice"
+                                            value={item.yearsInPractice}
+                                            label="Years in practice"
+                                            onChange={handleChange}
+                                        />
+
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col className="d-flex align-items-end">
+                                        <Stack direction="row" spacing={2}>
+                                            <IconButton ><FaPlus/>&nbsp;Expertise</IconButton>
+                                        </Stack>
+
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col>
+                                        <TextField fullWidth margin={"normal"}
+                                            id="timezone"
+                                            name="timezone"
+                                            value={item.timezone}
+                                            label="Timezone"
+                                            onChange={handleChange}
+                                        />
+                                    </Col>
+                                    <Col>
+                                        <TextField fullWidth margin={"normal"}
+                                            type={"number"}
+                                            id="availabilityPerWeek"
+                                            name="availabilityPerWeek"
+                                            value={item.availabilityPerWeek}
+                                            label="Availability per week (hours)"
+                                            onChange={handleChange}
+                                        />
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col>
+                                        <TextField fullWidth margin={"normal"}
+                                            type={"number"}
+                                            id="selfAssessment"
+                                            name="selfAssessment"
+                                            value={item.selfAssessment}
+                                            label="Self Assessment"
+                                            onChange={handleChange}
+                                        />
+                                    </Col>
+                                    <Col>
+                                        <TextField fullWidth margin={"normal"}
+                                            type={"number"}
+                                            id="expectedSalary"
+                                            name="expectedSalary"
+                                            value={item.expectedSalary}
+                                            label="Expected compensation ($ per hour)"
+                                            onChange={handleChange}
+                                        />
 
                                     </Col>
                                 </Row>
 
 
                             </Tab>
-                            {(item.annotation_annotator_role || item.annotation_reviewer_role || item.annotation_supervisor_role || item.annotation_manager_role || item.annotation_admin_role) &&
-                                <Tab eventKey="annotation_annotator_role" title="Annotation Platform">
-                                    <Row>
-                                        <Col>
-                                            <Form.Group className={'py-2'}>
-                                                <Form.Label htmlFor="degree">Degree</Form.Label>
-                                                <Form.Select  name="degree" id="degree" value={item.degree} onChange={this.handleChange}>
-                                                    <option value="1">Associate</option>
-                                                    <option value="2">Bachelor</option>
-                                                    <option value="3">Master</option>
-                                                    <option value="4">Doctoral</option>
-                                                </Form.Select>
-                                            </Form.Group>
+                        }
+                        {item.data_admin_role &&
+                        <Tab eventKey="data" title="Data Platform">
+                            <Row>
+                                <Col>
+                                </Col>
+                            </Row>
+                        </Tab>
+                        }
+                    </Tabs>
 
-                                        </Col>
-                                        <Col>
-                                            <Form.Group className={'py-2'}>
-                                                <Form.Label htmlFor="studyCountry">Study Country</Form.Label>
-                                                <Form.Control type="text" name="studyCountry" id="studyCountry" value={item.studyCountry} onChange={this.handleChange}/>
-                                            </Form.Group>
-
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col>
-                                            <Form.Group className={'py-2'}>
-                                                <Form.Label htmlFor="workCountry">Working Country</Form.Label>
-                                                <Form.Control type="text" name="workCountry" id="workCountry" value={item.workCountry} onChange={this.handleChange}/>
-                                            </Form.Group>
-                                        </Col>
-                                        <Col>
-                                            <Form.Group className={'py-2'}>
-                                                <Form.Label htmlFor="yearsInPractice">Years in practice</Form.Label>
-                                                <Form.Control type="number" name="yearsInPractice" id="yearsInPractice" value={item.yearsInPractice} onChange={this.handleChange}/>
-                                            </Form.Group>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col className="d-flex align-items-end">
-                                            <Form.Group className={'py-2'}>
-                                                <Button color="primary"><FaPlus/>&nbsp;Expertise</Button>
-                                            </Form.Group>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col>
-                                            <Form.Group className={'py-2'}>
-                                                <Form.Label htmlFor="timezone">Timezone</Form.Label>
-                                                <Form.Control type="text" name="timezone" id="timezone" value={item.timezone} onChange={this.handleChange}/>
-                                            </Form.Group>
-                                        </Col>
-                                        <Col>
-                                            <Form.Group className={'py-2'}>
-                                                <Form.Label htmlFor="availabilityPerWeek">Availability per week (hours)</Form.Label>
-                                                <Form.Control type="number" name="availabilityPerWeek" id="availabilityPerWeek" value={item.availabilityPerWeek} onChange={this.handleChange}/>
-                                            </Form.Group>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col>
-                                            <Form.Group className={'py-2'}>
-                                                <Form.Label htmlFor="selfAssessment">Self Assessment</Form.Label>
-                                                <Form.Control type="text" name="selfAssessment" id="selfAssessment" value={item.selfAssessment} onChange={this.handleChange}/>
-                                            </Form.Group>
-                                        </Col>
-                                        <Col>
-                                            <Form.Group className={'py-2'}>
-                                                <Form.Label htmlFor="expectedSalary">Expected compensation ($ per hour)</Form.Label>
-                                                <Form.Control type="number" name="expectedSalary" id="expectedSalary" value={item.expectedSalary} onChange={this.handleChange}/>
-                                            </Form.Group>
-                                        </Col>
-                                    </Row>
+                    <Stack direction="row" spacing={2}>
+                        <Button color="primary" onClick={e => handleSubmit(e)}>Save</Button>
+                        <Button component={RouterLink} color="secondary" to="/userManagement">Back</Button>
+                    </Stack>
 
 
-                                </Tab>
-                            }
-                            {item.data_admin_role &&
-                            <Tab eventKey="data" title="Data Platform">
-                                <Row>
-                                    <Col>
-                                    </Col>
-                                </Row>
-                            </Tab>
-                            }
-                        </Tabs>
-                        <Form.Group>
-                            <Button color="primary" onClick={this.handleSubmit}>Save</Button>{' '}
-                            <Link to="/userManagement"><Button color="secondary" >Back</Button></Link>{' '}
-                        </Form.Group>
-                    </Col>
-                </Row>
-            </Container>
-        </div>
-    }
+                </Col>
+            </Row>
+        </Container>
+    </div>
+    );
+
 }
-export default withRouter(UserEdit);
+export default UserEdit;

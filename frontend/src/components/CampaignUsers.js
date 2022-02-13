@@ -53,8 +53,10 @@ class CampaignUsers extends Component {
                     response =>
                         this.setState(
                             {availableUsers: response?.data._embedded.user
-                                    .filter(i => !this.props.campaign.annotators.some(a => a.idpID === i.idpID))
-                                    .filter(i => !this.props.campaign.reviewers.some(a => a.idpID === i.idpID)), isLoading: false}
+                                    .filter(i => !this.props.campaign.annotators?.some(a => a.idpID === i.idpID))
+                                    .filter(i => !this.props.campaign.reviewers?.some(a => a.idpID === i.idpID))
+                                    .filter(i => !this.props.campaign.supervisors?.some(a => a.idpID === i.idpID)),
+                                isLoading: false}
                         ));
 
         }).catch(err => console.log(err));
@@ -63,8 +65,9 @@ class CampaignUsers extends Component {
     componentDidUpdate(prevProps) {
         if (prevProps.campaign !== this.props.campaign) {
             let updatedUsers = [...this.state.availableUsers]
-                .filter(i => !this.props.campaign.annotators.some(a => a.idpID === i.idpID))
-                .filter(i => !this.props.campaign.reviewers.some(a => a.idpID === i.idpID));
+                .filter(i => !this.props.campaign.annotators?.some(a => a.idpID === i.idpID))
+                .filter(i => !this.props.campaign.reviewers?.some(a => a.idpID === i.idpID))
+                .filter(i => !this.props.campaign.supervisors?.some(a => a.idpID === i.idpID));
 
             this.setState({campaign: this.props.campaign, availableUsers: updatedUsers});
         }
@@ -124,6 +127,19 @@ class CampaignUsers extends Component {
         this.setState({availableUsers: availableUsers});
     }
 
+    removeSelectSupervisor(user) {
+        this.state.availableUsers.push(user);
+        let updatedUsers = [...this.state.campaign.supervisors].filter(i => i.idpID !== user.idpID);
+        this.state.campaign.supervisors = updatedUsers;
+        this.setState({item: this.state.campaign,availableUsers: this.state.availableUsers})
+    }
+
+    selectSupervisor(user) {
+        this.state.campaign.supervisors.push(user);
+        let availableUsers = [...this.state.availableUsers].filter(i => i.idpID !== user.idpID);
+        this.setState({availableUsers: availableUsers});
+    }
+
     render() {
 
         const {campaign, isLoading, availableUsers, annotatorFilter} = this.state;
@@ -159,7 +175,7 @@ class CampaignUsers extends Component {
 
                 <TableCell>
                     <Stack direction="row" spacing={2}>
-                        <Button size="small" color="warning" onClick={() => this.removeSelectUser(user)}>Remove</Button>
+                        <Button size="small" color="error" onClick={() => this.removeSelectUser(user)}>Remove</Button>
                     </Stack>
                 </TableCell>
             </TableRow>
@@ -186,7 +202,34 @@ class CampaignUsers extends Component {
 
                 <TableCell>
                     <Stack direction="row" spacing={2}>
-                        <Button size="small" color="warning" onClick={() => this.removeSelectReviewer(user)}>Remove</Button>
+                        <Button size="small" color="error" onClick={() => this.removeSelectReviewer(user)}>Remove</Button>
+                    </Stack>
+                </TableCell>
+            </TableRow>
+        });
+
+        const availableSupervisorList = availableUsers.filter(user => user.supervisorRole != undefined).map(user => {
+            return <TableRow key={user.idpID} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                <TableCell style={{whiteSpace: 'nowrap'}}><Link component={RouterLink} to={"/users/" + user.userUUID}>{user.username}</Link></TableCell>
+                <TableCell style={{whiteSpace: 'nowrap'}} align={"right"}>{user.annotatorRole.yearsInPractice}</TableCell>
+                <TableCell style={{whiteSpace: 'nowrap'}} align={"right"}>{user.annotatorRole.selfAssessment}</TableCell>
+                <TableCell>
+                    <Stack direction="row" spacing={2}>
+                        <Button size="small" color="success" onClick={() => this.selectSupervisor(user)}>Select</Button>
+                    </Stack>
+                </TableCell>
+            </TableRow>
+        });
+
+        const supervisorList = campaign.supervisors?.map(user => {
+            return <TableRow key={user.idpID} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                <TableCell style={{whiteSpace: 'nowrap'}}><Link component={RouterLink} to={"/users/" + user.userUUID}>{user.username}</Link></TableCell>
+                <TableCell style={{whiteSpace: 'nowrap'}} align={"right"}>{user.annotatorRole.yearsInPractice}</TableCell>
+                <TableCell style={{whiteSpace: 'nowrap'}} align={"right"}>{user.annotatorRole.selfAssessment}</TableCell>
+
+                <TableCell>
+                    <Stack direction="row" spacing={2}>
+                        <Button size="small" color="error" onClick={() => this.removeSelectSupervisor(user)}>Remove</Button>
                     </Stack>
                 </TableCell>
             </TableRow>
@@ -194,7 +237,90 @@ class CampaignUsers extends Component {
 
         return (
             <div>
-                <Tabs defaultActiveKey="annotators" id="uncontrolled-tab-example" className="mt-5">
+                <Tabs defaultActiveKey="supervisors" id="uncontrolled-tab-example" className="mt-5">
+                    <Tab eventKey="supervisors" title="Supervisors">
+                        <Row className='mt-5'>
+                            <Col>
+                                <h3>Find supervisors</h3>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <Form>
+                                    <Row>
+                                        <Col>
+                                            <FormControl fullWidth sx={{ mt: 5 }}>
+                                                <TextField
+                                                    type="number"
+                                                    id="yearsInPractice"
+                                                    name="yearsInPractice"
+                                                    value={annotatorFilter.yearsInPractice || ''}
+                                                    label="Minimum years in practice"
+                                                    onChange={this.handleAnnotatorFilterChange}
+                                                />
+                                            </FormControl>
+
+                                        </Col>
+                                        <Col>
+                                            <FormControl fullWidth sx={{ mt: 5 }}>
+                                                <TextField
+                                                    type="number"
+                                                    id="selfAssessment"
+                                                    name="selfAssessment"
+                                                    value={annotatorFilter.selfAssessment || ''}
+                                                    label="Minimum self-assessment grade"
+                                                    onChange={this.handleAnnotatorFilterChange}
+                                                />
+                                            </FormControl>
+                                        </Col>
+                                    </Row>
+                                    <Stack direction="row" spacing={2}>
+                                        <Button color="primary" onClick={() => this.handleFindAnnotators()}>Search</Button>{' '}
+                                        <Button color="primary" onClick={() => this.handleResetAnnotators()}>Reset</Button>
+                                    </Stack>
+                                </Form>
+                            </Col>
+                        </Row>
+                        <Row className='mt-5'>
+                            <Col>
+                                <h3>Available supervisors</h3>
+                                <TableContainer component={Paper}>
+                                    <Table aria-label="simple table">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell width="30%">Username</TableCell>
+                                                <TableCell width="30%" align={"right"}>Years in practice</TableCell>
+                                                <TableCell width="30%" align={"right"}>Self-Assessment</TableCell>
+                                                <TableCell align={"right"} width="10%">Actions</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {availableSupervisorList}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </Col>
+                            <Col>
+                                <h3>Selected supervisors</h3>
+                                <TableContainer component={Paper}>
+                                    <Table aria-label="simple table">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell width="30%">Username</TableCell>
+                                                <TableCell width="30%" align={"right"}>Years in practice</TableCell>
+                                                <TableCell width="30%" align={"right"}>Self-Assessment</TableCell>
+                                                <TableCell align={"right"} width="10%">Actions</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {supervisorList}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </Col>
+                        </Row>
+                    </Tab>
+                    
                     <Tab eventKey="annotators" title="Annotators">
                         <Row className='mt-5'>
                             <Col>

@@ -3,7 +3,21 @@ import {Link as RouterLink, Link} from "react-router-dom";
 import {Auth} from "aws-amplify";
 import UserClient from "../api/UserClient";
 import Loader from "react-loader-spinner";
-import {Button, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import {
+    Button,
+    IconButton,
+    Paper,
+    Stack,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow
+} from "@mui/material";
+import Title from "../Title";
+import Grid from "@material-ui/core/Grid";
+import {FaRedo} from "react-icons/fa";
 
 class UserListComponent extends Component {
 
@@ -52,13 +66,15 @@ class UserListComponent extends Component {
 
                 </TableCell>
             </TableRow>
-
-
         });
 
         return (
             <>
-                <h3>{title}</h3>
+                <Title>{title}</Title>
+                <Grid container justifyContent="flex-end">
+                    <IconButton onClick={() => this.componentDidMount()}><FaRedo/></IconButton>{' '}
+                    <Button color="success" tag={Link} to="/users/new">Add User</Button>
+                </Grid>
                 <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                         <TableHead>

@@ -99,6 +99,22 @@ class TaskClient {
             });
     }
 
+    async removeAnnotation(annotationUUID) {
+        console.log("Deleting annotation for Id: " + annotationUUID);
+
+        return callApiWithToken(this.accessToken, `${this.config.ANNOTATION_URL}/${annotationUUID}`,"DELETE")
+            .then(([response, json]) => {
+                if (!response.ok) {
+                    return { success: false, error: json };
+                }
+                return { success: true, data: json };
+            })
+            .catch((e) => {
+                this.handleError(e);
+            });
+    }
+
+
     handleError(error) {
         const err = new Map([
             [TypeError, "There was a problem fetching the response."],

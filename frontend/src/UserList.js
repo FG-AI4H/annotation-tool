@@ -1,34 +1,33 @@
-import React, {Component} from "react";
+import React from "react";
 import {Link} from "react-router-dom";
 import AppNavbar from "./AppNavbar";
 import Container from "react-bootstrap/Container";
 import {FaRedo} from "react-icons/fa";
 
 import UserListComponent from "./components/UserListComponent";
-import {Button, IconButton} from "@mui/material";
-
-class UserList extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {users: [], isLoading: false};
-    }
-
-    render(){
+import {Button, IconButton, Paper} from "@mui/material";
+import Grid from "@material-ui/core/Grid";
+import {ociStyles} from "./customStyle";
 
 
-        return (
-            <div>
-                <AppNavbar/>
-                <Container className={'pt-5'}>
-                    <div className={'float-end'}>
-                        <IconButton onClick={() => this.componentDidMount()}><FaRedo /></IconButton>{' '}
-                        <Button color="success" tag={Link} to="/users/new">Add User</Button>
-                    </div>
-                    <UserListComponent title="Users"/>
-                </Container>
-            </div>
-        );
-    }
+const UserList = () => {
+
+    const classes = ociStyles();
+
+    return (
+        <div>
+            <AppNavbar/>
+            <Container maxWidth="lg" className={classes.container}>
+                <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                        <Paper className={classes.paper}>
+                            <UserListComponent title="Users"/>
+                        </Paper>
+                    </Grid>
+                </Grid>
+            </Container>
+        </div>
+    );
+
 }
 export default UserList;

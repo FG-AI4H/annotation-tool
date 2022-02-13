@@ -132,6 +132,7 @@ class TaskEdit extends Component {
                         >
                             <MenuItem value={"create"}>Create</MenuItem>
                             <MenuItem value={"correct"}>Correct</MenuItem>
+                            <MenuItem value={"review"}>Review</MenuItem>
                         </Select>
                 </FormControl>
 

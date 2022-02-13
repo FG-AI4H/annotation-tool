@@ -66,17 +66,34 @@ const CampaignTask = (props) => {
             <Row className='mt-5'>
                 <Col>
                     <Typography gutterBottom variant="h5" component="div">Define your tasks</Typography>
-                    <FormControl fullWidth>
+                    <FormControl fullWidth margin={"normal"}>
                         <InputLabel >Task type</InputLabel>
                         <Select
-                            id="taskType"
-                            value={campaign.kind}
+                            id="annotationKind"
+                            name="annotationKind"
+                            value={campaign.annotationKind}
                             label="Task type"
                             onChange={handleChange}
                         >
-                            <MenuItem value={"3DIS"}>3D Image Segmentation</MenuItem>
-                            <MenuItem value={"2DIS"}>2D Image Segmentation</MenuItem>
-                            <MenuItem value={"TS"}>Time Series</MenuItem>
+                            <MenuItem value={"semantic_segmentation"}>[Image] - Semantic Segmentation</MenuItem>
+                            <MenuItem value={"bounding_boxes"}>[Image] - Bounding boxes</MenuItem>
+                            <MenuItem value={"3d_cuboids"}>[Image] - 3D cuboids</MenuItem>
+                            <MenuItem value={"polygons"}>[Image] - Polygons</MenuItem>
+                            <MenuItem value={"lines_splines"}>[Image] - Lines and splines</MenuItem>
+                            <MenuItem value={"time_series"}>Time Series</MenuItem>
+                        </Select>
+                    </FormControl>
+
+                    <FormControl fullWidth margin={"normal"}>
+                        <InputLabel >Annotation tool</InputLabel>
+                        <Select
+                            id="annotationTool"
+                                name="annotationTool"
+                            value={campaign.annotationTool}
+                            label="Annotation tool"
+                            onChange={handleChange}
+                        >
+                            <MenuItem value={"visian"}>[Image] - Visian</MenuItem>
                         </Select>
                     </FormControl>
 

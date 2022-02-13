@@ -2,10 +2,9 @@ import React, {Component} from 'react';
 import './App.css';
 import AppNavbar from './AppNavbar';
 import {Link as RouterLink, Link} from 'react-router-dom';
-import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import {Button, Card, CardActions, CardContent, Typography} from "@mui/material";
+import {Button, Card, CardActions, CardContent, Container, Typography} from "@mui/material";
 
 
 class AnnotationHome extends Component {
@@ -13,7 +12,7 @@ class AnnotationHome extends Component {
         return (
             <div>
                 <AppNavbar/>
-                <Container className={'pt-5'}>
+                <Container sx={{ mt: 5 }}>
                     <Row>
                         <Col><h1 className="header">Welcome To The FG-AI4H Annotation Tool</h1></Col>
                     </Row>

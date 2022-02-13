@@ -94,7 +94,7 @@ class CampaignForm extends Component {
                     </Alert>
                 </Snackbar>
 
-                <FormControl fullWidth sx={{ mt: 5 }}>
+                <FormControl fullWidth margin={"normal"} >
                     <TextField
                         id="name"
                         name="name"
@@ -104,7 +104,7 @@ class CampaignForm extends Component {
                     />
                 </FormControl>
 
-                <FormControl fullWidth sx={{ mt: 5 }}>
+                <FormControl fullWidth margin={"normal"}>
                     <TextField
                         multiline
                         rows={4}

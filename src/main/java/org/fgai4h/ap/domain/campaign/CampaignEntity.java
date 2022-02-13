@@ -32,6 +32,8 @@ public class CampaignEntity implements Serializable
     private String description;
     private String status;
     private String[] datasets;
+    private String annotationKind;
+    private String annotationTool;
 
     @ManyToMany(cascade=CascadeType.ALL)
     @JoinTable(
@@ -46,5 +48,12 @@ public class CampaignEntity implements Serializable
             joinColumns = @JoinColumn(name = "campaignUUID"),
             inverseJoinColumns = @JoinColumn(name = "userUUID"))
     private List<UserEntity> reviewers;
+
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(
+            name = "campaign_supervisor",
+            joinColumns = @JoinColumn(name = "campaignUUID"),
+            inverseJoinColumns = @JoinColumn(name = "userUUID"))
+    private List<UserEntity> supervisors;
 
 }

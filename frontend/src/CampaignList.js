@@ -77,7 +77,7 @@ class CampaignList extends Component {
                 <TableCell>
                     <Stack direction={"row"} spacing={2} justifyContent="flex-end">
                         <Button component={RouterLink} size="small" color="primary" to={"/campaigns/" + campaign.campaignUUID}>Edit</Button>
-                        <Button size="small" color="warning" onClick={() => this.remove(campaign.campaignUUID)}>Delete</Button>
+                        <Button size="small" color="error" onClick={() => this.remove(campaign.campaignUUID)}>Delete</Button>
                     </Stack>
                 </TableCell>
 

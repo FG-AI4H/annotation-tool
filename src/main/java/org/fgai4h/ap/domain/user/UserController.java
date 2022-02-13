@@ -28,12 +28,14 @@ public class UserController {
     private final UserRepository userRepository;
     private final AnnotatorRepository annotatorRepository;
     private final ReviewerRepository reviewerRepository;
+    private final SupervisorModelAssembler supervisorModelAssembler;
     private final UserModelAssembler userModelAssembler;
     private final UserModelAWSAssembler userModelAWSAssembler;
     private final AnnotatorModelAssembler annotatorModelAssembler;
     private final ReviewerModelAssembler reviewerModelAssembler;
+    private final SupervisorRepository supervisorRepository;
 
-    public UserController(UserRepository userRepository, UserModelAssembler userModelAssembler, AnnotatorRepository annotatorRepository, AnnotatorModelAssembler annotatorModelAssembler,UserModelAWSAssembler userModelAWSAssembler, ReviewerModelAssembler reviewerModelAssembler, ReviewerRepository reviewerRepository){
+    public UserController(UserRepository userRepository, UserModelAssembler userModelAssembler, AnnotatorRepository annotatorRepository, AnnotatorModelAssembler annotatorModelAssembler,UserModelAWSAssembler userModelAWSAssembler, ReviewerModelAssembler reviewerModelAssembler, ReviewerRepository reviewerRepository, SupervisorModelAssembler supervisorModelAssembler, SupervisorRepository supervisorRepository){
         this.userRepository = userRepository;
         this.userModelAssembler = userModelAssembler;
         this.annotatorRepository = annotatorRepository;
@@ -41,6 +43,8 @@ public class UserController {
         this.userModelAWSAssembler = userModelAWSAssembler;
         this.reviewerModelAssembler = reviewerModelAssembler;
         this.reviewerRepository = reviewerRepository;
+        this.supervisorModelAssembler = supervisorModelAssembler;
+        this.supervisorRepository = supervisorRepository;
     }
 
     @GetMapping("/annotators")
@@ -148,6 +152,13 @@ public class UserController {
     public ResponseEntity<ReviewerModel> getReviewerById(@PathVariable("id") UUID id) {
         return reviewerRepository.findById(id)
                 .map(reviewerModelAssembler::toModel)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    public ResponseEntity<SupervisorModel> getSupervisorById(@PathVariable("id") UUID id) {
+        return supervisorRepository.findById(id)
+                .map(supervisorModelAssembler::toModel)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

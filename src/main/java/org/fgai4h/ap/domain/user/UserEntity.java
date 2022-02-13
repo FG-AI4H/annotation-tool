@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.UUID;
 
 @Data
@@ -32,7 +33,12 @@ public class UserEntity implements Serializable {
     @JoinColumn(name = "reviewer_role_ID")
     private ReviewerEntity reviewerRole;
 
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "supervisor_role_ID")
+    private SupervisorEntity supervisorRole;
+
     private String idpID;
     private String username;
+    private Date birthdate;
 
 }

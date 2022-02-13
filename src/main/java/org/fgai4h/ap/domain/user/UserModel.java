@@ -29,5 +29,6 @@ public class UserModel extends RepresentationModel<UserModel> {
 
     private AnnotatorModel annotatorRole;
     private ReviewerModel reviewerRole;
+    private SupervisorModel supervisorRole;
 
 }

@@ -22,6 +22,7 @@ public class UserModelAssembler extends RepresentationModelAssemblerSupport<User
 
         AnnotatorModelAssembler annotatorModelAssembler = new AnnotatorModelAssembler();
         ReviewerModelAssembler reviewerModelAssembler = new ReviewerModelAssembler();
+        SupervisorModelAssembler supervisorModelAssembler = new SupervisorModelAssembler();
         UserModel userModel = instantiateModel(entity);
 
         userModel.add(linkTo(
@@ -32,8 +33,9 @@ public class UserModelAssembler extends RepresentationModelAssemblerSupport<User
         userModel.setUserUUID(entity.getUserUUID());
         userModel.setIdpID(entity.getIdpID());
         userModel.setUsername(entity.getUsername());
+        userModel.setBirthdate(entity.getBirthdate());
         userModel.setAnnotatorRole(annotatorModelAssembler.toModel(entity.getAnnotatorRole()));
-
+        userModel.setSupervisorRole(supervisorModelAssembler.toModel(entity.getSupervisorRole()));
         userModel.setReviewerRole(reviewerModelAssembler.toModel(entity.getReviewerRole()));
 
         return userModel;
@@ -42,6 +44,8 @@ public class UserModelAssembler extends RepresentationModelAssemblerSupport<User
     public  UserEntity toEntity(UserModel model){
 
         AnnotatorModelAssembler annotatorModelAssembler = new AnnotatorModelAssembler();
+        ReviewerModelAssembler reviewerModelAssembler = new ReviewerModelAssembler();
+        SupervisorModelAssembler supervisorModelAssembler = new SupervisorModelAssembler();
 
         UserEntity useEntity = new UserEntity();
 
@@ -50,6 +54,12 @@ public class UserModelAssembler extends RepresentationModelAssemblerSupport<User
         useEntity.setUsername(model.getUsername());
         if(model.getAnnotatorRole() != null) {
             useEntity.setAnnotatorRole(annotatorModelAssembler.toEntity(model.getAnnotatorRole()));
+        }
+        if(model.getReviewerRole() != null) {
+            useEntity.setReviewerRole(reviewerModelAssembler.toEntity(model.getReviewerRole()));
+        }
+        if(model.getAnnotatorRole() != null) {
+            useEntity.setSupervisorRole(supervisorModelAssembler.toEntity(model.getSupervisorRole()));
         }
         return useEntity;
 
