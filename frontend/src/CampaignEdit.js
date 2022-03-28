@@ -1,9 +1,8 @@
 import React, {Component, useEffect, useState} from 'react';
+import PropTypes from 'prop-types';
 import AppNavbar from './AppNavbar';
 import {Link as RouterLink, Link, withRouter} from 'react-router-dom';
 import CampaignChart from "./CampaignChart";
-import Tabs from "react-bootstrap/Tabs";
-import Tab from 'react-bootstrap/Tab'
 import CampaignProgress from "./CampaignProgress";
 import {Auth} from "aws-amplify";
 import CampaignClient from "./api/CampaignClient";
@@ -12,7 +11,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import CampaignForm from "./components/CampaignForm";
 import CampaignUsers from "./components/CampaignUsers";
-import {Button, Container, Typography} from "@mui/material";
+import {Box, Button, Container, Tab, Tabs, Typography} from "@mui/material";
 import CampaignTask from "./components/CampaignTask";
 import CampaignData from "./components/CampaignData";
 
@@ -25,8 +24,42 @@ const CampaignEdit = (props) => {
         reviewers: []
     };
 
+    function TabPanel(props) {
+        const { children, value, index, ...other } = props;
+
+        return (
+            <div
+                role="tabpanel"
+                hidden={value !== index}
+                id={`simple-tabpanel-${index}`}
+                aria-labelledby={`simple-tab-${index}`}
+                {...other}
+            >
+                {value === index && (
+                    <Box sx={{ p: 3 }}>
+                        <Typography>{children}</Typography>
+                    </Box>
+                )}
+            </div>
+        );
+    }
+
+    TabPanel.propTypes = {
+        children: PropTypes.node,
+        index: PropTypes.number.isRequired,
+        value: PropTypes.number.isRequired,
+    };
+
+    function a11yProps(index) {
+        return {
+            id: `simple-tab-${index}`,
+            'aria-controls': `simple-tabpanel-${index}`,
+        };
+    }
+
     const [item, setItem] = useState(emptyItem);
     const [isLoading, setIsLoading] = useState(false);
+    const [tabValue, setTabValue] = useState(0);
 
     useEffect( () =>{
         setIsLoading(true);
@@ -61,15 +94,32 @@ const CampaignEdit = (props) => {
         /></div>);
     }
 
+    const handleChange = (event, newValue) => {
+        setTabValue(newValue);
+    };
+
+
     return <div>
         <AppNavbar/>
         <Container sx={{ mt: 5 }}>
             {title}
 
             {item.campaignUUID &&
-                <Tabs defaultActiveKey="progress" id="uncontrolled-tab-example" className="mb-3">
 
-                    <Tab eventKey="progress" title="Progress" className={'h-100'}>
+                <Box sx={{ width: '100%' }}>
+                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                    <Tabs
+                    value={tabValue}
+                    onChange={handleChange}
+                    aria-label="wrapped label tabs example"
+                    >
+                        <Tab label="Progress" {...a11yProps(0)}/>
+                        <Tab label="Settings" {...a11yProps(1)}/>
+                        <Tab label="Dataset" {...a11yProps(2)}/>
+                        <Tab label="Tasks" {...a11yProps(3)}/>
+                    </Tabs>
+                    </Box>
+                    <TabPanel value={tabValue} index={0}>
                         <div className={'panel-wrapper'}>
                             <Typography gutterBottom variant="h5" component="div">Number of Annotations</Typography>
                             <CampaignChart/>
@@ -79,23 +129,22 @@ const CampaignEdit = (props) => {
                             </div>
                             <Button component={RouterLink} color="secondary" to="/campaigns">Back</Button>
                         </div>
-
-                    </Tab>
-                    <Tab eventKey="settings" title="Settings">
+                    </TabPanel>
+                    <TabPanel value={tabValue} index={1}>
                         <Row><Col>
                             <CampaignForm campaign={item}/>
                         </Col>
                         </Row>
                         <CampaignUsers campaign={item}/>
-                    </Tab>
-                    <Tab eventKey="data" title="Dataset">
+                    </TabPanel>
+                    <TabPanel value={tabValue} index={2}>
                         <CampaignData campaign={item}/>
-                    </Tab>
-                    <Tab eventKey="tasks" title="Tasks">
+                    </TabPanel>
+                    <TabPanel value={tabValue} index={3}>
                         <CampaignTask campaign={item}/>
-                    </Tab>
+                    </TabPanel>
+                </Box>
 
-                </Tabs>
             }
             {!item.campaignUUID &&
             <>
