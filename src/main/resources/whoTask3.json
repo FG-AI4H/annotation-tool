@@ -1,0 +1,39 @@
+{
+"_class": "org.fgai4h.ap.domain.task.TaskEntity",
+  "kind": "review",
+  "readOnly": true,
+  "annotationTasks": [
+    {
+    "_class": "org.fgai4h.ap.domain.task.AnnotationTaskEntity",
+      "kind": "semantic_segmentation",
+      "title": "Tumor Segmentation",
+      "description": "Review the existing annotations"
+    }
+  ],
+  "samples": [
+
+  ],
+  "annotations": [
+
+  ],
+  "assignee": {
+  "_class": "org.fgai4h.ap.domain.user.UserEntity",
+    "userUUID": "05016117-04e1-4c70-8929-7c685c93ab8f",
+    "idpID": "ddf5a861-5ccd-43bf-9c58-85c0018c46c1",
+    "username": "mlecoultre",
+    "annotatorRole": {
+    "_class": "org.fgai4h.ap.domain.user.AnnotatorEntity",
+      "annotatorUUID": "e1293b99-ac56-4d68-a2fe-1bebb51ae47c",
+      "yearsInPractice": 10,
+      "expectedSalary": 25,
+      "workCountry": "Switzerland",
+      "studyCountry": "Switzerland",
+      "selfAssessment": 8,
+      "degree": "3"
+    },
+    "reviewerRole": {
+    "_class": "org.fgai4h.ap.domain.user.ReviewerEntity",
+      "reviewerUUID": "953e67fb-6103-40ec-9b2b-a64694c31b6a"
+    }
+  }
+}

@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.fgai4h.ap.domain.campaign.CampaignEntity;
+import org.fgai4h.ap.domain.user.UserEntity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -42,6 +44,14 @@ public class TaskEntity implements Serializable {
 
     @OneToMany(mappedBy="task", cascade=CascadeType.ALL)
     private List<AnnotationEntity> annotations;
+
+    @ManyToOne
+    @JoinColumn(name = "assignee_user_uuid")
+    private UserEntity assignee;
+
+    @ManyToOne
+    @JoinColumn(name = "campaign_campaign_uuid")
+    private CampaignEntity campaign;
 
 
 }

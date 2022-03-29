@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.fgai4h.ap.domain.user.AnnotatorEntity;
+import org.fgai4h.ap.domain.user.UserEntity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -29,7 +29,7 @@ public class AnnotationEntity implements Serializable {
     @Column(columnDefinition = "BINARY(16)")
     private UUID annotationUUID;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     private AnnotationTaskEntity annotationTask;
 
     private AnnotationStatus status;
@@ -37,8 +37,8 @@ public class AnnotationEntity implements Serializable {
     @OneToMany(mappedBy = "annotationEntity", cascade=CascadeType.ALL)
     private List<AnnotationDataEntity> annotationDataList;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private AnnotatorEntity annotator;
+    @OneToOne
+    private UserEntity annotator;
 
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime submittedAt;

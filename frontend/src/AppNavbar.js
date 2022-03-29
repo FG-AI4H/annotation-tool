@@ -5,7 +5,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Container from 'react-bootstrap/Container';
 
 import {Link} from 'react-router-dom';
-import {Auth, Sign} from "aws-amplify";
+import {Auth} from "aws-amplify";
 import {AmplifySignOut} from "@aws-amplify/ui-react";
 import {FaUser} from "react-icons/all";
 
@@ -60,6 +60,7 @@ export default class AppNavbar extends Component {
                         <Nav.Link as={Link} to="/annotation">Annotation</Nav.Link>
                         <Nav.Link as={Link} to="/dashboard">Data Store</Nav.Link>
                         <Nav.Link as={Link} to="/benchmark">Evaluation</Nav.Link>
+                        <Nav.Link as={Link} to="/admin">Admin</Nav.Link>
                     </Nav>
                     <Nav>
                         <Nav.Link><FaUser/></Nav.Link>

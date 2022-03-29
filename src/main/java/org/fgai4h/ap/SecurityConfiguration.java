@@ -26,6 +26,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http.headers().frameOptions().disable();
         http.cors();
+        http.oauth2ResourceServer().jwt();
     }
 
 }

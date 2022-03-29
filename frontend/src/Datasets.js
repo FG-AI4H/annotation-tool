@@ -1,33 +1,30 @@
-import React, { useEffect, useState } from 'react'
-import { makeStyles, withStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-import Modal from '@material-ui/core/Modal';
-import FilledInput from '@material-ui/core/FilledInput';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import TextField from '@material-ui/core/TextField';
-import Backdrop from '@material-ui/core/Backdrop';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Link from '@material-ui/core/Link';
-import Accordion from '@material-ui/core/Accordion';
-import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
+import React, {useEffect, useState} from 'react'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Box from '@material-ui/core/Box';
+import Grid from '@material-ui/core/Grid';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
 import axios from 'axios';
-import { API, graphqlOperation } from 'aws-amplify'
-import { createDataset } from './graphql/mutations'
-import { listDatasets } from './graphql/queries'
+import {API, graphqlOperation} from 'aws-amplify'
+import {createDataset} from './graphql/mutations'
+import {listDatasets} from './graphql/queries'
 import uuid from 'react-uuid'
 import Auth from '@aws-amplify/auth';
+import {
+    Backdrop,
+    Box,
+    Button,
+    CircularProgress,
+    FilledInput,
+    FormControl, IconButton,
+    InputLabel, Link,
+    Modal, Paper, Snackbar, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+    TextField,
+    Typography
+} from "@mui/material";
 
 import Title from './Title';
+import {FaRedo} from "react-icons/fa";
 
 const modalMode = Object.freeze({ _EDIT: 'edit', _READ: 'read' })
 
@@ -71,56 +68,10 @@ const initialState = {
     }
 }
 
-const useStyles = makeStyles((theme) => ({
-    modal: {
-        display: 'flex',
-        justifyContent: 'center',
-        overflow: 'scroll',
-    },
-    paper: {
-        backgroundColor: theme.palette.background.paper,
-        border: '2px solid #000',
-        boxShadow: theme.shadows[5],
-        padding: theme.spacing(2, 4, 3),
-    },
-    backdrop: {
-        zIndex: theme.zIndex.drawer + 1,
-        color: '#fff',
-    },
-}));
 
-const styles = {
-    modal: {
-        width: '70%',
-        position: 'absolute',
-        marginTop: 10
-    },
-    input: {
-        width: '100%',
-        marginBottom: 8
-    }
-}
-
-const AccordionSummary = withStyles({
-    root: {
-        backgroundColor: 'rgba(0, 0, 0, .03)',
-        borderBottom: '1px solid rgba(0, 0, 0, .125)',
-        marginBottom: -1,
-        minHeight: 56,
-        '&$expanded': {
-            minHeight: 56,
-        },
-    },
-    content: {
-        '&$expanded': {
-            margin: '12px 0',
-        },
-    },
-    expanded: {},
-})(MuiAccordionSummary);
 
 export default function Datasets(props) {
-    const classes = useStyles();
+
     const [datasets, setDatasets] = useState([])
     const [formState, setFormState] = useState(initialState)
     const [open, setOpen] = useState(false);
@@ -208,30 +159,30 @@ export default function Datasets(props) {
                         storageLocation: filepath,
                         metadata: {
                             version: '1.0',
-                            dataOwner: dataset.metadata.dataOwner,
-                            dataSource: dataset.metadata.dataSource,
-                            dataSampleSize: dataset.metadata.dataSampleSize,
-                            dataType: dataset.metadata.dataType,
-                            dataUpdateVersion: dataset.metadata.dataUpdateVersion,
-                            dataAcquisitionSensingModality: dataset.metadata.dataAcquisitionSensingModality,
-                            dataAcquisitionSensingDeviceType: dataset.metadata.dataAcquisitionSensingDeviceType,
-                            dataCollectionPlace: dataset.metadata.dataCollectionPlace,
-                            dataCollectionPeriod: dataset.metadata.dataCollectionPeriod,
-                            datCollectionAuthorsAgency: dataset.metadata.datCollectionAuthorsAgency,
-                            dataCollectionFundingAgency: dataset.metadata.dataCollectionFundingAgency,
-                            dataSamplingRate: dataset.metadata.dataSamplingRate,
-                            dataDimension: dataset.metadata.dataDimension,
-                            dataResolutionPrecision: dataset.metadata.dataResolutionPrecision,
-                            dataPrivacyDeIdentificationProtocol: dataset.metadata.dataPrivacyDeIdentificationProtocol,
-                            dataSafetySecurityProtocol: dataset.metadata.dataSafetySecurityProtocol,
-                            dataAssumptionsConstraintsDependencies: dataset.metadata.dataAssumptionsConstraintsDependencies,
-                            dataExclusionCriteria: dataset.metadata.dataExclusionCriteria,
-                            dataAcceptanceStandardsCompliance: dataset.metadata.dataAcceptanceStandardsCompliance,
-                            dataPreprocessingTechniques: dataset.metadata.dataPreprocessingTechniques,
-                            dataAnnotationProcessTool: dataset.metadata.dataAnnotationProcessTool,
-                            dataBiasAndVarianceMinimization: dataset.metadata.dataBiasAndVarianceMinimization,
-                            trainTuningEvalDatasetPartitioningRatio: dataset.metadata.trainTuningEvalDatasetPartitioningRatio,
-                            dataRegistryURL: dataset.metadata.dataRegistryURL
+                            dataOwner: dataset.metadata?.dataOwner,
+                            dataSource: dataset.metadata?.dataSource,
+                            dataSampleSize: dataset.metadata?.dataSampleSize,
+                            dataType: dataset.metadata?.dataType,
+                            dataUpdateVersion: dataset.metadata?.dataUpdateVersion,
+                            dataAcquisitionSensingModality: dataset.metadata?.dataAcquisitionSensingModality,
+                            dataAcquisitionSensingDeviceType: dataset.metadata?.dataAcquisitionSensingDeviceType,
+                            dataCollectionPlace: dataset.metadata?.dataCollectionPlace,
+                            dataCollectionPeriod: dataset.metadata?.dataCollectionPeriod,
+                            datCollectionAuthorsAgency: dataset.metadata?.datCollectionAuthorsAgency,
+                            dataCollectionFundingAgency: dataset.metadata?.dataCollectionFundingAgency,
+                            dataSamplingRate: dataset.metadata?.dataSamplingRate,
+                            dataDimension: dataset.metadata?.dataDimension,
+                            dataResolutionPrecision: dataset.metadata?.dataResolutionPrecision,
+                            dataPrivacyDeIdentificationProtocol: dataset.metadata?.dataPrivacyDeIdentificationProtocol,
+                            dataSafetySecurityProtocol: dataset.metadata?.dataSafetySecurityProtocol,
+                            dataAssumptionsConstraintsDependencies: dataset.metadata?.dataAssumptionsConstraintsDependencies,
+                            dataExclusionCriteria: dataset.metadata?.dataExclusionCriteria,
+                            dataAcceptanceStandardsCompliance: dataset.metadata?.dataAcceptanceStandardsCompliance,
+                            dataPreprocessingTechniques: dataset.metadata?.dataPreprocessingTechniques,
+                            dataAnnotationProcessTool: dataset.metadata?.dataAnnotationProcessTool,
+                            dataBiasAndVarianceMinimization: dataset.metadata?.dataBiasAndVarianceMinimization,
+                            trainTuningEvalDatasetPartitioningRatio: dataset.metadata?.trainTuningEvalDatasetPartitioningRatio,
+                            dataRegistryURL: dataset.metadata?.dataRegistryURL
                         }
                     }
 
@@ -275,90 +226,86 @@ export default function Datasets(props) {
         setOpen(false);
     };
 
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: "50%",
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+    };
+
     //HTML part of "Add Dataset" modal
     const modalBody = (
-        <div className={classes.paper} style={styles.modal}>
-            <h2>{readOnlyMode ? "View Dataset" : "Add Dataset"}</h2>
-            <form className={classes.root} noValidate autoComplete="off">
-                <FormControl variant="filled" style={styles.input}>
-                    <InputLabel required htmlFor="component-filled">Name</InputLabel>
-                    <FilledInput required id="component-filled" value={formState.name} onChange={event => setInput('name', event.target.value)} disabled={readOnlyMode} />
-                </FormControl><br />
+        <Box sx={style}>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+                {readOnlyMode ? "View Dataset" : "Add Dataset"}
+            </Typography>
+            <form noValidate autoComplete="off">
+                <TextField fullWidth margin={"normal"}
+                           label="Name"
+                           required
+                           value={formState.name}
+                           onChange={event => setInput('name', event.target.value)}
 
-                <TextField
-                    id="filled-multiline-flexible"
-                    label="Description"
-                    multiline
-                    required
-                    rows={4}
-                    rowsMax={4}
-                    value={formState.description}
-                    onChange={event => setInput('description', event.target.value)}
-                    variant="filled"
-                    style={styles.input}
-                    disabled={readOnlyMode}
-                /><br />
+                           disabled={readOnlyMode}
+                />
 
-                <Accordion>
+                <TextField fullWidth margin={"normal"}
+                           label="Description"
+                           multiline
+                           required
+                           rows={4}
+                           rowsMax={4}
+                           value={formState.description}
+                           onChange={event => setInput('description', event.target.value)}
+
+                           disabled={readOnlyMode}
+                />
+
+                <Accordion sx={{ mt: 5 }}>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel1a-content"
                         id="panel1a-header"
                     >
-                        <InputLabel style={{color: 'black'}}>General Metadata</InputLabel>
+                        <InputLabel >General Metadata</InputLabel>
                     </AccordionSummary>
                     <AccordionDetails>
                         <div style={{ width: '100%' }}>
                             <Grid container spacing={1}>
                                 <Grid item xs={12}>
-                                    <FormControl variant="filled" style={styles.input}>
-                                        <InputLabel required htmlFor="component-filled2">Data Owner</InputLabel>
-                                        <FilledInput required id="component-filled2" value={formState.metadata.dataOwner} onChange={event => setInputMetadata('dataOwner', event.target.value)} disabled={readOnlyMode}
-                                        />
-                                    </FormControl>
+                                    <TextField fullWidth label={"Data Owner"} required id="component-filled2" value={formState.metadata?.dataOwner} onChange={event => setInputMetadata('dataOwner', event.target.value)} disabled={readOnlyMode} />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <FormControl variant="filled" style={styles.input}>
-                                        <InputLabel required htmlFor="component-filled4">Data Source</InputLabel>
-                                        <FilledInput required id="component-filled4" value={formState.metadata.dataSource} onChange={event => setInputMetadata('dataSource', event.target.value)} disabled={readOnlyMode} />
-                                    </FormControl><br />
+                                    <TextField fullWidth label={"Data Source"} required id="component-filled4" value={formState.metadata?.dataSource} onChange={event => setInputMetadata('dataSource', event.target.value)} disabled={readOnlyMode} />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <FormControl variant="filled" style={styles.input}>
-                                        <InputLabel htmlFor="component-filled27">Data Registry URL</InputLabel>
-                                        <FilledInput id="component-filled27" value={formState.metadata.dataRegistryURL} onChange={event => setInputMetadata('dataRegistryURL', event.target.value)} disabled={readOnlyMode} />
-                                    </FormControl><br />
-                                </Grid>
-                                <Grid item xs={6}><FormControl variant="filled" style={styles.input}>
-                                    <InputLabel required htmlFor="component-filled5">Data Sample Size</InputLabel>
-                                    <FilledInput required id="component-filled5" value={formState.metadata.dataSampleSize} onChange={event => setInputMetadata('dataSampleSize', event.target.value)} disabled={readOnlyMode} />
-                                </FormControl><br />
+                                    <TextField fullWidth label={"Data Registry URL"} id="component-filled27" value={formState.metadata?.dataRegistryURL} onChange={event => setInputMetadata('dataRegistryURL', event.target.value)} disabled={readOnlyMode} />
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <FormControl variant="filled" style={styles.input}>
-                                        <InputLabel htmlFor="component-filled6">Data Type</InputLabel>
-                                        <FilledInput required id="component-filled6" value={formState.metadata.dataType} onChange={event => setInputMetadata('dataType', event.target.value)} disabled={readOnlyMode} />
-                                    </FormControl><br />
+                                    <TextField fullWidth label={"Data Sample Size"} required id="component-filled5" value={formState.metadata?.dataSampleSize} onChange={event => setInputMetadata('dataSampleSize', event.target.value)} disabled={readOnlyMode} />
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <TextField fullWidth label={"Data Type"} required id="component-filled6" value={formState.metadata?.dataType} onChange={event => setInputMetadata('dataType', event.target.value)} disabled={readOnlyMode} />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <FormControl variant="filled" style={styles.input}>
-                                        <InputLabel htmlFor="component-filled7">Data Update Version</InputLabel>
-                                        <FilledInput id="component-filled7" value={formState.metadata.dataUpdateVersion} onChange={event => setInputMetadata('dataUpdateVersion', event.target.value)} disabled={readOnlyMode} />
-                                    </FormControl><br />
+                                    <TextField fullWidth label={"Data Update Version"} id="component-filled7" value={formState.metadata?.dataUpdateVersion} onChange={event => setInputMetadata('dataUpdateVersion', event.target.value)} disabled={readOnlyMode} />
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <TextField
-                                        id="filled-multiline-flexible"
-                                        label="Data Assumptions/ Constraints/Dependencies"
-                                        multiline
-                                        rows={4}
-                                        rowsMax={4}
-                                        value={formState.metadata.dataAssumptionsConstraintsDependencies}
-                                        onChange={event => setInputMetadata('dataAssumptionsConstraintsDependencies', event.target.value)}
-                                        variant="filled"
-                                        style={styles.input}
-                                        disabled={readOnlyMode}
+                                    <TextField fullWidth
+                                               id="filled-multiline-flexible"
+                                               label="Data Assumptions/ Constraints/Dependencies"
+                                               multiline
+                                               rows={4}
+                                               rowsMax={4}
+                                               value={formState.metadata?.dataAssumptionsConstraintsDependencies}
+                                               onChange={event => setInputMetadata('dataAssumptionsConstraintsDependencies', event.target.value)}
+                                               disabled={readOnlyMode}
                                     /><br />
                                 </Grid>
                             </Grid>
@@ -373,46 +320,28 @@ export default function Datasets(props) {
                         aria-controls="panel1a-content"
                         id="panel1a-header"
                     >
-                        <InputLabel style={{color: 'black'}}>Data Collection</InputLabel>
+                        <InputLabel >Data Collection</InputLabel>
                     </AccordionSummary>
                     <AccordionDetails>
                         <div style={{ width: '100%' }}>
                             <Grid container spacing={1}>
                                 <Grid item xs={6}>
-                                    <FormControl variant="filled" style={styles.input}>
-                                        <InputLabel htmlFor="component-filled8">Data Acquisition / Sensing Modality </InputLabel>
-                                        <FilledInput id="component-filled8" value={formState.metadata.dataAcquisitionSensingModality} onChange={event => setInputMetadata('dataAcquisitionSensingModality', event.target.value)} disabled={readOnlyMode} />
-                                    </FormControl><br />
+                                    <TextField fullWidth label={"Data Acquisition / Sensing Modality"} id="component-filled8" value={formState.metadata?.dataAcquisitionSensingModality} onChange={event => setInputMetadata('dataAcquisitionSensingModality', event.target.value)} disabled={readOnlyMode} />
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <FormControl variant="filled" style={styles.input}>
-                                        <InputLabel htmlFor="component-filled9">Data Acquisition / Sensing Device Type</InputLabel>
-                                        <FilledInput id="component-filled9" value={formState.metadata.dataAcquisitionSensingDeviceType} onChange={event => setInputMetadata('dataAcquisitionSensingDeviceType', event.target.value)} disabled={readOnlyMode} />
-                                    </FormControl><br />
+                                    <TextField fullWidth label={"Data Acquisition / Sensing Device Type"} id="component-filled9" value={formState.metadata?.dataAcquisitionSensingDeviceType} onChange={event => setInputMetadata('dataAcquisitionSensingDeviceType', event.target.value)} disabled={readOnlyMode} />
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <FormControl variant="filled" style={styles.input}>
-                                        <InputLabel htmlFor="component-filled10">Data Collection Place</InputLabel>
-                                        <FilledInput id="component-filled10" value={formState.metadata.dataCollectionPlace} onChange={event => setInputMetadata('dataCollectionPlace', event.target.value)} disabled={readOnlyMode} />
-                                    </FormControl><br />
+                                    <TextField fullWidth label={"Data Collection Place"} id="component-filled10" value={formState.metadata?.dataCollectionPlace} onChange={event => setInputMetadata('dataCollectionPlace', event.target.value)} disabled={readOnlyMode} />
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <FormControl variant="filled" style={styles.input}>
-                                        <InputLabel htmlFor="component-filled11">Data Collection Period</InputLabel>
-                                        <FilledInput id="component-filled11" value={formState.metadata.dataCollectionPeriod} onChange={event => setInputMetadata('dataCollectionPeriod', event.target.value)} disabled={readOnlyMode} />
-                                    </FormControl><br />
+                                    <TextField fullWidth label={"Data Collection Period"} id="component-filled11" value={formState.metadata?.dataCollectionPeriod} onChange={event => setInputMetadata('dataCollectionPeriod', event.target.value)} disabled={readOnlyMode} />
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <FormControl variant="filled" style={styles.input}>
-                                        <InputLabel htmlFor="component-filled12">Data Collection Author</InputLabel>
-                                        <FilledInput id="component-filled12" value={formState.metadata.datCollectionAuthorsAgency} onChange={event => setInputMetadata('datCollectionAuthorsAgency', event.target.value)} disabled={readOnlyMode} />
-                                    </FormControl><br />
+                                    <TextField fullWidth label={"Data Collection Author"} id="component-filled12" value={formState.metadata?.datCollectionAuthorsAgency} onChange={event => setInputMetadata('datCollectionAuthorsAgency', event.target.value)} disabled={readOnlyMode} />
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <FormControl variant="filled" style={styles.input}>
-                                        <InputLabel htmlFor="component-filled13"> Data Collection Funding Agency</InputLabel>
-                                        <FilledInput id="component-filled13" value={formState.metadata.dataCollectionFundingAgency} onChange={event => setInputMetadata('dataCollectionFundingAgency', event.target.value)} disabled={readOnlyMode} />
-                                    </FormControl><br />
+                                    <TextField fullWidth label={"Data Collection Funding Agency"} id="component-filled13" value={formState.metadata?.dataCollectionFundingAgency} onChange={event => setInputMetadata('dataCollectionFundingAgency', event.target.value)} disabled={readOnlyMode} />
                                 </Grid>
                             </Grid>
                         </div>
@@ -425,71 +354,65 @@ export default function Datasets(props) {
                         aria-controls="panel1a-content"
                         id="panel1a-header"
                     >
-                        <InputLabel style={{color: 'black'}}>Data Privacy</InputLabel>
+                        <InputLabel >Data Privacy</InputLabel>
                     </AccordionSummary>
                     <AccordionDetails>
                         <div style={{ width: '100%' }}>
                             <Grid container spacing={1}>
                                 <Grid item xs={12}>
-                                    <FormControl variant="filled" style={styles.input}>
-                                        <InputLabel htmlFor="component-filled16">Data Resolution / Precision</InputLabel>
-                                        <FilledInput id="component-filled16" value={formState.metadata.dataResolutionPrecision} onChange={event => setInputMetadata('dataResolutionPrecision', event.target.value)} disabled={readOnlyMode} />
-                                    </FormControl><br />
+
+                                    <TextField fullWidth label={"Data Resolution / Precision"} id="component-filled16" value={formState.metadata?.dataResolutionPrecision} onChange={event => setInputMetadata('dataResolutionPrecision', event.target.value)} disabled={readOnlyMode} />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <TextField
-                                        id="filled-multiline-flexible"
-                                        label="Data Privacy or De-identification Protocol"
-                                        multiline
-                                        rows={4}
-                                        rowsMax={4}
-                                        value={formState.metadata.dataPrivacyDeIdentificationProtocol}
-                                        onChange={event => setInputMetadata('dataPrivacyDeIdentificationProtocol', event.target.value)}
-                                        variant="filled"
-                                        style={styles.input}
-                                        disabled={readOnlyMode}
+                                    <TextField fullWidth
+                                               id="filled-multiline-flexible"
+                                               label="Data Privacy or De-identification Protocol"
+                                               multiline
+                                               rows={4}
+                                               rowsMax={4}
+                                               value={formState.metadata?.dataPrivacyDeIdentificationProtocol}
+                                               onChange={event => setInputMetadata('dataPrivacyDeIdentificationProtocol', event.target.value)}
+
+                                               disabled={readOnlyMode}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <TextField
-                                        id="filled-multiline-flexible"
-                                        label="Data Safety & Security Protocol"
-                                        multiline
-                                        rows={4}
-                                        rowsMax={4}
-                                        value={formState.metadata.dataSafetySecurityProtocol}
-                                        onChange={event => setInputMetadata('dataSafetySecurityProtocol', event.target.value)}
-                                        variant="filled"
-                                        style={styles.input}
-                                        disabled={readOnlyMode}
+                                    <TextField fullWidth
+                                               id="filled-multiline-flexible"
+                                               label="Data Safety & Security Protocol"
+                                               multiline
+                                               rows={4}
+                                               rowsMax={4}
+                                               value={formState.metadata?.dataSafetySecurityProtocol}
+                                               onChange={event => setInputMetadata('dataSafetySecurityProtocol', event.target.value)}
+
+                                               disabled={readOnlyMode}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <TextField
-                                        id="filled-multiline-flexible"
-                                        label="Data Exclusion Criteria"
-                                        multiline
-                                        rows={4}
-                                        rowsMax={4}
-                                        value={formState.metadata.dataExclusionCriteria}
-                                        onChange={event => setInputMetadata('dataExclusionCriteria', event.target.value)}
-                                        variant="filled"
-                                        style={styles.input}
-                                        disabled={readOnlyMode}
+                                    <TextField fullWidth
+                                               id="filled-multiline-flexible"
+                                               label="Data Exclusion Criteria"
+                                               multiline
+                                               rows={4}
+                                               rowsMax={4}
+                                               value={formState.metadata?.dataExclusionCriteria}
+                                               onChange={event => setInputMetadata('dataExclusionCriteria', event.target.value)}
+
+                                               disabled={readOnlyMode}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <TextField
-                                        id="filled-multiline-flexible"
-                                        label="Data Acceptance-Standards Compliance"
-                                        multiline
-                                        rows={4}
-                                        rowsMax={4}
-                                        value={formState.metadata.dataAcceptanceStandardsCompliance}
-                                        onChange={event => setInputMetadata('dataAcceptanceStandardsCompliance', event.target.value)}
-                                        variant="filled"
-                                        style={styles.input}
-                                        disabled={readOnlyMode}
+                                    <TextField fullWidth
+                                               id="filled-multiline-flexible"
+                                               label="Data Acceptance-Standards Compliance"
+                                               multiline
+                                               rows={4}
+                                               rowsMax={4}
+                                               value={formState.metadata?.dataAcceptanceStandardsCompliance}
+                                               onChange={event => setInputMetadata('dataAcceptanceStandardsCompliance', event.target.value)}
+
+                                               disabled={readOnlyMode}
                                     />
                                 </Grid>
                             </Grid>
@@ -503,77 +426,68 @@ export default function Datasets(props) {
                         aria-controls="panel1a-content"
                         id="panel1a-header"
                     >
-                        <InputLabel style={{color: 'black'}}>Data Preparation</InputLabel>
+                        <InputLabel >Data Preparation</InputLabel>
                     </AccordionSummary>
                     <AccordionDetails>
                         <div style={{ width: '100%' }}>
                             <Grid container spacing={1}>
                                 <Grid item xs={6}>
-                                    <FormControl variant="filled" style={styles.input}>
-                                        <InputLabel htmlFor="component-filled14">Data Sampling Rate</InputLabel>
-                                        <FilledInput id="component-filled14" value={formState.metadata.dataSamplingRate} onChange={event => setInputMetadata('dataSamplingRate', event.target.value)} disabled={readOnlyMode} />
-                                    </FormControl><br />
+                                    <TextField fullWidth label={"Data Sampling Rate"} id="component-filled14" value={formState.metadata?.dataSamplingRate} onChange={event => setInputMetadata('dataSamplingRate', event.target.value)} disabled={readOnlyMode} />
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <FormControl variant="filled" style={styles.input}>
-                                        <InputLabel htmlFor="component-filled15">Data Dimension</InputLabel>
-                                        <FilledInput id="component-filled15" value={formState.metadata.dataDimension} onChange={event => setInputMetadata('dataDimension', event.target.value)} disabled={readOnlyMode} />
-                                    </FormControl><br />
+
+                                    <TextField fullWidth label={"Data Dimension"} id="component-filled15" value={formState.metadata?.dataDimension} onChange={event => setInputMetadata('dataDimension', event.target.value)} disabled={readOnlyMode} />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <TextField
-                                        id="filled-multiline-flexible"
-                                        label="Data Pre-processing Technique(s)"
-                                        multiline
-                                        rows={4}
-                                        rowsMax={4}
-                                        value={formState.metadata.dataPreprocessingTechnique}
-                                        onChange={event => setInputMetadata('dataPreprocessingTechnique', event.target.value)}
-                                        variant="filled"
-                                        style={styles.input}
-                                        disabled={readOnlyMode}
+                                    <TextField fullWidth
+                                               id="filled-multiline-flexible"
+                                               label="Data Pre-processing Technique(s)"
+                                               multiline
+                                               rows={4}
+                                               rowsMax={4}
+                                               value={formState.metadata?.dataPreprocessingTechnique}
+                                               onChange={event => setInputMetadata('dataPreprocessingTechnique', event.target.value)}
+
+                                               disabled={readOnlyMode}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <TextField
-                                        id="filled-multiline-flexible"
-                                        label="Data Annotation Process / Tool"
-                                        multiline
-                                        rows={4}
-                                        rowsMax={4}
-                                        value={formState.metadata.dataAnnotationProcessTool}
-                                        onChange={event => setInputMetadata('dataAnnotationProcessTool', event.target.value)}
-                                        variant="filled"
-                                        style={styles.input}
-                                        disabled={readOnlyMode}
+                                    <TextField fullWidth
+                                               id="filled-multiline-flexible"
+                                               label="Data Annotation Process / Tool"
+                                               multiline
+                                               rows={4}
+                                               rowsMax={4}
+                                               value={formState.metadata?.dataAnnotationProcessTool}
+                                               onChange={event => setInputMetadata('dataAnnotationProcessTool', event.target.value)}
+
+                                               disabled={readOnlyMode}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <TextField
-                                        id="filled-multiline-flexible"
-                                        label="Data Bias & Variance Minimization"
-                                        multiline
-                                        rows={4}
-                                        rowsMax={4}
-                                        value={formState.metadata.dataBiasAndVarianceMinimization}
-                                        onChange={event => setInputMetadata('dataBiasAndVarianceMinimization', event.target.value)}
-                                        variant="filled"
-                                        style={styles.input}
-                                        disabled={readOnlyMode}
+                                    <TextField fullWidth
+                                               id="filled-multiline-flexible"
+                                               label="Data Bias & Variance Minimization"
+                                               multiline
+                                               rows={4}
+                                               rowsMax={4}
+                                               value={formState.metadata?.dataBiasAndVarianceMinimization}
+                                               onChange={event => setInputMetadata('dataBiasAndVarianceMinimization', event.target.value)}
+
+                                               disabled={readOnlyMode}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <TextField
-                                        id="filled-multiline-flexible"
-                                        label="Train: Tuning(validation) : Test (evaluation) Dataset Partitioning Ratio"
-                                        multiline
-                                        rows={4}
-                                        rowsMax={4}
-                                        value={formState.metadata.trainTuningEvalDatasetPartitioningRatio}
-                                        onChange={event => setInputMetadata('trainTuningEvalDatasetPartitioningRatio', event.target.value)}
-                                        variant="filled"
-                                        style={styles.input}
-                                        disabled={readOnlyMode}
+                                    <TextField fullWidth
+                                               id="filled-multiline-flexible"
+                                               label="Train: Tuning(validation) : Test (evaluation) Dataset Partitioning Ratio"
+                                               multiline
+                                               rows={4}
+                                               rowsMax={4}
+                                               value={formState.metadata?.trainTuningEvalDatasetPartitioningRatio}
+                                               onChange={event => setInputMetadata('trainTuningEvalDatasetPartitioningRatio', event.target.value)}
+
+                                               disabled={readOnlyMode}
                                     />
                                 </Grid>
                             </Grid>
@@ -585,18 +499,18 @@ export default function Datasets(props) {
 
                 {readOnlyMode ?
                     <div>
-                        <FormControl variant="filled" style={styles.input}>
-                            <InputLabel required htmlFor="component-filled2">Storage Location</InputLabel>
-                            <FilledInput
-                                required
-                                id="component-filled2"
-                                value={formState.storageLocation}
-                                disabled={readOnlyMode}
-                            />
-                        </FormControl><br />
+
+                        <TextField fullWidth margin={"normal"}
+                                   required
+                                   label="Storage Location"
+                                   id="component-filled2"
+                                   value={formState.storageLocation}
+                                   disabled={readOnlyMode}
+                        />
+
                     </div>
                     :
-                    <div style={styles.input}>
+                    <div>
                         <input
                             id="btn-upload"
                             name="btn-upload"
@@ -622,19 +536,15 @@ export default function Datasets(props) {
 
             </form>
 
+            <Stack direction="row" spacing={2} sx={{ mt: 5 }}>
+                <Button variant="contained" onClick={handleModalClose}>{readOnlyMode ? "Close" : "Cancel"}</Button>
+            </Stack>
 
-            <Grid container>
-                <Grid item xs={10}>
-                    <Button variant="contained" onClick={handleModalClose}>{readOnlyMode ? "Close" : "Cancel"}</Button>
-                </Grid>
-                <Grid item xs={2}>
-                    {readOnlyMode ? null : <Button variant="contained" onClick={addDataset}>Add Dataset</Button>}
-                </Grid>
-            </Grid>
-            <Backdrop className={classes.backdrop} open={backdropOpen}>
+
+            <Backdrop open={backdropOpen}>
                 <CircularProgress color="inherit" />
             </Backdrop>
-        </div >
+        </Box>
     );
 
     //---------------- End of "Add Dataset" modal ------------------
@@ -643,36 +553,38 @@ export default function Datasets(props) {
         <React.Fragment>
             <Title>My Datasets</Title>
             <Grid container justifyContent="flex-end">
-                <Button variant="contained" onClick={() => handleModalOpen(modalMode._EDIT, initialState)}>Add Dataset</Button>
+                <IconButton onClick={() => fetchDatasets()}><FaRedo /></IconButton>{' '}
+                <Button color={"success"} onClick={() => handleModalOpen(modalMode._EDIT, initialState)}>Add Dataset</Button>
             </Grid>
 
-            <Table size="small">
-                <TableHead>
-                    <TableRow>
-                        <TableCell><b>Name</b></TableCell>
-                        <TableCell><b>Data Owner</b></TableCell>
-                        <TableCell><b>Last Updated</b></TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-
-                    {datasets.map((dataset) => (
-                        <TableRow key={dataset.id}>
-                            <TableCell><Link href="#" onClick={() => viewDataset(dataset.id)}>{dataset.name}</Link></TableCell>
-                            <TableCell>{dataset.metadata.dataOwner}</TableCell>
-                            <TableCell>{(new Date(Date.parse(dataset.updatedAt))).toLocaleString(navigator.language)}</TableCell>
+            <TableContainer component={Paper}>
+                <Table aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell width="40%">Name</TableCell>
+                            <TableCell width="30%">Data Owner</TableCell>
+                            <TableCell width="30%">Last Updated</TableCell>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+                    </TableHead>
+                    <TableBody>
+                        {datasets.map((dataset) => (
+                            <TableRow key={dataset.id}>
+                                <TableCell><Link href="#" onClick={() => viewDataset(dataset.id)}>{dataset.name}</Link></TableCell>
+                                <TableCell>{dataset.metadata?.dataOwner}</TableCell>
+                                <TableCell>{(new Date(Date.parse(dataset.updatedAt))).toLocaleString(navigator.language)}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+
 
             <Modal
                 open={open}
                 onClose={handleModalClose}
                 aria-labelledby="simple-modal-title"
                 aria-describedby="simple-modal-description"
-                className={classes.modal}
-            >
+                     >
                 {modalBody}
             </Modal>
 

@@ -1,11 +1,8 @@
-import React, { Component } from 'react';
-import Button from "react-bootstrap/Button";
+import React, {Component} from 'react';
 import Container from "react-bootstrap/Container";
-import { Link } from 'react-router-dom';
-import ButtonGroup from "react-bootstrap/ButtonGroup";
-import Table from "react-bootstrap/Table";
-import {FaRedo, FaThumbsUp} from 'react-icons/fa';
 import Loader from "react-loader-spinner";
+import {Button, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import {Link as RouterLink} from "react-router-dom";
 
 class AnnotationTaskList extends Component {
 
@@ -43,17 +40,18 @@ class AnnotationTaskList extends Component {
         }
 
         const taskList = tasks.map(task => {
-            return <tr key={task.annotationTaskUUID}>
-                <td>{task.kind}</td>
-                <td>{task.title}</td>
-                <td>{task.description}</td>
-                <td>
-                    <ButtonGroup >
-                        <Link to={"/annotationtasks/" + task.annotationTaskUUID}><Button size="sm" variant="primary">Edit</Button></Link>{' '}
-                        <Button size="sm" variant="danger" onClick={() => this.remove(task.annotationTaskUUID)}>Delete</Button>
-                    </ButtonGroup>
-                </td>
-            </tr>
+            return <TableRow key={task.annotationTaskUUID} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                <TableCell style={{whiteSpace: 'nowrap'}}>{task.kind}</TableCell>
+                <TableCell style={{whiteSpace: 'nowrap'}}>{task.title}</TableCell>
+                <TableCell style={{whiteSpace: 'nowrap'}}>{task.description}</TableCell>
+                <TableCell>
+                    <Stack direction={"row"} spacing={2} justifyContent="flex-end">
+                        <Button component={RouterLink} size="small" to={"/annotations/" + task.annotationTaskUUID}>Edit</Button>
+                        <Button component={RouterLink} size="small" color={"error"} onClick={() => this.remove(task.annotationTaskUUID)}>Delete</Button>
+                    </Stack>
+
+                </TableCell>
+            </TableRow>
         });
 
         return (
@@ -61,19 +59,22 @@ class AnnotationTaskList extends Component {
                 <Container className={'pt-5'}>
 
                     <h3>Annotation Tasks</h3>
-                    <Table className="mt-4">
-                        <thead>
-                        <tr>
-                            <th width="20%">Kind</th>
-                            <th width="20%">Title</th>
-                            <th width="30%">Description</th>
-                            <th width="30%">Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {taskList}
-                        </tbody>
-                    </Table>
+                    <TableContainer component={Paper}>
+                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell width={"20%"}>Kind</TableCell>
+                                    <TableCell width={"20%"}>Title</TableCell>
+                                    <TableCell width={"30%"}>Description</TableCell>
+                                    <TableCell width={"30%"} align={"right"}>Actions</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {taskList}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+
                 </Container>
             </div>
         );

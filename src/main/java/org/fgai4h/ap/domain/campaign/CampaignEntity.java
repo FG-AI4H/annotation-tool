@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.fgai4h.ap.domain.user.UserEntity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -29,5 +31,29 @@ public class CampaignEntity implements Serializable
     private String name;
     private String description;
     private String status;
+    private String[] datasets;
+    private String annotationKind;
+    private String annotationTool;
+
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(
+            name = "campaign_annotator",
+            joinColumns = @JoinColumn(name = "campaignUUID"),
+            inverseJoinColumns = @JoinColumn(name = "userUUID"))
+    private List<UserEntity> annotators;
+
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(
+            name = "campaign_reviewer",
+            joinColumns = @JoinColumn(name = "campaignUUID"),
+            inverseJoinColumns = @JoinColumn(name = "userUUID"))
+    private List<UserEntity> reviewers;
+
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(
+            name = "campaign_supervisor",
+            joinColumns = @JoinColumn(name = "campaignUUID"),
+            inverseJoinColumns = @JoinColumn(name = "userUUID"))
+    private List<UserEntity> supervisors;
 
 }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.Principal;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -44,7 +45,7 @@ public class TaskController {
     }
 
 
-    @GetMapping("/tasks")
+    @GetMapping("/api/v1/tasks")
     public ResponseEntity<CollectionModel<TaskModel>> getAllTasks() {
         List<TaskEntity> taskEntities = taskRepository.findAll();
         return new ResponseEntity<>(
@@ -52,7 +53,15 @@ public class TaskController {
                 HttpStatus.OK);
     }
 
-    @GetMapping("/tasks/{id}")
+    @GetMapping("/api/v1/tasks/me")
+    public ResponseEntity<CollectionModel<TaskModel>> getMyTasks(Principal principal) {
+        List<TaskEntity> taskEntities = taskRepository.findMyTasks(principal.getName());
+        return new ResponseEntity<>(
+                taskModelAssembler.toCollectionModel(taskEntities),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/api/v1/tasks/{id}")
     public ResponseEntity<TaskModel> getTaskById(@PathVariable("id") UUID id) {
         return taskRepository.findById(id)
                 .map(taskModelAssembler::toModel)
@@ -60,7 +69,7 @@ public class TaskController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/tasks/{id}")
+    @PutMapping("/api/v1/tasks/{id}")
     public ResponseEntity<?> updateTask(@RequestBody TaskEntity task, @PathVariable UUID id){
         TaskEntity taskToUpdate = task;
         taskToUpdate.setTaskUUID(id);
@@ -75,7 +84,7 @@ public class TaskController {
         }
     }
 
-    @PutMapping("/tasks/{id}/next")
+    @PutMapping("/api/v1/tasks/{id}/next")
     public ResponseEntity<?> updateTaskNext(@RequestBody TaskEntity task, @PathVariable UUID id){
         TaskEntity taskToUpdate = task;
         taskToUpdate.setSamples(null);
@@ -104,7 +113,7 @@ public class TaskController {
         }
     }
 
-    @GetMapping("/annotations")
+    @GetMapping("/api/v1/annotations")
     public ResponseEntity<CollectionModel<AnnotationModel>> getAllAnnotations() {
         List<AnnotationEntity> annotationEntities = annotationRepository.findAll();
         return new ResponseEntity<>(
@@ -113,7 +122,7 @@ public class TaskController {
     }
 
 
-    @GetMapping("/annotations/{id}")
+    @GetMapping("/api/v1/annotations/{id}")
     public ResponseEntity<AnnotationModel> getAnnotationById(@PathVariable("id") UUID id) {
         return annotationRepository.findById(id)
                 .map(annotationModelAssembler::toModel)
@@ -121,12 +130,12 @@ public class TaskController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/annotations/{id}")
+    @DeleteMapping("/api/v1/annotations/{id}")
     public void deleteAnnotationById(@PathVariable("id") UUID id) {
         annotationRepository.deleteById(id);
     }
 
-    @GetMapping("/samples/{id}")
+    @GetMapping("/api/v1/samples/{id}")
     public ResponseEntity<SampleModel> getSampleById(@PathVariable("id") UUID id) {
         return sampleRepository.findById(id)
                 .map(sampleModelAssembler::toModel)
@@ -134,7 +143,7 @@ public class TaskController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/annotationtasks")
+    @GetMapping("/api/v1/annotationtasks")
     public ResponseEntity<CollectionModel<AnnotationTaskModel>> getAllAnnotationTask() {
         List<AnnotationTaskEntity> annotationTaskEntities = annotationTaskRepository.findAll();
         return new ResponseEntity<>(
@@ -142,7 +151,7 @@ public class TaskController {
                 HttpStatus.OK);
     }
 
-    @GetMapping("/annotationtasks/{id}")
+    @GetMapping("/api/v1/annotationtasks/{id}")
     public ResponseEntity<AnnotationTaskModel> getAnnotationTaskById(@PathVariable("id") UUID id) {
         return annotationTaskRepository.findById(id)
                 .map(annotationTaskModelAssembler::toModel)

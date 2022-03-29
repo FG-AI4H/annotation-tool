@@ -14,5 +14,6 @@
       "providerPlugin": "awscloudformation",
       "type": "manual"
     }
-  }
+  },
+  "api": {}
 }

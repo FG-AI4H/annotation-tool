@@ -1,11 +1,10 @@
 import {Auth} from "aws-amplify";
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import AppNavbar from "./AppNavbar";
 import Container from "react-bootstrap/Container";
 import Loader from "react-loader-spinner";
 import Form from "react-bootstrap/Form";
-import {FaPlus, FaThumbsUp} from 'react-icons/fa';
-import Button from "react-bootstrap/Button";
+import {FaPlus} from 'react-icons/fa';
 
 class Profile extends Component {
     constructor(props) {

@@ -1,12 +1,8 @@
-import React, { Component } from 'react';
-import Button from "react-bootstrap/Button";
+import React, {Component} from 'react';
 import Container from "react-bootstrap/Container";
-import { Link } from 'react-router-dom';
-import ButtonGroup from "react-bootstrap/ButtonGroup";
-import Table from "react-bootstrap/Table";
-import {FaRedo, FaThumbsUp} from 'react-icons/fa';
-import ImageViewer from "./ImageViewer";
 import Form from "react-bootstrap/Form";
+import {Button, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import {Link as RouterLink} from "react-router-dom";
 
 class SampleList extends Component {
 
@@ -38,19 +34,22 @@ class SampleList extends Component {
         }
 
         const sampleList = samples.map(sample => {
-            return <tr key={sample.sampleUUID}>
-                <td>{sample.title}</td>
-                <td><Form.Group controlId="formFile" className="mb-3">
+            return <TableRow key={sample.annotationUUID} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                <TableCell style={{whiteSpace: 'nowrap'}}>{sample.title}</TableCell>
+                <TableCell style={{whiteSpace: 'nowrap'}}><Form.Group controlId="formFile" className="mb-3">
                     <Form.Control type="file" />
-                </Form.Group></td>
-                <td>
-                    <ButtonGroup >
-                        <Link to={"/samples/" + sample.sampleUUID}><Button size="sm" variant="primary">Edit</Button></Link>{' '}
-                        <Button size="sm" variant="danger" onClick={() => this.remove(sample.sampleUUID)}>Delete</Button>
-                        <Link to={"/imageViewer/" + sample.sampleUUID}><Button size="sm" variant="success">View</Button></Link>{' '}
-                    </ButtonGroup>
-                </td>
-            </tr>
+                </Form.Group></TableCell>
+                <TableCell>
+                    <Stack direction={"row"} spacing={2} justifyContent="flex-end">
+                        <Button component={RouterLink} size="small" to={"/samples/" + sample.sampleUUID}>Edit</Button>
+                        <Button component={RouterLink} size="small" color={"error"} onClick={() => this.remove(sample.sampleUUID)}>Delete</Button>
+                        <Button component={RouterLink} size="small" color={"info"} to={"/imageViewer/" + sample.sampleUUID}>View</Button>
+                    </Stack>
+
+                </TableCell>
+            </TableRow>
+
+
         });
 
         return (
@@ -58,18 +57,21 @@ class SampleList extends Component {
                 <Container className={'pt-5'}>
 
                     <h3>Samples</h3>
-                    <Table className="mt-4">
-                        <thead>
-                        <tr>
-                            <th width="40%">Title</th>
-                            <th width="30%">Data</th>
-                            <th width="30%">Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {sampleList}
-                        </tbody>
-                    </Table>
+                    <TableContainer component={Paper}>
+                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell width={"40%"}>Title</TableCell>
+                                    <TableCell width={"30%"}>Data</TableCell>
+                                    <TableCell width={"30%"} align={"right"}>Actions</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {sampleList}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+
                 </Container>
             </div>
         );

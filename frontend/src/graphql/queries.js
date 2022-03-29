@@ -52,33 +52,6 @@ export const listDatasets = /* GraphQL */ `
         name
         description
         storageLocation
-        metadata {
-          version
-          dataOwner
-          dataSource
-          dataSampleSize
-          dataType
-          dataUpdateVersion
-          dataAcquisitionSensingModality
-          dataAcquisitionSensingDeviceType
-          dataCollectionPlace
-          dataCollectionPeriod
-          datCollectionAuthorsAgency
-          dataCollectionFundingAgency
-          dataSamplingRate
-          dataDimension
-          dataResolutionPrecision
-          dataPrivacyDeIdentificationProtocol
-          dataSafetySecurityProtocol
-          dataAssumptionsConstraintsDependencies
-          dataExclusionCriteria
-          dataAcceptanceStandardsCompliance
-          dataPreprocessingTechniques
-          dataAnnotationProcessTool
-          dataBiasAndVarianceMinimization
-          trainTuningEvalDatasetPartitioningRatio
-          dataRegistryURL
-        }
         createdAt
         updatedAt
       }

@@ -1,110 +1,131 @@
-import React, { Component } from 'react';
-import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
+import React, {Component, useEffect, useState} from 'react';
+import PropTypes from 'prop-types';
 import AppNavbar from './AppNavbar';
-import { Link,withRouter } from 'react-router-dom';
-import Form from "react-bootstrap/Form";
+import {Link as RouterLink, Link, withRouter} from 'react-router-dom';
 import CampaignChart from "./CampaignChart";
-import Tabs from "react-bootstrap/Tabs";
-import Tab from 'react-bootstrap/Tab'
-import {ConfirmationNumber} from "@material-ui/icons";
 import CampaignProgress from "./CampaignProgress";
+import {Auth} from "aws-amplify";
+import CampaignClient from "./api/CampaignClient";
+import Loader from "react-loader-spinner";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import CampaignForm from "./components/CampaignForm";
+import CampaignUsers from "./components/CampaignUsers";
+import {Box, Button, Container, Tab, Tabs, Typography} from "@mui/material";
+import CampaignTask from "./components/CampaignTask";
+import CampaignData from "./components/CampaignData";
+import {TabPanel} from "./components/TabPanel";
+import {a11yProps} from "./components/allyProps";
 
-class CampaignEdit extends Component {
+const CampaignEdit = (props) => {
 
-    emptyItem = {
+    const emptyItem = {
         name: '',
-        email: ''
+        description: '',
+        annotators: [],
+        reviewers: []
     };
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            item: this.emptyItem
-        };
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+    const [item, setItem] = useState(emptyItem);
+    const [isLoading, setIsLoading] = useState(false);
+    const [tabValue, setTabValue] = useState(0);
+
+    useEffect( () =>{
+        setIsLoading(true);
+
+        Auth.currentAuthenticatedUser({
+            bypassCache: false
+        }).then(response => {
+            if (props.match.params.id !== 'new') {
+                const campaignClient = new CampaignClient(response.signInUserSession.accessToken.jwtToken);
+                campaignClient.fetchCampaignById(props.match.params.id)
+                    .then(
+                        response => {
+                            setIsLoading(false);
+                            setItem(response?.data);
+                        }
+                    );
+            }
+
+        }).catch(err => console.log(err));
+
+    }, [props.match.params.id])
+
+    const title = <h2>{item.campaignUUID ? 'Edit Campaign' : 'Add Campaign'}</h2>;
+
+    if (isLoading) {
+        return (<div className="loading"><Loader
+            type="Puff"
+            color="#00a5e3"
+            height={100}
+            width={100}
+            timeout={3000} //3 secs
+        /></div>);
     }
 
-    async componentDidMount() {
-        if (this.props.match.params.id !== 'new') {
-            const campaign = await (await fetch(`https://annotation.ai4h.net/campaigns/${this.props.match.params.id}`)).json();
-            this.setState({item: campaign});
-        }
-    }
+    const handleChange = (event, newValue) => {
+        setTabValue(newValue);
+    };
 
-    handleChange(event) {
-        const target = event.target;
-        const value = target.value;
-        const name = target.name;
-        let item = {...this.state.item};
-        item[name] = value;
-        this.setState({item});
-    }
+    return <div>
+        <AppNavbar/>
+        <Container sx={{ mt: 5 }}>
+            {title}
 
-    async handleSubmit(event) {
-        event.preventDefault();
-        const {item} = this.state;
+            {item.campaignUUID &&
 
-        await fetch('https://annotation.ai4h.net/campaigns' + (item.campaignUUID ? '/' + item.campaignUUID : ''), {
-            method: (item.campaignUUID) ? 'PUT' : 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(item),
-        });
-        this.props.history.push('/campaigns');
-    }
-
-    render() {
-        const {item} = this.state;
-        const title = <h2>{item.campaignUUID ? 'Edit Campaign' : 'Add Campaign'}</h2>;
-
-        return <div>
-            <AppNavbar/>
-            <Container className={'pt-5 h-100'}>
-                {title}
-
-                <Tabs defaultActiveKey="progress" id="uncontrolled-tab-example" className="mb-3">
-
-                    <Tab eventKey="progress" title="Progress" className={'h-100'}>
+                <Box sx={{ width: '100%' }}>
+                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                    <Tabs
+                    value={tabValue}
+                    onChange={handleChange}
+                    aria-label="wrapped label tabs example"
+                    >
+                        <Tab label="Progress" {...a11yProps(0)}/>
+                        <Tab label="Settings" {...a11yProps(1)}/>
+                        <Tab label="Dataset" {...a11yProps(2)}/>
+                        <Tab label="Tasks" {...a11yProps(3)}/>
+                    </Tabs>
+                    </Box>
+                    <TabPanel value={tabValue} index={0}>
                         <div className={'panel-wrapper'}>
-                            <Form.Label for="name">Number of Annotations</Form.Label>
-                        <CampaignChart/>
+                            <Typography gutterBottom variant="h5" component="div">Number of Annotations</Typography>
+                            <CampaignChart/>
                             <div className={'panel-wrapper'}>
-                                <Form.Label for="name">Campaign Progression</Form.Label>
-                        <CampaignProgress/>
+                                <Typography gutterBottom variant="h5" component="div">Campaign Progression</Typography>
+                                <CampaignProgress/>
                             </div>
-                            <Link to="/campaigns"><Button color="secondary" >Back</Button></Link>{' '}
+                            <Button component={RouterLink} color="secondary" to="/campaigns">Back</Button>
                         </div>
+                    </TabPanel>
+                    <TabPanel value={tabValue} index={1}>
+                        <Row><Col>
+                            <CampaignForm campaign={item}/>
+                        </Col>
+                        </Row>
+                        <CampaignUsers campaign={item}/>
+                    </TabPanel>
+                    <TabPanel value={tabValue} index={2}>
+                        <CampaignData campaign={item}/>
+                    </TabPanel>
+                    <TabPanel value={tabValue} index={3}>
+                        <CampaignTask campaign={item}/>
+                    </TabPanel>
+                </Box>
 
-                    </Tab>
-                    <Tab eventKey="info" title="Info">
-                        <Form onSubmit={this.handleSubmit}>
-                            <Form.Group>
-                                <Form.Label for="name">Name</Form.Label>
-                                <Form.Control type="text" name="name" id="name" value={item.name || ''}
-                                              onChange={this.handleChange} autoComplete="name"/>
-                            </Form.Group>
+            }
+            {!item.campaignUUID &&
+            <>
+                    <Row><Col>
+                        <CampaignForm campaign={item}/>
+                    </Col>
+                    </Row>
+                    <CampaignUsers campaign={item}/>
+                </>
 
-                            <Form.Group>
-                                <Form.Label for="description">Description</Form.Label>
-                                <Form.Control as="textarea" rows={3} name="description" id="description" value={item.description || ''}
-                                              onChange={this.handleChange} autoComplete="description"/>
-                            </Form.Group>
+            }
 
-                            <Form.Group className={'pt-5'}>
-                                <Button color="primary" type="submit">Save</Button>{' '}
-                                <Link to="/campaigns"><Button color="secondary" >Cancel</Button></Link>{' '}
-                            </Form.Group>
-                        </Form>
-                    </Tab>
-
-                </Tabs>
-
-            </Container>
-        </div>
-    }
+        </Container>
+    </div>
 }
-export default withRouter(CampaignEdit);
+export default CampaignEdit;
