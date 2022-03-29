@@ -14,6 +14,8 @@ import CampaignUsers from "./components/CampaignUsers";
 import {Box, Button, Container, Tab, Tabs, Typography} from "@mui/material";
 import CampaignTask from "./components/CampaignTask";
 import CampaignData from "./components/CampaignData";
+import {TabPanel} from "./components/TabPanel";
+import {a11yProps} from "./components/allyProps";
 
 const CampaignEdit = (props) => {
 
@@ -23,39 +25,6 @@ const CampaignEdit = (props) => {
         annotators: [],
         reviewers: []
     };
-
-    function TabPanel(props) {
-        const { children, value, index, ...other } = props;
-
-        return (
-            <div
-                role="tabpanel"
-                hidden={value !== index}
-                id={`simple-tabpanel-${index}`}
-                aria-labelledby={`simple-tab-${index}`}
-                {...other}
-            >
-                {value === index && (
-                    <Box sx={{ p: 3 }}>
-                        <Typography>{children}</Typography>
-                    </Box>
-                )}
-            </div>
-        );
-    }
-
-    TabPanel.propTypes = {
-        children: PropTypes.node,
-        index: PropTypes.number.isRequired,
-        value: PropTypes.number.isRequired,
-    };
-
-    function a11yProps(index) {
-        return {
-            id: `simple-tab-${index}`,
-            'aria-controls': `simple-tabpanel-${index}`,
-        };
-    }
 
     const [item, setItem] = useState(emptyItem);
     const [isLoading, setIsLoading] = useState(false);
@@ -97,7 +66,6 @@ const CampaignEdit = (props) => {
     const handleChange = (event, newValue) => {
         setTabValue(newValue);
     };
-
 
     return <div>
         <AppNavbar/>
