@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.fgai4h.ap.domain.dataset.DatasetEntity;
 import org.fgai4h.ap.domain.user.UserEntity;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -31,7 +32,6 @@ public class CampaignEntity implements Serializable
     private String name;
     private String description;
     private String status;
-    private String[] datasets;
     private String annotationKind;
     private String annotationTool;
 
@@ -55,5 +55,12 @@ public class CampaignEntity implements Serializable
             joinColumns = @JoinColumn(name = "campaignUUID"),
             inverseJoinColumns = @JoinColumn(name = "userUUID"))
     private List<UserEntity> supervisors;
+
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(
+            name = "campaign_dataset",
+            joinColumns = @JoinColumn(name = "campaignUUID"),
+            inverseJoinColumns = @JoinColumn(name = "datasetUUID"))
+    private List<DatasetEntity> datasets;
 
 }
