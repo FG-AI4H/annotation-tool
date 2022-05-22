@@ -1,0 +1,61 @@
+@startuml
+
+hide footbox
+title Visan Integration - Annotation sequence diagram
+
+actor Annotator order 1
+participant "FG-AI4H Platform" order 2
+participant "FG-AI4H API" order 3
+participant Visian order 5
+participant Cognito order 4
+
+activate Annotator
+Annotator -> Visian : Select task /w Cognito JWT, TaskUUID
+activate Visian
+Visian-> Cognito : Validate token
+activate Cognito
+Cognito -> Visian : Token valid
+deactivate Cognito
+Visian-> "FG-AI4H API" : Get task /w Cognito JWT, TaskUUID
+activate "FG-AI4H API"
+"FG-AI4H API" -> Cognito : Validate token
+activate Cognito
+Cognito -> "FG-AI4H API" : Token valid
+deactivate Cognito
+"FG-AI4H API" -> Visian : Return Task
+deactivate "FG-AI4H API"
+Visian -> Annotator : Show annotation task
+deactivate Visian
+
+Annotator -> Visian : Save task /w Cognito JWT
+activate Visian
+
+Visian-> "FG-AI4H API" : PUT Task /w Cognito JWT
+activate "FG-AI4H API"
+"FG-AI4H API" -> Cognito : Validate token
+activate Cognito
+Cognito -> "FG-AI4H API" : Token valid
+deactivate Cognito
+"FG-AI4H API" -> Visian : Return next TaskUUID
+deactivate "FG-AI4H API"
+
+alt Next task exists
+    Visian-> "FG-AI4H API" : Get task /w Cognito JWT, TaskUUID
+    activate "FG-AI4H API"
+    "FG-AI4H API" -> Cognito : Validate token
+    activate Cognito
+    Cognito -> "FG-AI4H API" : Token valid
+    deactivate Cognito
+    "FG-AI4H API" -> Visian : Return Task
+    deactivate "FG-AI4H API"
+    Visian -> Annotator : Show annotation task
+else Last task
+    Visian -> Annotator : Finished
+end
+
+deactivate Visian
+deactivate Annotator
+
+
+
+@enduml

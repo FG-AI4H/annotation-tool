@@ -1,5 +1,8 @@
 package org.fgai4h.ap.domain.campaign;
 
+import org.fgai4h.ap.domain.dataset.DatasetEntity;
+import org.fgai4h.ap.domain.dataset.DatasetModel;
+import org.fgai4h.ap.domain.dataset.DatasetModelAssembler;
 import org.fgai4h.ap.domain.user.*;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -26,6 +29,7 @@ public class CampaignModelAssembler extends RepresentationModelAssemblerSupport<
     {
         CampaignModel campaignModel = instantiateModel(entity);
 
+
         if (isNull(entity))
             return campaignModel;
 
@@ -46,7 +50,7 @@ public class CampaignModelAssembler extends RepresentationModelAssemblerSupport<
         campaignModel.setName(entity.getName());
         campaignModel.setDescription(entity.getDescription());
         campaignModel.setStatus(entity.getStatus());
-        campaignModel.setDatasets(entity.getDatasets());
+        campaignModel.setDatasets(toDatasetModel(entity.getDatasets()));
         campaignModel.setAnnotators(toUserModel(entity.getAnnotators()));
         campaignModel.setReviewers(toUserModel(entity.getReviewers()));
         campaignModel.setSupervisors(toUserModel(entity.getSupervisors()));
@@ -54,6 +58,21 @@ public class CampaignModelAssembler extends RepresentationModelAssemblerSupport<
         campaignModel.setAnnotationTool(entity.getAnnotationTool());
 
         return campaignModel;
+    }
+
+    private List<DatasetModel> toDatasetModel(List<DatasetEntity> datasets) {
+        if (datasets.isEmpty())
+            return Collections.emptyList();
+
+        DatasetModelAssembler datasetModelAssembler = new DatasetModelAssembler();
+
+        return datasets.stream()
+                .map(dataset-> DatasetModel.builder()
+                        .datasetUUID(dataset.getDatasetUUID())
+                        .name(dataset.getName())
+                        .description(dataset.getDescription())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     private List<UserModel> toUserModel(List<UserEntity> users) {

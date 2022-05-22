@@ -1,0 +1,36 @@
+@startuml
+
+hide footbox
+title Visan Integration - Annotation sequence diagram
+
+actor Annotator order 1
+participant "FG-AI4H Platform" order 2
+participant "FG-AI4H API" order 3
+participant Visian order 5
+participant Cognito order 4
+
+Annotator -> "FG-AI4H Platform" : Login
+activate "FG-AI4H Platform"
+"FG-AI4H Platform" -> Cognito : Login request
+activate Cognito
+Cognito -> Cognito : Validate user
+Cognito -> "FG-AI4H Platform" : Valid user return JWT
+deactivate Cognito
+"FG-AI4H Platform" -> "FG-AI4H Platform" : Save JWT
+"FG-AI4H Platform" -> Annotator : Show home page
+deactivate "FG-AI4H Platform"
+
+Annotator -> "FG-AI4H Platform" : Get annotation tasks
+activate "FG-AI4H Platform"
+"FG-AI4H Platform" -> "FG-AI4H API" : /tasks /w Cognito JWT
+activate "FG-AI4H API"
+"FG-AI4H API" -> Cognito : Validate token
+activate Cognito
+Cognito -> "FG-AI4H API" : Token valid
+deactivate Cognito
+"FG-AI4H API" -> "FG-AI4H Platform" : List of tasks
+deactivate "FG-AI4H API"
+"FG-AI4H Platform" -> Annotator : Show list of tasks
+deactivate "FG-AI4H Platform"
+
+@enduml
