@@ -19,6 +19,8 @@ public class DatasetModelAssembler extends RepresentationModelAssemblerSupport<D
     public DatasetModel toModel(DatasetEntity entity)
     {
         DatasetModel datasetModel = instantiateModel(entity);
+        MetadataModelAssembler metadataModelAssembler = new MetadataModelAssembler();
+
 
         if (isNull(entity))
             return datasetModel;
@@ -31,6 +33,12 @@ public class DatasetModelAssembler extends RepresentationModelAssemblerSupport<D
 
 
         datasetModel.setDatasetUUID(entity.getDatasetUUID());
+        datasetModel.setDescription(entity.getDescription());
+        datasetModel.setName(entity.getName());
+        datasetModel.setCreatedAt(entity.getCreatedAt());
+        datasetModel.setUpdatedAt(entity.getUpdatedAt());
+        datasetModel.setStorageLocation(entity.getStorageLocation());
+        datasetModel.setMetadata(metadataModelAssembler.toModel(entity.getMetadata()));
 
 
         return datasetModel;

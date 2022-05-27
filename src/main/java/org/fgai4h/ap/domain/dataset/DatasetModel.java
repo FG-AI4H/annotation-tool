@@ -6,6 +6,7 @@ import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -13,13 +14,16 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-@JsonRootName(value = "campaign")
-@Relation(collectionRelation = "campaign")
+@JsonRootName(value = "dataset")
+@Relation(collectionRelation = "dataset")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DatasetModel extends RepresentationModel<DatasetModel> {
 
     private UUID datasetUUID;
     private String name;
     private String description;
-    private Integer size;
+    private String storageLocation;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private MetadataModel metadata;
 }
