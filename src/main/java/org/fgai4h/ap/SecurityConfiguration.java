@@ -19,10 +19,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         //.anyRequest()
                         //.authenticated()
                 //);
-                //.oauth2Login()
-                //.and()
-                //.logout()
-                //.logoutSuccessUrl("/");
 
         http.headers().frameOptions().disable();
         http.cors();

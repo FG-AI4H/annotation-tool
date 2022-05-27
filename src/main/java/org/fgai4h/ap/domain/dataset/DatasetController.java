@@ -18,11 +18,15 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class DatasetController {
 
     private final DatasetRepository datasetRepository;
+    private final MetadataRepository metadataRepository;
     private final DatasetModelAssembler datasetModelAssembler;
+    private final MetadataModelAssembler metadataModelAssembler;
 
-    public DatasetController(DatasetRepository datasetRepository, DatasetModelAssembler datasetModelAssembler) {
+    public DatasetController(DatasetRepository datasetRepository, DatasetModelAssembler datasetModelAssembler, MetadataRepository metadataRepository, MetadataModelAssembler metadataModelAssembler) {
         this.datasetRepository = datasetRepository;
         this.datasetModelAssembler = datasetModelAssembler;
+        this.metadataRepository = metadataRepository;
+        this.metadataModelAssembler = metadataModelAssembler;
     }
 
 
@@ -72,4 +76,14 @@ public class DatasetController {
             return ResponseEntity.badRequest().body("Unable to add " + newDataset);
         }
     }
+
+    @GetMapping("/api/v1/metadata/{id}")
+    public ResponseEntity<MetadataModel> getMetadataById(@PathVariable("id") UUID id)
+    {
+        return metadataRepository.findById(id)
+                .map(metadataModelAssembler::toModel)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
 }

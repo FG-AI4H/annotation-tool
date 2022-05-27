@@ -8,6 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -28,5 +29,10 @@ public class DatasetEntity implements Serializable
 
     private String name;
     private String description;
-    private Integer size;
+    private String storageLocation;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    @OneToOne(cascade = {CascadeType.ALL})
+    private MetadataEntity metadata;
 }
