@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.fgai4h</groupId>
-    <artifactId>demo</artifactId>
+    <artifactId>annotation</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Annotation backend</name>
     <description>Annotation backend</description>
