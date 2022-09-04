@@ -19,6 +19,12 @@ The production profile defines a MySQL database (Bean defined in DataSourceConfi
 
 # CICD Definition
 
+##Conventional Commits
+We enforced Conventional Commits on the repo be able to track changes and generate CHANGELOG files.
+https://github.com/qoomon/git-conventional-commits
+
+Pre-commit hooks defined in .git-hooks
+
 ##AWS CodePipeline
 We are using AWS CodePipeline
 

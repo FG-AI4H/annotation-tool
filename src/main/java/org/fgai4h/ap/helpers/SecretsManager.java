@@ -11,7 +11,6 @@ public class SecretsManager {
     // Use this code snippet in your app.
 // If you need more information about configurations or implementing the sample code, visit the AWS docs:
 // https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/java-dg-samples.html#prerequisites
-
     public static String getSecret() {
 
         String secretName = "arn:aws:secretsmanager:eu-central-1:601883093460:secret:annotation-backend/db-nzARqA";
