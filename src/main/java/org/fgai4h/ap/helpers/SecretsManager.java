@@ -17,7 +17,11 @@ public class SecretsManager {
         String secretName = "arn:aws:secretsmanager:eu-central-1:601883093460:secret:annotation-backend/db-nzARqA";
         Region region = Region.of("eu-central-1");
 
-        InstanceProfileCredentialsProvider provider = InstanceProfileCredentialsProvider.builder().asyncCredentialUpdateEnabled(true).build();
+        // Uses an instance profile for prod environment
+        // On AWS Elastic Beanstalk aws-elasticbeanstalk-ec2-role is used by default
+        InstanceProfileCredentialsProvider provider = InstanceProfileCredentialsProvider.builder()
+                .asyncCredentialUpdateEnabled(true)
+                .build();
 
         // Create a Secrets Manager client
         SecretsManagerClient client = SecretsManagerClient.builder()
