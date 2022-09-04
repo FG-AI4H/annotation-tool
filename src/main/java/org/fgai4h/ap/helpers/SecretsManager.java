@@ -1,5 +1,6 @@
 package org.fgai4h.ap.helpers;
 
+import software.amazon.awssdk.auth.credentials.InstanceProfileCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
 import software.amazon.awssdk.services.secretsmanager.model.*;
@@ -16,9 +17,12 @@ public class SecretsManager {
         String secretName = "arn:aws:secretsmanager:eu-central-1:601883093460:secret:annotation-backend/db-nzARqA";
         Region region = Region.of("eu-central-1");
 
+        InstanceProfileCredentialsProvider provider = InstanceProfileCredentialsProvider.builder().asyncCredentialUpdateEnabled(true).build();
+
         // Create a Secrets Manager client
         SecretsManagerClient client = SecretsManagerClient.builder()
                 .region(region)
+                .credentialsProvider(provider)
                 .build();
 
         // In this sample we only handle the specific exceptions for the 'GetSecretValue' API.

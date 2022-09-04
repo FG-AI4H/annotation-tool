@@ -16,6 +16,7 @@ The production profile defines a MySQL database (Bean defined in DataSourceConfi
           jpa:
             database: mysql
 
+Prod environnement is using AWS Elastic Beanstalk with IAM instance profile: aws-elasticbeanstalk-ec2-role
 
 # CICD Definition
 
