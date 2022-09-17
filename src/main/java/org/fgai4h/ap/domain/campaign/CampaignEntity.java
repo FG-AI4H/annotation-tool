@@ -63,4 +63,9 @@ public class CampaignEntity implements Serializable
             inverseJoinColumns = @JoinColumn(name = "datasetUUID"))
     private List<DatasetEntity> datasets;
 
+    public CampaignEntity(UUID uuid, String name, String description) {
+        this.campaignUUID = uuid;
+        this.name = name;
+        this.description = description;
+    }
 }
