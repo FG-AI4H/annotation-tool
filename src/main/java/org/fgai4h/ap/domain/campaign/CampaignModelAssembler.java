@@ -61,7 +61,7 @@ public class CampaignModelAssembler extends RepresentationModelAssemblerSupport<
     }
 
     private List<DatasetModel> toDatasetModel(List<DatasetEntity> datasets) {
-        if (datasets.isEmpty())
+        if (isNull(datasets) || datasets.isEmpty())
             return Collections.emptyList();
 
         DatasetModelAssembler datasetModelAssembler = new DatasetModelAssembler();
@@ -76,7 +76,7 @@ public class CampaignModelAssembler extends RepresentationModelAssemblerSupport<
     }
 
     private List<UserModel> toUserModel(List<UserEntity> users) {
-        if (users.isEmpty())
+        if (isNull(users) || users.isEmpty())
             return Collections.emptyList();
 
         AnnotatorModelAssembler annotatorModelAssembler = new AnnotatorModelAssembler();
