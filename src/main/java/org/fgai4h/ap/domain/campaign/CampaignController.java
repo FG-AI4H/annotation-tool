@@ -89,4 +89,13 @@ public class CampaignController {
         return ResponseEntity.ok(campaignRepository.save(campaign));
     }
 
+    @PostMapping("/api/v1/campaigns/{id}/end")
+    ResponseEntity<?> start(@PathVariable UUID id) {
+
+        CampaignEntity campaign = campaignRepository.findById(id).orElseThrow(() -> new CampaignNotFoundException(id));
+
+        campaign.setStatus("ENDED");
+        return ResponseEntity.ok(campaignRepository.save(campaign));
+    }
+
 }
