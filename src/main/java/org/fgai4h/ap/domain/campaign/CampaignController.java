@@ -90,7 +90,7 @@ public class CampaignController {
     }
 
     @PostMapping("/api/v1/campaigns/{id}/end")
-    ResponseEntity<?> start(@PathVariable UUID id) {
+    ResponseEntity<?> end(@PathVariable UUID id) {
 
         CampaignEntity campaign = campaignRepository.findById(id).orElseThrow(() -> new CampaignNotFoundException(id));
 
