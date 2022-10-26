@@ -34,6 +34,7 @@ public class DatasetController {
     @GetMapping("/api/v1/datasets")
     public ResponseEntity<CollectionModel<DatasetModel>> getAllDatasets()
     {
+        //To be removed later when dataset secured
         List<DatasetEntity> datasetEntities = new ArrayList<DatasetEntity>(); //datasetRepository.findAll();
         return new ResponseEntity<>(
                 datasetModelAssembler.toCollectionModel(datasetEntities),
