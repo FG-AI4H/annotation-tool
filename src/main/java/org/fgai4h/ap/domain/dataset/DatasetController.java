@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,7 +34,7 @@ public class DatasetController {
     @GetMapping("/api/v1/datasets")
     public ResponseEntity<CollectionModel<DatasetModel>> getAllDatasets()
     {
-        List<DatasetEntity> datasetEntities = datasetRepository.findAll();
+        List<DatasetEntity> datasetEntities = new ArrayList<DatasetEntity>(); //datasetRepository.findAll();
         return new ResponseEntity<>(
                 datasetModelAssembler.toCollectionModel(datasetEntities),
                 HttpStatus.OK);
