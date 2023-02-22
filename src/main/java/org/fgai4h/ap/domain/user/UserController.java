@@ -10,11 +10,9 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminGetUserResponse;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType;
-import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -56,38 +54,7 @@ public class UserController {
                 HttpStatus.OK);
     }
 
-    @GetMapping("/api/v1/users")
-    public ResponseEntity<CollectionModel<UserModel>> getAllUsers()
-    {
 
-        CognitoIdentityProviderClient cognitoClient = CognitoIdentityProviderClient.builder()
-                .region(Region.EU_CENTRAL_1)
-                .build();
-
-        List<UserType> awsUsers = AWSCognito.getAllUsers(cognitoClient,"eu-central-1_1cFVgcU36") ;
-        cognitoClient.close();
-
-        CollectionModel<UserModel> userModelCollection = userModelAWSAssembler.toCollectionModel(awsUsers);
-        Iterator<UserModel> iterator = userModelCollection.iterator();
-        while(iterator.hasNext()) {
-            UserModel next = iterator.next();
-            UserEntity userEntity = userRepository.findByIdpId(next.getIdpID());
-
-            // If user exists in local DB
-            if(userEntity == null){
-                userEntity = userRepository.save(userModelAssembler.toEntity(next));
-            }
-
-            next.setAnnotatorRole(annotatorModelAssembler.toModel(userEntity.getAnnotatorRole()));
-            next.setReviewerRole(reviewerModelAssembler.toModel(userEntity.getReviewerRole()));
-            next.setUserUUID(userEntity.getUserUUID());
-
-        }
-
-        return new ResponseEntity<>(
-                userModelCollection,
-                HttpStatus.OK);
-    }
 
     @PutMapping("/api/v1/users/{id}")
     public ResponseEntity<?> updateUser(@RequestBody UserEntity user, @PathVariable UUID id){
