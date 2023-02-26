@@ -32,4 +32,6 @@ public class CampaignModel extends RepresentationModel<CampaignModel> {
     private List<UserModel> supervisors;
     private String annotationKind;
     private String annotationTool;
+    private String annotationMethod;
+    private String annotationInstructions;
 }

@@ -34,6 +34,8 @@ public class CampaignEntity implements Serializable
     private String status;
     private String annotationKind;
     private String annotationTool;
+    private String annotationMethod;
+    private String annotationInstructions;
 
     @ManyToMany(cascade=CascadeType.ALL)
     @JoinTable(

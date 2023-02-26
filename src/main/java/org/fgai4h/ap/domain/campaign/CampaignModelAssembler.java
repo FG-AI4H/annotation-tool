@@ -2,7 +2,6 @@ package org.fgai4h.ap.domain.campaign;
 
 import org.fgai4h.ap.domain.dataset.DatasetEntity;
 import org.fgai4h.ap.domain.dataset.DatasetModel;
-import org.fgai4h.ap.domain.dataset.DatasetModelAssembler;
 import org.fgai4h.ap.domain.user.*;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -56,15 +55,14 @@ public class CampaignModelAssembler extends RepresentationModelAssemblerSupport<
         campaignModel.setSupervisors(toUserModel(entity.getSupervisors()));
         campaignModel.setAnnotationKind(entity.getAnnotationKind());
         campaignModel.setAnnotationTool(entity.getAnnotationTool());
-
+        campaignModel.setAnnotationMethod(entity.getAnnotationMethod());
+        campaignModel.setAnnotationInstructions(entity.getAnnotationInstructions());
         return campaignModel;
     }
 
     private List<DatasetModel> toDatasetModel(List<DatasetEntity> datasets) {
         if (isNull(datasets) || datasets.isEmpty())
             return Collections.emptyList();
-
-        DatasetModelAssembler datasetModelAssembler = new DatasetModelAssembler();
 
         return datasets.stream()
                 .map(dataset-> DatasetModel.builder()
