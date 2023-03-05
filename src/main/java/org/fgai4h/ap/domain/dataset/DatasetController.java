@@ -1,14 +1,16 @@
 package org.fgai4h.ap.domain.dataset;
 
+import org.fgai4h.ap.security.IAuthenticationFacade;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,6 +19,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class DatasetController {
+
+    @Autowired
+    private IAuthenticationFacade authenticationFacade;
 
     private final DatasetRepository datasetRepository;
     private final MetadataRepository metadataRepository;
@@ -34,8 +39,8 @@ public class DatasetController {
     @GetMapping("/api/v1/datasets")
     public ResponseEntity<CollectionModel<DatasetModel>> getAllDatasets()
     {
-        //To be removed later when dataset secured
-        List<DatasetEntity> datasetEntities = new ArrayList<DatasetEntity>(); //datasetRepository.findAll();
+        Authentication authentication = authenticationFacade.getAuthentication();
+        List<DatasetEntity> datasetEntities = datasetRepository.findAllByUserId(authentication.getName());
         return new ResponseEntity<>(
                 datasetModelAssembler.toCollectionModel(datasetEntities),
                 HttpStatus.OK);
