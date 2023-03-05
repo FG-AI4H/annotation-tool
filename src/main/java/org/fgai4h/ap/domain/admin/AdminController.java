@@ -9,11 +9,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType;
 
-import java.util.Iterator;
 import java.util.List;
 
 @RestController
@@ -22,25 +22,17 @@ import java.util.List;
 public class AdminController {
 
     private final UserRepository userRepository;
-    private final AnnotatorRepository annotatorRepository;
-    private final ReviewerRepository reviewerRepository;
-    private final SupervisorModelAssembler supervisorModelAssembler;
     private final UserModelAssembler userModelAssembler;
     private final UserModelAWSAssembler userModelAWSAssembler;
     private final AnnotatorModelAssembler annotatorModelAssembler;
     private final ReviewerModelAssembler reviewerModelAssembler;
-    private final SupervisorRepository supervisorRepository;
 
-    public AdminController(UserRepository userRepository, UserModelAssembler userModelAssembler, AnnotatorRepository annotatorRepository, AnnotatorModelAssembler annotatorModelAssembler,UserModelAWSAssembler userModelAWSAssembler, ReviewerModelAssembler reviewerModelAssembler, ReviewerRepository reviewerRepository, SupervisorModelAssembler supervisorModelAssembler, SupervisorRepository supervisorRepository){
+    public AdminController(UserRepository userRepository, UserModelAssembler userModelAssembler, AnnotatorModelAssembler annotatorModelAssembler,UserModelAWSAssembler userModelAWSAssembler, ReviewerModelAssembler reviewerModelAssembler){
         this.userRepository = userRepository;
         this.userModelAssembler = userModelAssembler;
-        this.annotatorRepository = annotatorRepository;
         this.annotatorModelAssembler = annotatorModelAssembler;
         this.userModelAWSAssembler = userModelAWSAssembler;
         this.reviewerModelAssembler = reviewerModelAssembler;
-        this.reviewerRepository = reviewerRepository;
-        this.supervisorModelAssembler = supervisorModelAssembler;
-        this.supervisorRepository = supervisorRepository;
     }
 
     @GetMapping("/users")
@@ -48,19 +40,18 @@ public class AdminController {
     {
         CognitoIdentityProviderClient cognitoClient = CognitoIdentityProviderClient.builder()
                 .region(Region.EU_CENTRAL_1)
+                .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
                 .build();
 
         List<UserType> awsUsers = AWSCognito.getAllUsers(cognitoClient,"eu-central-1_1cFVgcU36") ;
         cognitoClient.close();
 
         CollectionModel<UserModel> userModelCollection = userModelAWSAssembler.toCollectionModel(awsUsers);
-        Iterator<UserModel> iterator = userModelCollection.iterator();
-        while(iterator.hasNext()) {
-            UserModel next = iterator.next();
+        for (UserModel next : userModelCollection) {
             UserEntity userEntity = userRepository.findByIdpId(next.getIdpID());
 
-            // If user exists in local DB
-            if(userEntity == null){
+            // If user does not exists in local DB
+            if (userEntity == null) {
                 userEntity = userRepository.save(userModelAssembler.toEntity(next));
             }
 

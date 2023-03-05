@@ -9,5 +9,6 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 
     @Query("select u from UserEntity u where u.idpID = :idpID")
-    public UserEntity findByIdpId(@Param("idpID") String idpID);
+    UserEntity findByIdpId(@Param("idpID") String idpID);
+
 }
