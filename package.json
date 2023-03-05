@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "spellchecker": "^3.7.1"
+  }
+}

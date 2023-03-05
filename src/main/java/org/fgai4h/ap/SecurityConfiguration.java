@@ -1,33 +1,34 @@
 package org.fgai4h.ap;
 
-import com.nimbusds.jose.shaded.json.JSONArray;
+import net.minidev.json.JSONArray;
 import org.fgai4h.ap.domain.user.UserEntity;
 import org.fgai4h.ap.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Configuration
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration {
 
     @Autowired
     private UserRepository userRepository;
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/**").permitAll();
-
-
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests().requestMatchers("/**").permitAll();
         http.cors();
         http.oauth2ResourceServer(oauth2 ->
                 oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(grantedAuthoritiesExtractor())));
+
+        return http.build();
     }
 
     private JwtAuthenticationConverter grantedAuthoritiesExtractor() {

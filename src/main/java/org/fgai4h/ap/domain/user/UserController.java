@@ -1,5 +1,6 @@
 package org.fgai4h.ap.domain.user;
 
+import org.fgai4h.ap.api.UserApi;
 import org.fgai4h.ap.helpers.AWSCognito;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
@@ -21,7 +22,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-public class UserController {
+public class UserController implements UserApi {
 
     private final UserRepository userRepository;
     private final AnnotatorRepository annotatorRepository;
@@ -44,6 +45,8 @@ public class UserController {
         this.supervisorModelAssembler = supervisorModelAssembler;
         this.supervisorRepository = supervisorRepository;
     }
+
+
 
     @GetMapping("/annotators")
     public ResponseEntity<CollectionModel<AnnotatorModel>> getAllAnnotators()

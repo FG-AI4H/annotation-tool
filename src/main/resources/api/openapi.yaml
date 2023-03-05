@@ -1,0 +1,138 @@
+openapi: 3.0.2
+info:
+  title: FG-AI4H-OCI Platform
+  description: >
+    'FG-AI4H Open Code Initiative Platform'
+  termsOfService: https://github.com/FG-AI4H/annotation-tool/blob/master/LICENSE
+  contact:
+    email: ml@mllab.ai
+  license:
+    name: BSD 3-Clause License
+    url: https://github.com/FG-AI4H/annotation-tool/blob/master/LICENSE
+  version: 2023-02-20
+servers:
+  - url: https://annotation.ai4h.net/api/v1
+    description: Production server
+  - url: http://localhost:8080/api/v1
+    description: Development server
+tags:
+  - name: Campaign
+    description: Everything about annotation campaign
+  - name: Dataset
+    description: Operation about dataset management
+  - name: Task
+    description: Operation about annotation tasks
+  - name: User
+    description: Operations about users
+
+components:
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    UserDto:
+      description: A user
+      type: object
+      properties:
+        id:
+          description: Id of the user
+          type: string
+          format: uuid
+        username:
+          description: User name
+          type: string
+        idp_id:
+          description: Unique identifier generated from the SSO token
+          type: string
+        birthdate:
+          description: Birthdate of user
+          type: string
+        timezone:
+          description: Timezone of user
+          type: string
+        email:
+          description: Email of user
+          type: string
+        annotator_role:
+          description: Annotator attributes
+          $ref: '#/components/schemas/AnnotatorDto'
+
+    AnnotatorDto:
+      description: An annotator
+      type: object
+      properties:
+        id:
+          description: Id of the annotator
+          type: string
+          format: uuid
+        expertise:
+          description: Expertise
+          type: string
+        years_in_practice:
+          description: Years in practice
+          type: integer
+          minimum: 0
+          maximum: 100
+        expected_salary:
+          description: Expected salary
+          type: number
+          format: float
+        work_country:
+          description: Working country
+          type: string
+        study_country:
+          description: Study country
+          type: string
+        self_assessment:
+          description: Self assessment grade
+          type: integer
+          minimum: 0
+          maximum: 10
+        degree:
+          description: Study degree
+          type: string
+
+paths:
+  /users/current:
+    get:
+      tags:
+        - User
+      summary: Returns current user
+      description: Returns the current user given JWT token
+      operationId: getCurrentUser
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        '404':
+          description: Current user doesn't exist
+          content: { }
+  /users/{user_id}:
+    get:
+      tags:
+        - User
+      summary: Returns user
+      description: Returns the user of given user_id
+      operationId: getUserById
+      parameters:
+        - name: user_id
+          in: path
+          description: User Identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        '404':
+          description: Given user ID doesn't exist
+          content: { }
