@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -44,7 +45,7 @@ public class SecurityConfiguration {
 
                     String[] scopes;
                     if (jwt.getClaims().containsKey("cognito:groups")) {
-                        scopes = ((JSONArray) jwt.getClaims().get("cognito:groups")).toArray(new String[0]);
+                        scopes = (String[]) ((ArrayList) jwt.getClaims().get("cognito:groups")).toArray(new String[0]);
                     } else {
                         scopes = ((String) jwt.getClaims().getOrDefault("scope", "")).split(" ");
                     }
