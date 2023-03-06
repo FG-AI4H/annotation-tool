@@ -1,6 +1,5 @@
 package org.fgai4h.ap;
 
-import net.minidev.json.JSONArray;
 import org.fgai4h.ap.domain.user.UserEntity;
 import org.fgai4h.ap.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
