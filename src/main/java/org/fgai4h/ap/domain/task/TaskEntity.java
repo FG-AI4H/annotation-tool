@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.fgai4h.ap.domain.campaign.CampaignEntity;
-import org.fgai4h.ap.domain.user.UserEntity;
+import org.fgai4h.ap.domain.campaign.entity.CampaignEntity;
+import org.fgai4h.ap.domain.user.entity.UserEntity;
 import org.hibernate.annotations.GenericGenerator;
 
 import jakarta.persistence.*;

@@ -1,5 +1,6 @@
 package org.fgai4h.ap.domain.campaign;
 
+import org.fgai4h.ap.domain.campaign.repository.CampaignRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;

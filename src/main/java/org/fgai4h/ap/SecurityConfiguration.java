@@ -1,7 +1,7 @@
 package org.fgai4h.ap;
 
-import org.fgai4h.ap.domain.user.UserEntity;
-import org.fgai4h.ap.domain.user.UserRepository;
+import org.fgai4h.ap.domain.user.entity.UserEntity;
+import org.fgai4h.ap.domain.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

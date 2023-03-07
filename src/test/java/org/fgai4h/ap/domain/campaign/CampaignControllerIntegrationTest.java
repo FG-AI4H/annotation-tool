@@ -1,5 +1,9 @@
 package org.fgai4h.ap.domain.campaign;
 
+import org.fgai4h.ap.domain.campaign.controller.CampaignController;
+import org.fgai4h.ap.domain.campaign.entity.CampaignEntity;
+import org.fgai4h.ap.domain.campaign.mapper.CampaignModelAssembler;
+import org.fgai4h.ap.domain.campaign.repository.CampaignRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

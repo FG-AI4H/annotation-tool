@@ -1,6 +1,9 @@
 package org.fgai4h.ap.domain.admin;
 
-import org.fgai4h.ap.domain.user.*;
+import org.fgai4h.ap.domain.user.entity.UserEntity;
+import org.fgai4h.ap.domain.user.mapper.*;
+import org.fgai4h.ap.domain.user.model.UserModel;
+import org.fgai4h.ap.domain.user.repository.UserRepository;
 import org.fgai4h.ap.helpers.AWSCognito;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
@@ -9,7 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType;
@@ -40,7 +42,6 @@ public class AdminController {
     {
         CognitoIdentityProviderClient cognitoClient = CognitoIdentityProviderClient.builder()
                 .region(Region.EU_CENTRAL_1)
-                .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
                 .build();
 
         List<UserType> awsUsers = AWSCognito.getAllUsers(cognitoClient,"eu-central-1_1cFVgcU36") ;
@@ -64,5 +65,29 @@ public class AdminController {
         return new ResponseEntity<>(
                 userModelCollection,
                 HttpStatus.OK);
+    }
+
+    public UserEntity toEntity(UserModel model){
+
+        AnnotatorModelAssembler annotatorModelAssembler = new AnnotatorModelAssembler();
+        ReviewerModelAssembler reviewerModelAssembler = new ReviewerModelAssembler();
+        SupervisorModelAssembler supervisorModelAssembler = new SupervisorModelAssembler();
+
+        UserEntity useEntity = new UserEntity();
+
+        useEntity.setUserUUID(model.getUserUUID());
+        useEntity.setIdpID(model.getIdpID());
+        useEntity.setUsername(model.getUsername());
+        if(model.getAnnotatorRole() != null) {
+            useEntity.setAnnotatorRole(annotatorModelAssembler.toEntity(model.getAnnotatorRole()));
+        }
+        if(model.getReviewerRole() != null) {
+            useEntity.setReviewerRole(reviewerModelAssembler.toEntity(model.getReviewerRole()));
+        }
+        if(model.getAnnotatorRole() != null) {
+            useEntity.setSupervisorRole(supervisorModelAssembler.toEntity(model.getSupervisorRole()));
+        }
+        return useEntity;
+
     }
 }

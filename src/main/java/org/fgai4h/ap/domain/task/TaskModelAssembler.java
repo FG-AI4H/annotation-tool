@@ -1,7 +1,7 @@
 package org.fgai4h.ap.domain.task;
 
-import org.fgai4h.ap.domain.campaign.CampaignModelAssembler;
-import org.fgai4h.ap.domain.user.UserModelAssembler;
+import org.fgai4h.ap.domain.campaign.mapper.CampaignModelAssembler;
+import org.fgai4h.ap.domain.user.mapper.UserModelAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;

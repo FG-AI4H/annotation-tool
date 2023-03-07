@@ -58,6 +58,148 @@ components:
         annotator_role:
           description: Annotator attributes
           $ref: '#/components/schemas/AnnotatorDto'
+    DatasetDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        storage_location:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        metadata:
+          $ref: '#/components/schemas/DatasetMetadataDto'
+        visibility:
+          $ref: '#/components/schemas/DatasetVisibility'
+    DatasetMetadataDto:
+      type: object
+      properties: 
+        id:
+          type: string
+          format: uuid
+        data_collection_authors_agency:
+          type: string
+        data_acceptance_standards_compliance:
+          type: string
+        data_acquisition_sensing_device_type:
+          type: string
+        data_acquisition_sensing_modality:
+          type: string
+        data_annotation_process_tool:
+          type: string
+        data_assumptions_constraints_dependencies:
+          type: string
+        data_bias_and_variance_minimization:
+          type: string
+        data_collection_funding_agency:
+          type: string
+        data_collection_period:
+          type: string
+        data_collection_place:
+          type: string
+        data_dimension:
+          type: string
+        data_exclusion_criteria:
+          type: string
+        data_owner:
+          type: string
+        data_preprocessing_techniques:
+          type: string
+        data_privacy_deIdentification_protocol:
+          type: string
+        data_registry_url:
+          type: string
+        data_resolution_precision:
+          type: string
+        data_safety_security_protocol:
+          type: string
+        data_sample_size:
+          type: string
+        data_sampling_rate:
+          type: string
+        data_source:
+          type: string
+        data_type:
+          type: string
+        data_update_version:
+          type: string
+        train_tuning_eval_dataset_partitioning_ratio:
+          type: string
+        version:
+          type: string
+    DatasetVisibility:
+      type: string
+      enum:
+        - PRIVATE
+        - PUBLIC
+    DatasetRoleDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        dataset:
+          type: string
+          format: uuid
+        user:
+          type: string
+          format: uuid
+        user_role:
+          $ref: '#/components/schemas/UserRole'
+    UserRole:
+      type: object
+      enum:
+        - OWNER
+        - CONTRIBUTOR
+        - READER
+    CampaignDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+        annotation_kind:
+          type: string
+        annotation_tool:
+          type: string
+        annotation_method:
+          type: string
+        annotation_instructions:
+          type: string
+        datasets:
+          type: array
+          items:
+            type: string
+            format: uuid
+        annotators:
+          items:
+            type: string
+            format: uuid
+        reviewers:
+          items:
+            type: string
+            format: uuid
+        supervisors:
+          items:
+            type: string
+            format: uuid
 
     AnnotatorDto:
       description: An annotator
@@ -93,8 +235,39 @@ components:
         degree:
           description: Study degree
           type: string
+    ReviewerDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+    SupervisorDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
 
 paths:
+  /users:
+    put:
+      tags:
+        - User
+      summary: Update the user
+      description: Update the given user
+      operationId: updateUser
+      requestBody:
+        description: New User object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDto'
+      responses:
+        '201':
+          description: User updated successfully
+        '404':
+          description: Given user ID doesn't exist
+          content: { }
   /users/current:
     get:
       tags:
@@ -126,6 +299,7 @@ paths:
           required: true
           schema:
             type: string
+            format: uuid
       responses:
         '200':
           description: successful operation
@@ -136,3 +310,42 @@ paths:
         '404':
           description: Given user ID doesn't exist
           content: { }
+
+  /campaigns:
+    get:
+      tags:
+        - Campaign
+      summary: List all the campaigns
+      description: List all the campaigns
+      operationId: getAllCampaigns
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CampaignDto'
+        '404':
+          description: Error occured
+          content: { }
+    post:
+      tags:
+        - Campaign
+      summary: Creates a new campaign for the given campaign request
+      description: Creates a new campaign for the given campaign request.
+      operationId: addCampaign
+      requestBody:
+        description: New Campaign Request object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignDto'
+      responses:
+        '201':
+          description: Campaign added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignDto'

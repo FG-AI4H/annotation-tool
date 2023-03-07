@@ -3,8 +3,8 @@ package org.fgai4h.ap.domain.task;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.*;
-import org.fgai4h.ap.domain.campaign.CampaignModel;
-import org.fgai4h.ap.domain.user.UserModel;
+import org.fgai4h.ap.domain.campaign.model.CampaignModel;
+import org.fgai4h.ap.domain.user.model.UserModel;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 
