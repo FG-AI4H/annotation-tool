@@ -5,7 +5,6 @@ import org.fgai4h.ap.api.CampaignApi;
 import org.fgai4h.ap.api.model.CampaignDto;
 import org.fgai4h.ap.domain.campaign.entity.CampaignEntity;
 import org.fgai4h.ap.domain.campaign.mapper.CampaignApiMapper;
-import org.fgai4h.ap.domain.campaign.mapper.CampaignModelAssembler;
 import org.fgai4h.ap.domain.campaign.model.CampaignModel;
 import org.fgai4h.ap.domain.campaign.repository.CampaignRepository;
 import org.fgai4h.ap.domain.campaign.service.CampaignService;
@@ -14,7 +13,10 @@ import org.fgai4h.ap.domain.exception.NotFoundException;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -31,7 +33,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class CampaignController implements CampaignApi {
 
     private final CampaignRepository campaignRepository;
-    private final CampaignModelAssembler campaignModelAssembler;
     private final CampaignService campaignService;
     private final CampaignApiMapper campaignApiMapper;
 
@@ -43,36 +44,39 @@ public class CampaignController implements CampaignApi {
     }
 
     @Override
-    public ResponseEntity<CampaignDto> addCampaign(CampaignDto campaignDto) {
+    public ResponseEntity<Void> addCampaign(CampaignDto campaignDto) {
         CampaignModel campaignModel = campaignApiMapper.toCampaignModel(campaignDto);
         campaignModel = campaignService.addCampaign(campaignModel);
-        return new ResponseEntity<CampaignDto>(campaignApiMapper.toCampaignDto(campaignModel),HttpStatus.CREATED);
+
+        try {
+            return ResponseEntity.created(new URI(campaignModel.getCampaignUUID().toString())).build();
+        } catch (URISyntaxException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
-    @GetMapping("/api/v1/campaigns/{id}")
-    public ResponseEntity<CampaignModel> getCampaignById(@PathVariable("id") UUID id)
-    {
-        return campaignRepository.findById(id)
-                .map(campaignModelAssembler::toModel)
+    @Override
+    public ResponseEntity<CampaignDto> getCampaignById(UUID campaignId) {
+        return campaignService.getCampaignById(campaignId)
+                .map(campaignApiMapper::toCampaignDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/api/v1/campaigns/{id}")
-    public ResponseEntity<?> updateCampaign(@RequestBody CampaignEntity campaign, @PathVariable UUID id){
-        CampaignEntity campaignToUpdate = campaign;
-        campaignToUpdate.setCampaignUUID(id);
-        campaignRepository.save(campaignToUpdate);
 
-        Link newlyCreatedLink = linkTo(methodOn(CampaignController.class).getCampaignById(id)).withSelfRel();
+    @Override
+    public ResponseEntity<Void> updateCampaign(UUID campaignId, CampaignDto campaignDto) {
+        CampaignModel campaignModel = campaignApiMapper.toCampaignModel(campaignDto);
+        campaignService.updateCampaign(campaignModel);
+
+        Link newlyCreatedLink = linkTo(methodOn(CampaignController.class).getCampaignById(campaignId)).withSelfRel();
 
         try {
             return ResponseEntity.noContent().location(new URI(newlyCreatedLink.getHref())).build();
         } catch (URISyntaxException e) {
-            return ResponseEntity.badRequest().body("Unable to update " + campaignToUpdate);
+            return ResponseEntity.badRequest().build();
         }
     }
-
 
     @DeleteMapping("/api/v1/campaigns/{id}")
     public ResponseEntity<?> removeCampaign(@PathVariable UUID id){

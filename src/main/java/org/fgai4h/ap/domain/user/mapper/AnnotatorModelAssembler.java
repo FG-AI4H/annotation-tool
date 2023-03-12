@@ -86,8 +86,6 @@ public class AnnotatorModelAssembler extends RepresentationModelAssemblerSupport
     {
         CollectionModel<AnnotatorModel> annotatorModels = super.toCollectionModel(entities);
 
-        annotatorModels.add(linkTo(methodOn(UserController.class).getAllAnnotators()).withSelfRel());
-
         return annotatorModels;
     }
 }

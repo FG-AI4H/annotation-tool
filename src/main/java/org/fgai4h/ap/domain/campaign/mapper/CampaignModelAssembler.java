@@ -2,15 +2,16 @@ package org.fgai4h.ap.domain.campaign.mapper;
 
 import org.fgai4h.ap.domain.campaign.controller.CampaignController;
 import org.fgai4h.ap.domain.campaign.entity.CampaignEntity;
+import org.fgai4h.ap.domain.campaign.entity.ClassLabelEntity;
 import org.fgai4h.ap.domain.campaign.model.CampaignModel;
+import org.fgai4h.ap.domain.campaign.model.CampaignStatusModel;
+import org.fgai4h.ap.domain.campaign.model.ClassLabelModel;
 import org.fgai4h.ap.domain.dataset.entity.DatasetEntity;
-import org.fgai4h.ap.domain.dataset.mapper.DatasetMapper;
 import org.fgai4h.ap.domain.dataset.model.DatasetModel;
 import org.fgai4h.ap.domain.user.entity.UserEntity;
 import org.fgai4h.ap.domain.user.mapper.AnnotatorModelAssembler;
 import org.fgai4h.ap.domain.user.mapper.ReviewerModelAssembler;
 import org.fgai4h.ap.domain.user.mapper.SupervisorModelAssembler;
-import org.fgai4h.ap.domain.user.mapper.UserMapper;
 import org.fgai4h.ap.domain.user.model.UserModel;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
@@ -47,7 +48,7 @@ public class CampaignModelAssembler extends RepresentationModelAssemblerSupport<
         campaignModel.setCampaignUUID(entity.getCampaignUUID());
         campaignModel.setName(entity.getName());
         campaignModel.setDescription(entity.getDescription());
-        campaignModel.setStatus(entity.getStatus());
+        campaignModel.setStatus(CampaignStatusModel.valueOf(entity.getStatus()));
         campaignModel.setDatasets(toDatasetModel(entity.getDatasets()));
         campaignModel.setAnnotators(toUserModel(entity.getAnnotators()));
         campaignModel.setReviewers(toUserModel(entity.getReviewers()));
@@ -55,8 +56,27 @@ public class CampaignModelAssembler extends RepresentationModelAssemblerSupport<
         campaignModel.setAnnotationKind(entity.getAnnotationKind());
         campaignModel.setAnnotationTool(entity.getAnnotationTool());
         campaignModel.setAnnotationMethod(entity.getAnnotationMethod());
+        campaignModel.setPreAnnotationModel(entity.getPreAnnotationModel());
+        campaignModel.setPreAnnotationTool(entity.getPreAnnotationTool());
         campaignModel.setAnnotationInstructions(entity.getAnnotationInstructions());
+        campaignModel.setQualityAssurance(entity.getQualityAssurance());
+        campaignModel.setClassLabels(toClassModel(entity.getClassLabels()));
+        campaignModel.setIsInstanceLabel(entity.getIsInstanceLabel());
+        campaignModel.setMinAnnotation(entity.getMinAnnotation());
         return campaignModel;
+    }
+
+    private List<ClassLabelModel> toClassModel(List<ClassLabelEntity> classLabels) {
+        if (isNull(classLabels) || classLabels.isEmpty())
+            return Collections.emptyList();
+
+        return classLabels.stream()
+                .map(classModel-> ClassLabelModel.builder()
+                        .classLabelUUID(classModel.getClassLabelUUID())
+                        .name(classModel.getName())
+                        .description(classModel.getDescription())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     private List<DatasetModel> toDatasetModel(List<DatasetEntity> datasets) {
@@ -100,27 +120,5 @@ public class CampaignModelAssembler extends RepresentationModelAssemblerSupport<
         campaignModels.add(linkTo(methodOn(CampaignController.class).getAllCampaigns()).withSelfRel());
 
         return campaignModels;
-    }
-
-    public CampaignEntity toEntity(CampaignModel campaignModel) {
-
-        AnnotatorModelAssembler annotatorModelAssembler = new AnnotatorModelAssembler();
-        ReviewerModelAssembler reviewerModelAssembler = new ReviewerModelAssembler();
-        SupervisorModelAssembler supervisorModelAssembler = new SupervisorModelAssembler();
-
-        return CampaignEntity.builder()
-                .annotationInstructions(campaignModel.getAnnotationInstructions())
-                .name(campaignModel.getName())
-                .description(campaignModel.getDescription())
-                .annotationKind(campaignModel.getAnnotationKind())
-                .campaignUUID(campaignModel.getCampaignUUID())
-                .annotationMethod(campaignModel.getAnnotationMethod())
-                .annotationTool(campaignModel.getAnnotationTool())
-                .status(campaignModel.getStatus())
-                .datasets(DatasetMapper.INSTANCE.toListDatasetEntity(campaignModel.getDatasets()))
-                .annotators(UserMapper.INSTANCE.toListUserEntity(campaignModel.getAnnotators()))
-                .reviewers(UserMapper.INSTANCE.toListUserEntity(campaignModel.getReviewers()))
-                .supervisors(UserMapper.INSTANCE.toListUserEntity(campaignModel.getSupervisors()))
-                .build();
     }
 }

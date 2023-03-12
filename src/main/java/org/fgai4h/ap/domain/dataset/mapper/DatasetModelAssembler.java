@@ -43,7 +43,7 @@ public class DatasetModelAssembler extends RepresentationModelAssemblerSupport<D
         datasetModel.setUpdatedAt(entity.getUpdatedAt());
         datasetModel.setStorageLocation(entity.getStorageLocation());
         datasetModel.setMetadata(metadataModelAssembler.toModel(entity.getMetadata()));
-        datasetModel.setVisibility(DatasetVisibility.valueOf(entity.getVisibility()));
+        datasetModel.setVisibility(entity.getVisibility() != null ? DatasetVisibility.valueOf(entity.getVisibility()):null);
 
 
         return datasetModel;

@@ -24,14 +24,20 @@ public class CampaignModel extends RepresentationModel<CampaignModel> {
     private UUID campaignUUID;
     private String name;
     private String description;
-    private String status;
+    private CampaignStatusModel status;
     private List<DatasetModel> datasets;
 
     private List<UserModel> annotators;
     private List<UserModel> reviewers;
     private List<UserModel> supervisors;
+    private List<ClassLabelModel> classLabels;
     private String annotationKind;
     private String annotationTool;
+    private String preAnnotationTool;
+    private String preAnnotationModel;
     private String annotationMethod;
     private String annotationInstructions;
+    private String qualityAssurance;
+    private Boolean isInstanceLabel;
+    private Integer minAnnotation;
 }

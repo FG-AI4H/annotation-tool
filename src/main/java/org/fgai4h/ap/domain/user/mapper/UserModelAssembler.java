@@ -43,29 +43,5 @@ public class UserModelAssembler extends RepresentationModelAssemblerSupport<User
 
         return userModel;
     }
-
-    public UserEntity toEntity(UserModel model){
-
-        AnnotatorModelAssembler annotatorModelAssembler = new AnnotatorModelAssembler();
-        ReviewerModelAssembler reviewerModelAssembler = new ReviewerModelAssembler();
-        SupervisorModelAssembler supervisorModelAssembler = new SupervisorModelAssembler();
-
-        UserEntity useEntity = new UserEntity();
-
-        useEntity.setUserUUID(model.getUserUUID());
-        useEntity.setIdpID(model.getIdpID());
-        useEntity.setUsername(model.getUsername());
-        if(model.getAnnotatorRole() != null) {
-            useEntity.setAnnotatorRole(annotatorModelAssembler.toEntity(model.getAnnotatorRole()));
-        }
-        if(model.getReviewerRole() != null) {
-            useEntity.setReviewerRole(reviewerModelAssembler.toEntity(model.getReviewerRole()));
-        }
-        if(model.getAnnotatorRole() != null) {
-            useEntity.setSupervisorRole(supervisorModelAssembler.toEntity(model.getSupervisorRole()));
-        }
-        return useEntity;
-
-    }
 }
 

@@ -2,111 +2,80 @@ package org.fgai4h.ap.domain.user.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.fgai4h.ap.api.UserApi;
+import org.fgai4h.ap.api.model.AnnotatorDto;
+import org.fgai4h.ap.api.model.ReviewerDto;
+import org.fgai4h.ap.api.model.SupervisorDto;
 import org.fgai4h.ap.api.model.UserDto;
-import org.fgai4h.ap.domain.user.entity.AnnotatorEntity;
-import org.fgai4h.ap.domain.user.entity.UserEntity;
-import org.fgai4h.ap.domain.user.mapper.*;
-import org.fgai4h.ap.domain.user.model.AnnotatorModel;
-import org.fgai4h.ap.domain.user.model.ReviewerModel;
-import org.fgai4h.ap.domain.user.model.SupervisorModel;
+import org.fgai4h.ap.domain.user.mapper.AnnotatorApiMapper;
+import org.fgai4h.ap.domain.user.mapper.ReviewerApiMapper;
+import org.fgai4h.ap.domain.user.mapper.SupervisorApiMapper;
+import org.fgai4h.ap.domain.user.mapper.UserApiMapper;
 import org.fgai4h.ap.domain.user.model.UserModel;
-import org.fgai4h.ap.domain.user.repository.AnnotatorRepository;
-import org.fgai4h.ap.domain.user.repository.ReviewerRepository;
-import org.fgai4h.ap.domain.user.repository.SupervisorRepository;
-import org.fgai4h.ap.domain.user.repository.UserRepository;
 import org.fgai4h.ap.domain.user.service.UserService;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 public class UserController implements UserApi {
 
-    private final UserRepository userRepository;
-    private final AnnotatorRepository annotatorRepository;
-    private final ReviewerRepository reviewerRepository;
-    private final SupervisorModelAssembler supervisorModelAssembler;
-    private final UserModelAssembler userModelAssembler;
-    private final UserModelAWSAssembler userModelAWSAssembler;
-    private final AnnotatorModelAssembler annotatorModelAssembler;
-    private final ReviewerModelAssembler reviewerModelAssembler;
-    private final SupervisorRepository supervisorRepository;
 
     private final UserService userService;
-    private UserApiMapper userMapper;
+    private final UserApiMapper userApiMapper;
+    private final AnnotatorApiMapper annotatorApiMapper;
+    private final ReviewerApiMapper reviewerApiMapper;
+    private final SupervisorApiMapper supervisorApiMapper;
 
 
-    @GetMapping("/annotators")
-    public ResponseEntity<CollectionModel<AnnotatorModel>> getAllAnnotators()
-    {
-        List<AnnotatorEntity> annotatorEntities = annotatorRepository.findAll();
+    @Override
+    public ResponseEntity<List<UserDto>> getAllUsers() {
         return new ResponseEntity<>(
-                annotatorModelAssembler.toCollectionModel(annotatorEntities),
+                userService.getAllUsers().stream().map(userApiMapper::toUserDto).collect(Collectors.toList()),
                 HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Void> updateUser(UserDto userDto) {
-        UserModel userModel = userMapper.toUserModel(userDto);
+    public ResponseEntity<Void> updateUser(UUID userId, UserDto userDto) {
+        UserModel userModel = userApiMapper.toUserModel(userDto);
         userService.updateUser(userModel);
         return ResponseEntity.noContent().build();
     }
 
-
     @Override
     public ResponseEntity<UserDto> getUserById(UUID userId) {
         return userService.getUserById(userId)
-                .map(userMapper::toUserDto)
+                .map(userApiMapper::toUserDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-
-    @PostMapping("/api/v1/users")
-    public ResponseEntity<?> addUser(@RequestBody UserEntity newUser){
-        newUser = userRepository.save(newUser);
-
-        Link newlyCreatedLink = linkTo(methodOn(UserController.class).getUserById(newUser.getUserUUID())).withSelfRel();
-
-        try {
-            return ResponseEntity.noContent().location(new URI(newlyCreatedLink.getHref())).build();
-        } catch (URISyntaxException e) {
-            return ResponseEntity.badRequest().body("Unable to create " + newUser);
-        }
-    }
-
-
-
-    @GetMapping("/annotators/{id}")
-    public ResponseEntity<AnnotatorModel> getAnnotatorById(@PathVariable("id") UUID id) {
-        return annotatorRepository.findById(id)
-                .map(annotatorModelAssembler::toModel)
+    @Override
+    public ResponseEntity<AnnotatorDto> getAnnotatorById(UUID annotatorId) {
+        return userService.getAnnotatorById(annotatorId)
+                .map(annotatorApiMapper::toAnnotatorDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    public ResponseEntity<ReviewerModel> getReviewerById(@PathVariable("id") UUID id) {
-        return reviewerRepository.findById(id)
-                .map(reviewerModelAssembler::toModel)
+    @Override
+    public ResponseEntity<ReviewerDto> getReviewerById(UUID reviewerId) {
+        return userService.getReviewerById(reviewerId)
+                .map(reviewerApiMapper::toReviewerDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    public ResponseEntity<SupervisorModel> getSupervisorById(@PathVariable("id") UUID id) {
-        return supervisorRepository.findById(id)
-                .map(supervisorModelAssembler::toModel)
+    @Override
+    public ResponseEntity<SupervisorDto> getSupervisorById(UUID supervisorId) {
+        return userService.getSupervisorById(supervisorId)
+                .map(supervisorApiMapper::toSupervisorDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
 }

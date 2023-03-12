@@ -1,5 +1,8 @@
 package org.fgai4h.ap.domain.admin;
 
+import lombok.RequiredArgsConstructor;
+import org.fgai4h.ap.domain.error.DomainError;
+import org.fgai4h.ap.domain.exception.NotFoundException;
 import org.fgai4h.ap.domain.user.entity.UserEntity;
 import org.fgai4h.ap.domain.user.mapper.*;
 import org.fgai4h.ap.domain.user.model.UserModel;
@@ -14,12 +17,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminGetUserResponse;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/admin")
+@RequiredArgsConstructor
+@RequestMapping("/admin")
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 public class AdminController {
 
@@ -28,18 +36,12 @@ public class AdminController {
     private final UserModelAWSAssembler userModelAWSAssembler;
     private final AnnotatorModelAssembler annotatorModelAssembler;
     private final ReviewerModelAssembler reviewerModelAssembler;
-
-    public AdminController(UserRepository userRepository, UserModelAssembler userModelAssembler, AnnotatorModelAssembler annotatorModelAssembler,UserModelAWSAssembler userModelAWSAssembler, ReviewerModelAssembler reviewerModelAssembler){
-        this.userRepository = userRepository;
-        this.userModelAssembler = userModelAssembler;
-        this.annotatorModelAssembler = annotatorModelAssembler;
-        this.userModelAWSAssembler = userModelAWSAssembler;
-        this.reviewerModelAssembler = reviewerModelAssembler;
-    }
+    private final UserMapper userMapper;
 
     @GetMapping("/users")
     public ResponseEntity<CollectionModel<UserModel>> getAllUsers()
     {
+
         CognitoIdentityProviderClient cognitoClient = CognitoIdentityProviderClient.builder()
                 .region(Region.EU_CENTRAL_1)
                 .build();
@@ -49,11 +51,11 @@ public class AdminController {
 
         CollectionModel<UserModel> userModelCollection = userModelAWSAssembler.toCollectionModel(awsUsers);
         for (UserModel next : userModelCollection) {
-            UserEntity userEntity = userRepository.findByIdpId(next.getIdpID());
+            UserEntity userEntity = userRepository.findByIdpId(next.getIdpID()).get();
 
             // If user does not exists in local DB
             if (userEntity == null) {
-                userEntity = userRepository.save(userModelAssembler.toEntity(next));
+                userEntity = userRepository.save(userMapper.toUserEntity(next));
             }
 
             next.setAnnotatorRole(annotatorModelAssembler.toModel(userEntity.getAnnotatorRole()));
@@ -67,27 +69,25 @@ public class AdminController {
                 HttpStatus.OK);
     }
 
-    public UserEntity toEntity(UserModel model){
+    public Optional<UserModel> getUserById(final UUID userId) {
+        Optional<UserModel> userModel = Optional.ofNullable(userRepository
+                .findById(userId)
+                .map(userModelAssembler::toModel)
+                .orElseThrow(() -> new NotFoundException(DomainError.NOT_FOUND, "User", "id", userId)));
 
-        AnnotatorModelAssembler annotatorModelAssembler = new AnnotatorModelAssembler();
-        ReviewerModelAssembler reviewerModelAssembler = new ReviewerModelAssembler();
-        SupervisorModelAssembler supervisorModelAssembler = new SupervisorModelAssembler();
+        CognitoIdentityProviderClient cognitoClient = CognitoIdentityProviderClient.builder()
+                .region(Region.EU_CENTRAL_1)
+                .build();
 
-        UserEntity useEntity = new UserEntity();
+        AdminGetUserResponse awsUser = AWSCognito.getUserByUsername(cognitoClient, "eu-central-1_1cFVgcU36", userModel.get().getUsername());
+        cognitoClient.close();
+        for (AttributeType attribute : awsUser.userAttributes()) {
+            switch (attribute.name()){
+                case "email": userModel.get().setEmail(attribute.value());
+            }
+        }
 
-        useEntity.setUserUUID(model.getUserUUID());
-        useEntity.setIdpID(model.getIdpID());
-        useEntity.setUsername(model.getUsername());
-        if(model.getAnnotatorRole() != null) {
-            useEntity.setAnnotatorRole(annotatorModelAssembler.toEntity(model.getAnnotatorRole()));
-        }
-        if(model.getReviewerRole() != null) {
-            useEntity.setReviewerRole(reviewerModelAssembler.toEntity(model.getReviewerRole()));
-        }
-        if(model.getAnnotatorRole() != null) {
-            useEntity.setSupervisorRole(supervisorModelAssembler.toEntity(model.getSupervisorRole()));
-        }
-        return useEntity;
+        return userModel;
 
     }
 }

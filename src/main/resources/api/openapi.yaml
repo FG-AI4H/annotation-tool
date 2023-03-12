@@ -33,7 +33,6 @@ components:
       bearerFormat: JWT
   schemas:
     UserDto:
-      description: A user
       type: object
       properties:
         id:
@@ -56,8 +55,12 @@ components:
           description: Email of user
           type: string
         annotator_role:
-          description: Annotator attributes
           $ref: '#/components/schemas/AnnotatorDto'
+        reviewer_role:
+          $ref: '#/components/schemas/ReviewerDto'
+        supervisor_role:
+          $ref: '#/components/schemas/SupervisorDto'
+
     DatasetDto:
       type: object
       properties:
@@ -112,7 +115,7 @@ components:
           type: string
         data_preprocessing_techniques:
           type: string
-        data_privacy_deIdentification_protocol:
+        data_privacy_de_identification_protocol:
           type: string
         data_registry_url:
           type: string
@@ -174,15 +177,30 @@ components:
         description:
           type: string
         status:
-          type: string
+          $ref: '#/components/schemas/CampaignStatus'
         annotation_kind:
           type: string
         annotation_tool:
+          type: string
+        pre_annotation_tool:
+          type: string
+        pre_annotation_model:
           type: string
         annotation_method:
           type: string
         annotation_instructions:
           type: string
+        quality_control:
+          type: string
+        is_instance_label:
+          type: boolean
+          default: false
+        min_annotation:
+          type: integer
+        class_label:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClassLabelDto'
         datasets:
           type: array
           items:
@@ -200,7 +218,25 @@ components:
           items:
             type: string
             format: uuid
-
+    CampaignStatus:
+      type: string
+      enum:
+        - DRAFT
+        - READY
+        - RUNNING
+        - COMPLETED
+        - ARCHIVED
+    ClassLabelDto:
+      type: object
+      description: A class label
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
     AnnotatorDto:
       description: An annotator
       type: object
@@ -250,23 +286,23 @@ components:
 
 paths:
   /users:
-    put:
+    get:
       tags:
         - User
-      summary: Update the user
-      description: Update the given user
-      operationId: updateUser
-      requestBody:
-        description: New User object
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserDto'
+      summary: Get local users
+      description: Returns the list of local users
+      operationId: getAllUsers
       responses:
-        '201':
-          description: User updated successfully
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserDto'
         '404':
-          description: Given user ID doesn't exist
+          description: Current user doesn't exist
           content: { }
   /users/current:
     get:
@@ -310,6 +346,108 @@ paths:
         '404':
           description: Given user ID doesn't exist
           content: { }
+    put:
+      tags:
+        - User
+      summary: Update the user
+      description: Update the given user
+      operationId: updateUser
+      parameters:
+        - name: user_id
+          in: path
+          description: User Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: New User object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDto'
+      responses:
+        '204':
+          description: User updated successfully
+        '500':
+          description: Given user ID doesn't exist
+          content: { }
+
+  /annotators/{annotator_id}:
+    get:
+      tags:
+        - User
+      summary: Returns annotator
+      description: Returns the annotator of given user_id
+      operationId: getAnnotatorById
+      parameters:
+        - name: annotator_id
+          in: path
+          description: Annotator Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnnotatorDto'
+        '404':
+          description: Given annotator ID doesn't exist
+          content: { }
+  /reviewers/{reviewer_id}:
+    get:
+      tags:
+        - User
+      summary: Returns reviewer
+      description: Returns the reviewer of given user_id
+      operationId: getReviewerById
+      parameters:
+        - name: reviewer_id
+          in: path
+          description: Reviewer Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewerDto'
+        '404':
+          description: Given reviewer_id ID doesn't exist
+          content: { }
+  /supervisors/{supervisor_id}:
+    get:
+      tags:
+        - User
+      summary: Returns supervisor
+      description: Returns the supervisor of given user_id
+      operationId: getSupervisorById
+      parameters:
+        - name: supervisor_id
+          in: path
+          description: Supervisor Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupervisorDto'
+        '404':
+          description: Given supervisor ID doesn't exist
+          content: { }
 
   /campaigns:
     get:
@@ -345,7 +483,119 @@ paths:
       responses:
         '201':
           description: Campaign added successfully
+
+  /campaigns/{campaign_id}:
+    get:
+      tags:
+        - Campaign
+      summary: Returns a campaign
+      description: Returns the campaign of given campaignId
+      operationId: getCampaignById
+      parameters:
+        - name: campaign_id
+          in: path
+          description: Campaign Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CampaignDto'
+        '404':
+          description: Given campaignId ID doesn't exist
+          content: { }
+    put:
+      tags:
+        - Campaign
+      summary: Updates a new campaign for the given campaign request
+      description: Updates a new campaign for the given campaign request.
+      operationId: updateCampaign
+      parameters:
+        - name: campaign_id
+          in: path
+          description: Campaign Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Campaign Request object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignDto'
+      responses:
+        '204':
+          description: Campaign updates successfully
+        '500':
+          description: Error occured
+          content: { }
+
+  /datasets:
+    get:
+      tags:
+        - Dataset
+      summary: List all the datasets
+      description: List all the datasets
+      operationId: getAllDatasets
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DatasetDto'
+        '404':
+          description: Error occured
+          content: { }
+    post:
+      tags:
+        - Dataset
+      summary: Creates a new dataset for the given dataset request
+      description: Creates a new dataset for the given dataset request.
+      operationId: addDataset
+      requestBody:
+        description: New dataset Request object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatasetDto'
+      responses:
+        '201':
+          description: Dataset added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetDto'
+  /datasets/{dataset_id}:
+    get:
+      tags:
+        - Dataset
+      summary: Returns a dataset
+      description: Returns the dataset of given datasetId
+      operationId: getDatasetById
+      parameters:
+        - name: dataset_id
+          in: path
+          description: Dataset Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetDto'
+        '404':
+          description: Given Dataset ID doesn't exist
+          content: { }

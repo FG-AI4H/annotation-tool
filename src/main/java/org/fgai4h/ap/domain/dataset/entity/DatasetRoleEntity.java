@@ -31,10 +31,10 @@ public class DatasetRoleEntity implements Serializable
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    @OneToOne(cascade = {CascadeType.ALL})
+    @OneToOne(cascade = {CascadeType.MERGE})
     private DatasetEntity dataset;
 
-    @OneToOne(cascade = {CascadeType.ALL})
+    @OneToOne(cascade = {CascadeType.MERGE})
     private UserEntity user;
 
     private String userRole;

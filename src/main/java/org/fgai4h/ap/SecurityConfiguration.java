@@ -13,6 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -35,12 +36,12 @@ public class SecurityConfiguration {
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwt -> {
 
-                    UserEntity user = userRepository.findByIdpId(jwt.getClaims().get("sub").toString());
-                    if(user == null){
-                        user = new UserEntity();
-                        user.setIdpID(jwt.getClaims().get("sub").toString());
-                        user.setUsername(jwt.getClaims().get("username").toString());
-                        userRepository.save(user);
+                    Optional<UserEntity> user = userRepository.findByIdpId(jwt.getClaims().get("sub").toString());
+                    if(!user.isPresent()){
+                        UserEntity newUser = new UserEntity();
+                        newUser.setIdpID(jwt.getClaims().get("sub").toString());
+                        newUser.setUsername(jwt.getClaims().get("username").toString());
+                        userRepository.save(newUser);
                     }
 
                     String[] scopes;

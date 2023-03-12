@@ -1,5 +1,6 @@
 package org.fgai4h.ap.domain.campaign.entity;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,7 +9,6 @@ import org.fgai4h.ap.domain.dataset.entity.DatasetEntity;
 import org.fgai4h.ap.domain.user.entity.UserEntity;
 import org.hibernate.annotations.GenericGenerator;
 
-import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
@@ -34,31 +34,39 @@ public class CampaignEntity implements Serializable
     private String status;
     private String annotationKind;
     private String annotationTool;
+    private String preAnnotationTool;
+    private String preAnnotationModel;
     private String annotationMethod;
     private String annotationInstructions;
+    private String qualityAssurance;
+    private Boolean isInstanceLabel;
+    private Integer minAnnotation;
 
-    @ManyToMany(cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "campaignEntity")
+    private List<ClassLabelEntity> classLabels = new java.util.ArrayList<>();
+
+    @ManyToMany(cascade=CascadeType.MERGE)
     @JoinTable(
             name = "campaign_annotator",
             joinColumns = @JoinColumn(name = "campaignUUID"),
             inverseJoinColumns = @JoinColumn(name = "userUUID"))
     private List<UserEntity> annotators;
 
-    @ManyToMany(cascade=CascadeType.ALL)
+    @ManyToMany(cascade=CascadeType.MERGE)
     @JoinTable(
             name = "campaign_reviewer",
             joinColumns = @JoinColumn(name = "campaignUUID"),
             inverseJoinColumns = @JoinColumn(name = "userUUID"))
     private List<UserEntity> reviewers;
 
-    @ManyToMany(cascade=CascadeType.ALL)
+    @ManyToMany(cascade=CascadeType.MERGE)
     @JoinTable(
             name = "campaign_supervisor",
             joinColumns = @JoinColumn(name = "campaignUUID"),
             inverseJoinColumns = @JoinColumn(name = "userUUID"))
     private List<UserEntity> supervisors;
 
-    @ManyToMany(cascade=CascadeType.ALL)
+    @ManyToMany(cascade=CascadeType.MERGE)
     @JoinTable(
             name = "campaign_dataset",
             joinColumns = @JoinColumn(name = "campaignUUID"),

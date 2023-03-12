@@ -9,7 +9,7 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {UserMapper.class, DatasetMapper.class})
+@Mapper(componentModel = "spring", uses = {UserMapper.class, DatasetMapper.class, ClassLabelApiMapper.class})
 public interface CampaignMapper {
 
     CampaignMapper INSTANCE = Mappers.getMapper(CampaignMapper.class);
