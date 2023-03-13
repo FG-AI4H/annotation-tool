@@ -15,6 +15,7 @@ import org.fgai4h.ap.domain.user.repository.SupervisorRepository;
 import org.fgai4h.ap.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -65,6 +66,15 @@ public class UserService {
         return userRepository.findAll()
                 .stream()
                 .map(userModelAssembler::toModel).collect(Collectors.toList());
+    }
+
+    public List<UserModel> getUsers(List<UUID> idList){
+        List<UserModel> list = new ArrayList<UserModel>();
+        if(idList != null) {
+            list = idList.stream().map(id -> getUserById(id).get()).collect(Collectors.toList());
+        }
+
+        return list;
     }
 
     public Optional<AnnotatorModel> getAnnotatorById(UUID annotatorId) {
