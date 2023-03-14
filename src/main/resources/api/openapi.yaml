@@ -576,6 +576,27 @@ paths:
         '500':
           description: Error occured
           content: { }
+  /campaigns/{campaign_id}/generate_tasks:
+    post:
+      tags:
+        - Campaign
+      summary: Generate the tasks for the given campaign id
+      description: Generate the tasks for the given campaign id
+      operationId: generateTasks
+      parameters:
+        - name: campaign_id
+          in: path
+          description: Campaign Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '201':
+          description: Tasks generated successfully
+        '500':
+          description: Error occured
+          content: { }
   /datasets:
     get:
       tags:

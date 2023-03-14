@@ -73,14 +73,20 @@ public class CampaignController implements CampaignApi {
     }
 
     @Override
+    public ResponseEntity<Void> deleteCampaignById(UUID campaignId) {
+        campaignService.deleteCampaignById(campaignId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
     public ResponseEntity<Void> startCampaign(UUID campaignId) {
         campaignService.startCampaign(campaignId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Override
-    public ResponseEntity<Void> deleteCampaignById(UUID campaignId) {
-        campaignService.deleteCampaignById(campaignId);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> generateTasks(UUID campaignId) {
+        campaignService.generateTasks(campaignId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

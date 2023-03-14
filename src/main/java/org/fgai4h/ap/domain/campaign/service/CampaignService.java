@@ -10,8 +10,12 @@ import org.fgai4h.ap.domain.campaign.model.CampaignStatusModel;
 import org.fgai4h.ap.domain.campaign.repository.CampaignRepository;
 import org.fgai4h.ap.domain.error.DomainError;
 import org.fgai4h.ap.domain.exception.NotFoundException;
+import org.fgai4h.ap.domain.task.AnnotationTaskEntity;
+import org.fgai4h.ap.domain.task.SampleEntity;
+import org.fgai4h.ap.domain.task.TaskEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -60,5 +64,24 @@ public class CampaignService {
 
     public void deleteCampaignById(UUID campaignId) {
         campaignRepository.deleteById(campaignId);
+    }
+
+    public void generateTasks(UUID campaignId) {
+        CampaignEntity campaign = campaignRepository.findById(campaignId).orElseThrow(() -> new NotFoundException(DomainError.NOT_FOUND, "Campaign", "id", campaignId));
+        //Create annotation task for the campaign
+        List<AnnotationTaskEntity> annotationTaskList = new ArrayList<>();
+        annotationTaskList.add(AnnotationTaskEntity.builder()
+                .kind(campaign.getAnnotationKind()).build());
+
+        campaign.getDatasets().forEach(datasetEntity -> {
+            //Get sample reference
+            List<SampleEntity> samples = new ArrayList<>();
+            samples.add(SampleEntity.builder().build());
+            TaskEntity.builder()
+                    .campaign(campaign)
+                    .annotationTasks(annotationTaskList)
+                    .samples(samples)
+                    .build();
+        });
     }
 }
