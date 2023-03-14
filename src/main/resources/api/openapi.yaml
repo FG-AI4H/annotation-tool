@@ -1,0 +1,708 @@
+openapi: 3.0.2
+info:
+  title: FG-AI4H-OCI Platform
+  description: >
+    'FG-AI4H Open Code Initiative Platform'
+  termsOfService: https://github.com/FG-AI4H/annotation-tool/blob/master/LICENSE
+  contact:
+    email: ml@mllab.ai
+  license:
+    name: BSD 3-Clause License
+    url: https://github.com/FG-AI4H/annotation-tool/blob/master/LICENSE
+  version: 2023-02-20
+servers:
+  - url: https://annotation.ai4h.net/api/v1
+    description: Production server
+  - url: http://localhost:8080/api/v1
+    description: Development server
+tags:
+  - name: Campaign
+    description: Everything about annotation campaign
+  - name: Dataset
+    description: Operation about dataset management
+  - name: Task
+    description: Operation about annotation tasks
+  - name: User
+    description: Operations about users
+
+components:
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    UserDto:
+      type: object
+      properties:
+        id:
+          description: Id of the user
+          type: string
+          format: uuid
+        username:
+          description: User name
+          type: string
+        idp_id:
+          description: Unique identifier generated from the SSO token
+          type: string
+        birthdate:
+          description: Birthdate of user
+          type: string
+        timezone:
+          description: Timezone of user
+          type: string
+        email:
+          description: Email of user
+          type: string
+        annotator_role:
+          $ref: '#/components/schemas/AnnotatorDto'
+        reviewer_role:
+          $ref: '#/components/schemas/ReviewerDto'
+        supervisor_role:
+          $ref: '#/components/schemas/SupervisorDto'
+
+    DatasetDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        storage_location:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        metadata:
+          $ref: '#/components/schemas/DatasetMetadataDto'
+        visibility:
+          $ref: '#/components/schemas/DatasetVisibility'
+    DatasetMetadataDto:
+      type: object
+      properties: 
+        id:
+          type: string
+          format: uuid
+        data_collection_authors_agency:
+          type: string
+        data_acceptance_standards_compliance:
+          type: string
+        data_acquisition_sensing_device_type:
+          type: string
+        data_acquisition_sensing_modality:
+          type: string
+        data_annotation_process_tool:
+          type: string
+        data_assumptions_constraints_dependencies:
+          type: string
+        data_bias_and_variance_minimization:
+          type: string
+        data_collection_funding_agency:
+          type: string
+        data_collection_period:
+          type: string
+        data_collection_place:
+          type: string
+        data_dimension:
+          type: string
+        data_exclusion_criteria:
+          type: string
+        data_owner:
+          type: string
+        data_preprocessing_techniques:
+          type: string
+        data_privacy_de_identification_protocol:
+          type: string
+        data_registry_url:
+          type: string
+        data_resolution_precision:
+          type: string
+        data_safety_security_protocol:
+          type: string
+        data_sample_size:
+          type: string
+        data_sampling_rate:
+          type: string
+        data_source:
+          type: string
+        data_type:
+          type: string
+        data_update_version:
+          type: string
+        train_tuning_eval_dataset_partitioning_ratio:
+          type: string
+        version:
+          type: string
+    DatasetVisibility:
+      type: string
+      enum:
+        - PRIVATE
+        - PUBLIC
+    DatasetRoleDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        dataset:
+          type: string
+          format: uuid
+        user:
+          type: string
+          format: uuid
+        user_role:
+          $ref: '#/components/schemas/UserRole'
+    UserRole:
+      type: object
+      enum:
+        - OWNER
+        - CONTRIBUTOR
+        - READER
+    CampaignDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          $ref: '#/components/schemas/CampaignStatus'
+        annotation_kind:
+          type: string
+        annotation_tool:
+          type: string
+        pre_annotation_tool:
+          type: string
+        pre_annotation_model:
+          type: string
+        annotation_method:
+          type: string
+        annotation_instructions:
+          type: string
+        quality_control:
+          type: string
+        is_instance_label:
+          type: boolean
+          default: false
+        min_annotation:
+          type: integer
+        class_label:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClassLabelDto'
+        datasets:
+          type: array
+          items:
+            type: string
+            format: uuid
+        annotators:
+          items:
+            type: string
+            format: uuid
+        reviewers:
+          items:
+            type: string
+            format: uuid
+        supervisors:
+          items:
+            type: string
+            format: uuid
+    CampaignStatus:
+      type: string
+      enum:
+        - DRAFT
+        - READY
+        - RUNNING
+        - COMPLETED
+        - ARCHIVED
+    ClassLabelDto:
+      type: object
+      description: A class label
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+    AnnotatorDto:
+      description: An annotator
+      type: object
+      properties:
+        id:
+          description: Id of the annotator
+          type: string
+          format: uuid
+        expertise:
+          description: Expertise
+          type: string
+        years_in_practice:
+          description: Years in practice
+          type: integer
+          minimum: 0
+          maximum: 100
+        expected_salary:
+          description: Expected salary
+          type: number
+          format: float
+        work_country:
+          description: Working country
+          type: string
+        study_country:
+          description: Study country
+          type: string
+        self_assessment:
+          description: Self assessment grade
+          type: integer
+          minimum: 0
+          maximum: 10
+        degree:
+          description: Study degree
+          type: string
+    ReviewerDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+    SupervisorDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+
+paths:
+  /users:
+    get:
+      tags:
+        - User
+      summary: Get local users
+      description: Returns the list of local users
+      operationId: getAllUsers
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserDto'
+        '404':
+          description: Current user doesn't exist
+          content: { }
+  /users/current:
+    get:
+      tags:
+        - User
+      summary: Returns current user
+      description: Returns the current user given JWT token
+      operationId: getCurrentUser
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        '404':
+          description: Current user doesn't exist
+          content: { }
+  /users/{user_id}:
+    get:
+      tags:
+        - User
+      summary: Returns user
+      description: Returns the user of given user_id
+      operationId: getUserById
+      parameters:
+        - name: user_id
+          in: path
+          description: User Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        '404':
+          description: Given user ID doesn't exist
+          content: { }
+    put:
+      tags:
+        - User
+      summary: Update the user
+      description: Update the given user
+      operationId: updateUser
+      parameters:
+        - name: user_id
+          in: path
+          description: User Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: New User object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDto'
+      responses:
+        '204':
+          description: User updated successfully
+        '500':
+          description: Given user ID doesn't exist
+          content: { }
+
+  /annotators/{annotator_id}:
+    get:
+      tags:
+        - User
+      summary: Returns annotator
+      description: Returns the annotator of given user_id
+      operationId: getAnnotatorById
+      parameters:
+        - name: annotator_id
+          in: path
+          description: Annotator Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnnotatorDto'
+        '404':
+          description: Given annotator ID doesn't exist
+          content: { }
+  /reviewers/{reviewer_id}:
+    get:
+      tags:
+        - User
+      summary: Returns reviewer
+      description: Returns the reviewer of given user_id
+      operationId: getReviewerById
+      parameters:
+        - name: reviewer_id
+          in: path
+          description: Reviewer Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewerDto'
+        '404':
+          description: Given reviewer_id ID doesn't exist
+          content: { }
+  /supervisors/{supervisor_id}:
+    get:
+      tags:
+        - User
+      summary: Returns supervisor
+      description: Returns the supervisor of given user_id
+      operationId: getSupervisorById
+      parameters:
+        - name: supervisor_id
+          in: path
+          description: Supervisor Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupervisorDto'
+        '404':
+          description: Given supervisor ID doesn't exist
+          content: { }
+
+  /campaigns:
+    get:
+      tags:
+        - Campaign
+      summary: List all the campaigns
+      description: List all the campaigns
+      operationId: getAllCampaigns
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CampaignDto'
+        '404':
+          description: Error occured
+          content: { }
+    post:
+      tags:
+        - Campaign
+      summary: Creates a new campaign for the given campaign request
+      description: Creates a new campaign for the given campaign request.
+      operationId: addCampaign
+      requestBody:
+        description: New Campaign Request object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignDto'
+      responses:
+        '201':
+          description: Campaign added successfully
+
+  /campaigns/{campaign_id}:
+    get:
+      tags:
+        - Campaign
+      summary: Returns a campaign
+      description: Returns the campaign of given campaignId
+      operationId: getCampaignById
+      parameters:
+        - name: campaign_id
+          in: path
+          description: Campaign Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignDto'
+        '404':
+          description: Given campaignId ID doesn't exist
+          content: { }
+    put:
+      tags:
+        - Campaign
+      summary: Updates a new campaign for the given campaign request
+      description: Updates a new campaign for the given campaign request.
+      operationId: updateCampaign
+      parameters:
+        - name: campaign_id
+          in: path
+          description: Campaign Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Campaign Request object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignDto'
+      responses:
+        '204':
+          description: Campaign updates successfully
+        '500':
+          description: Error occured
+          content: { }
+    delete:
+      tags:
+        - Campaign
+      summary: Delete a campaign
+      description: Delete the campaign of given campaignId
+      operationId: deleteCampaignById
+      parameters:
+        - name: campaign_id
+          in: path
+          description: Campaign Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: successful operation
+        '404':
+          description: Given campaignId ID doesn't exist
+          content: { }
+  /campaigns/{campaign_id}/start:
+    post:
+      tags:
+        - Campaign
+      summary: Starts the campaign for the given campaign id
+      description: Starts the campaign for the given campaign id
+      operationId: startCampaign
+      parameters:
+        - name: campaign_id
+          in: path
+          description: Campaign Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '201':
+          description: Campaign started successfully
+        '500':
+          description: Error occured
+          content: { }
+  /campaigns/{campaign_id}/generate_tasks:
+    post:
+      tags:
+        - Campaign
+      summary: Generate the tasks for the given campaign id
+      description: Generate the tasks for the given campaign id
+      operationId: generateTasks
+      parameters:
+        - name: campaign_id
+          in: path
+          description: Campaign Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '201':
+          description: Tasks generated successfully
+        '500':
+          description: Error occured
+          content: { }
+  /datasets:
+    get:
+      tags:
+        - Dataset
+      summary: List all the datasets
+      description: List all the datasets
+      operationId: getAllDatasets
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DatasetDto'
+        '404':
+          description: Error occured
+          content: { }
+    post:
+      tags:
+        - Dataset
+      summary: Creates a new dataset for the given dataset request
+      description: Creates a new dataset for the given dataset request.
+      operationId: addDataset
+      requestBody:
+        description: New dataset Request object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatasetDto'
+      responses:
+        '201':
+          description: Dataset added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetDto'
+  /datasets/{dataset_id}:
+    get:
+      tags:
+        - Dataset
+      summary: Returns a dataset
+      description: Returns the dataset of given datasetId
+      operationId: getDatasetById
+      parameters:
+        - name: dataset_id
+          in: path
+          description: Dataset Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetDto'
+        '404':
+          description: Given Dataset ID doesn't exist
+          content: { }
+    put:
+      tags:
+        - Dataset
+      summary: Update the dataset
+      description: Update the given dataset
+      operationId: updateDatatset
+      parameters:
+        - name: dataset_id
+          in: path
+          description: Dataset Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: New Dataset object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatasetDto'
+      responses:
+        '204':
+          description: Datset updated successfully
+        '500':
+          description: Given dataset ID doesn't exist
+          content: { }
+    delete:
+      tags:
+        - Dataset
+      summary: Delete a dataset
+      description: Delete the dataset of given datasetId
+      operationId: deleteDatasetById
+      parameters:
+        - name: dataset_id
+          in: path
+          description: Dataset Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: successful operation
+        '404':
+          description: Given Dataset ID doesn't exist
+          content: { }
