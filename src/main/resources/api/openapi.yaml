@@ -665,3 +665,23 @@ paths:
         '500':
           description: Given dataset ID doesn't exist
           content: { }
+    delete:
+      tags:
+        - Dataset
+      summary: Delete a dataset
+      description: Delete the dataset of given datasetId
+      operationId: deleteDatasetById
+      parameters:
+        - name: dataset_id
+          in: path
+          description: Dataset Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: successful operation
+        '404':
+          description: Given Dataset ID doesn't exist
+          content: { }

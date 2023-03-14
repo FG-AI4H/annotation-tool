@@ -4,15 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.fgai4h.ap.api.DatasetApi;
 import org.fgai4h.ap.api.model.DatasetDto;
 import org.fgai4h.ap.domain.dataset.mapper.DatasetApiMapper;
-import org.fgai4h.ap.domain.dataset.mapper.DatasetModelAssembler;
 import org.fgai4h.ap.domain.dataset.mapper.MetadataModelAssembler;
 import org.fgai4h.ap.domain.dataset.model.DatasetMetadataModel;
 import org.fgai4h.ap.domain.dataset.model.DatasetModel;
-import org.fgai4h.ap.domain.dataset.repository.DatasetRepository;
-import org.fgai4h.ap.domain.dataset.repository.DatasetRoleRepository;
 import org.fgai4h.ap.domain.dataset.repository.MetadataRepository;
 import org.fgai4h.ap.domain.dataset.service.DatasetService;
-import org.fgai4h.ap.domain.user.repository.UserRepository;
 import org.fgai4h.ap.security.IAuthenticationFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
@@ -38,12 +34,7 @@ public class DatasetController implements DatasetApi {
 
     @Autowired
     private IAuthenticationFacade authenticationFacade;
-
-    private final DatasetRepository datasetRepository;
     private final MetadataRepository metadataRepository;
-    private final DatasetRoleRepository datasetRoleRepository;
-    private final UserRepository userRepository;
-    private final DatasetModelAssembler datasetModelAssembler;
     private final MetadataModelAssembler metadataModelAssembler;
     private final DatasetService datasetService;
     private final DatasetApiMapper datasetApiMapper;
@@ -84,6 +75,12 @@ public class DatasetController implements DatasetApi {
         } catch (URISyntaxException e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteDatasetById(UUID datasetId) {
+        datasetService.deleteCampaignById(datasetId);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/api/v1/metadata/{id}")

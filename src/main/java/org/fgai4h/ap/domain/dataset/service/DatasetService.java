@@ -66,4 +66,8 @@ public class DatasetService {
     public void updateDataset(DatasetModel datasetModel) {
         datasetRepository.save(datasetMapper.toDatasetEntity(datasetModel));
     }
+
+    public void deleteCampaignById(UUID datasetId) {
+        datasetRepository.deleteById(datasetId);
+    }
 }
