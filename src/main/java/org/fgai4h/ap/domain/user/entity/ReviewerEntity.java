@@ -1,11 +1,11 @@
 package org.fgai4h.ap.domain.user.entity;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
-import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.UUID;
 

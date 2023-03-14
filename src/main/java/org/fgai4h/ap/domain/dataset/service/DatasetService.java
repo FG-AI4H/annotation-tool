@@ -40,7 +40,7 @@ public class DatasetService {
     public DatasetModel addDataset(DatasetModel datasetModel, String userIdpId) {
         DatasetEntity newDataset = datasetRepository.save(datasetMapper.toDatasetEntity(datasetModel));
 
-        UserModel currentUser = userService.getUserByIdpId(userIdpId).get();
+        UserModel currentUser = userService.getUserByIdpId(userIdpId).orElseThrow(() -> new NotFoundException(DomainError.NOT_FOUND, "User", "idpId", userIdpId));
 
         DatasetRoleModel datasetRole = new DatasetRoleModel();
         datasetRole.setDataset(datasetModelAssembler.toModel(newDataset));
@@ -60,6 +60,10 @@ public class DatasetService {
     }
 
     public DatasetModel findById(UUID datasetId) {
-        return getDatasetById(datasetId).get();
+        return getDatasetById(datasetId).orElseThrow(() -> new NotFoundException(DomainError.NOT_FOUND, "Dataset", "id", datasetId));
+    }
+
+    public void updateDataset(DatasetModel datasetModel) {
+        datasetRepository.save(datasetMapper.toDatasetEntity(datasetModel));
     }
 }

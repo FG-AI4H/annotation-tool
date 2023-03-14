@@ -1,8 +1,8 @@
 package org.fgai4h.ap.domain.exception;
 
+import org.fgai4h.ap.domain.error.Error;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.fgai4h.ap.domain.error.Error;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class NotFoundException extends DomainException {

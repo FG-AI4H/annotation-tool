@@ -1,5 +1,6 @@
 package org.fgai4h.ap.domain.task;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,7 +9,6 @@ import org.fgai4h.ap.domain.campaign.entity.CampaignEntity;
 import org.fgai4h.ap.domain.user.entity.UserEntity;
 import org.hibernate.annotations.GenericGenerator;
 
-import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;

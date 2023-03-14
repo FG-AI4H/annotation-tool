@@ -3,19 +3,15 @@ package org.fgai4h.ap.domain.campaign.controller;
 import lombok.RequiredArgsConstructor;
 import org.fgai4h.ap.api.CampaignApi;
 import org.fgai4h.ap.api.model.CampaignDto;
-import org.fgai4h.ap.domain.campaign.entity.CampaignEntity;
 import org.fgai4h.ap.domain.campaign.mapper.CampaignApiMapper;
 import org.fgai4h.ap.domain.campaign.model.CampaignModel;
 import org.fgai4h.ap.domain.campaign.repository.CampaignRepository;
 import org.fgai4h.ap.domain.campaign.service.CampaignService;
-import org.fgai4h.ap.domain.error.DomainError;
-import org.fgai4h.ap.domain.exception.NotFoundException;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
@@ -78,28 +74,16 @@ public class CampaignController implements CampaignApi {
         }
     }
 
+    @Override
+    public ResponseEntity<Void> startCampaign(UUID campaignId) {
+        campaignService.startCampaign(campaignId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
     @DeleteMapping("/api/v1/campaigns/{id}")
     public ResponseEntity<?> removeCampaign(@PathVariable UUID id){
         campaignRepository.deleteById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/api/v1/campaigns/{id}/start")
-    public ResponseEntity<?> start(@PathVariable UUID id) {
-
-        CampaignEntity campaign = campaignRepository.findById(id).orElseThrow(() -> new NotFoundException(DomainError.NOT_FOUND, "Campaign", "id", id));
-
-        campaign.setStatus("STARTED");
-        return ResponseEntity.ok(campaignRepository.save(campaign));
-    }
-
-    @PostMapping("/api/v1/campaigns/{id}/end")
-    ResponseEntity<?> end(@PathVariable UUID id) {
-
-        CampaignEntity campaign = campaignRepository.findById(id).orElseThrow(() -> new NotFoundException(DomainError.NOT_FOUND, "Campaign", "id", id));
-
-        campaign.setStatus("ENDED");
-        return ResponseEntity.ok(campaignRepository.save(campaign));
     }
 
 }

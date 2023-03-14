@@ -3,7 +3,6 @@ package org.fgai4h.ap.domain.dataset.controller;
 import lombok.RequiredArgsConstructor;
 import org.fgai4h.ap.api.DatasetApi;
 import org.fgai4h.ap.api.model.DatasetDto;
-import org.fgai4h.ap.domain.dataset.entity.DatasetEntity;
 import org.fgai4h.ap.domain.dataset.mapper.DatasetApiMapper;
 import org.fgai4h.ap.domain.dataset.mapper.DatasetModelAssembler;
 import org.fgai4h.ap.domain.dataset.mapper.MetadataModelAssembler;
@@ -20,7 +19,9 @@ import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -60,7 +61,7 @@ public class DatasetController implements DatasetApi {
         Authentication authentication = authenticationFacade.getAuthentication();
         DatasetModel datasetModel = datasetApiMapper.toDatasetModel(datasetDto);
         datasetModel = datasetService.addDataset(datasetModel, authentication.getName());
-        return new ResponseEntity<DatasetDto>(datasetApiMapper.toDatasetDto(datasetModel),HttpStatus.CREATED);
+        return new ResponseEntity<>(datasetApiMapper.toDatasetDto(datasetModel),HttpStatus.CREATED);
     }
 
     @Override
@@ -71,17 +72,17 @@ public class DatasetController implements DatasetApi {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/api/v1/datasets/{id}")
-    public ResponseEntity<String> updateDataset(@RequestBody DatasetEntity dataset, @PathVariable UUID id){
-        dataset.setDatasetUUID(id);
-        datasetRepository.save(dataset);
+    @Override
+    public ResponseEntity<Void> updateDatatset(UUID datasetId, DatasetDto datasetDto) {
+        DatasetModel datasetModel = datasetApiMapper.toDatasetModel(datasetDto);
+        datasetService.updateDataset(datasetModel);
 
-        Link newlyCreatedLink = linkTo(methodOn(DatasetController.class).getDatasetById(id)).withSelfRel();
+        Link newlyCreatedLink = linkTo(methodOn(DatasetController.class).getDatasetById(datasetId)).withSelfRel();
 
         try {
             return ResponseEntity.noContent().location(new URI(newlyCreatedLink.getHref())).build();
         } catch (URISyntaxException e) {
-            return ResponseEntity.badRequest().body("Unable to update " + dataset);
+            return ResponseEntity.badRequest().build();
         }
     }
 

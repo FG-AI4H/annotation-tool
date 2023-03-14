@@ -1,6 +1,7 @@
 package org.fgai4h.ap.domain.campaign.service;
 
 import lombok.RequiredArgsConstructor;
+import org.fgai4h.ap.api.model.CampaignStatus;
 import org.fgai4h.ap.domain.campaign.entity.CampaignEntity;
 import org.fgai4h.ap.domain.campaign.mapper.CampaignMapper;
 import org.fgai4h.ap.domain.campaign.mapper.CampaignModelAssembler;
@@ -44,11 +45,16 @@ public class CampaignService {
     }
 
     public CampaignModel findById(UUID campaignId){
-        return getCampaignById(campaignId).get();
+        return getCampaignById(campaignId).orElseThrow(() -> new NotFoundException(DomainError.NOT_FOUND, "Campaign", "id", campaignId));
     }
 
     public void updateCampaign(CampaignModel campaignModel) {
-        CampaignEntity campaign = campaignRepository.save(campaignMapper.toCampaignEntity(campaignModel));
+        campaignRepository.save(campaignMapper.toCampaignEntity(campaignModel));
+    }
+
+    public void startCampaign(UUID campaignId) {
+        CampaignEntity campaign = campaignRepository.findById(campaignId).orElseThrow(() -> new NotFoundException(DomainError.NOT_FOUND, "Campaign", "id", campaignId));
+        campaign.setStatus(CampaignStatus.RUNNING.toString());
         campaignRepository.save(campaign);
     }
 }
