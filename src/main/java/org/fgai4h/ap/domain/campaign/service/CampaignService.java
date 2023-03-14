@@ -57,4 +57,8 @@ public class CampaignService {
         campaign.setStatus(CampaignStatus.RUNNING.toString());
         campaignRepository.save(campaign);
     }
+
+    public void deleteCampaignById(UUID campaignId) {
+        campaignRepository.deleteById(campaignId);
+    }
 }

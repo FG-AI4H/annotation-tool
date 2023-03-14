@@ -10,8 +10,6 @@ import org.fgai4h.ap.domain.campaign.service.CampaignService;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
@@ -80,10 +78,9 @@ public class CampaignController implements CampaignApi {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("/api/v1/campaigns/{id}")
-    public ResponseEntity<?> removeCampaign(@PathVariable UUID id){
-        campaignRepository.deleteById(id);
+    @Override
+    public ResponseEntity<Void> deleteCampaignById(UUID campaignId) {
+        campaignService.deleteCampaignById(campaignId);
         return ResponseEntity.noContent().build();
     }
-
 }

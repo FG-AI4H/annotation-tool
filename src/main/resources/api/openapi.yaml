@@ -535,6 +535,26 @@ paths:
         '500':
           description: Error occured
           content: { }
+    delete:
+      tags:
+        - Campaign
+      summary: Delete a campaign
+      description: Delete the campaign of given campaignId
+      operationId: deleteCampaignById
+      parameters:
+        - name: campaign_id
+          in: path
+          description: Campaign Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: successful operation
+        '404':
+          description: Given campaignId ID doesn't exist
+          content: { }
   /campaigns/{campaign_id}/start:
     post:
       tags:
