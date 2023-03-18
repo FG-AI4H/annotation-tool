@@ -1,23 +1,48 @@
-package org.fgai4h.ap.domain.task;
+package org.fgai4h.ap.domain.task.controller;
 
+import lombok.RequiredArgsConstructor;
+import org.fgai4h.ap.api.TaskApi;
+import org.fgai4h.ap.api.model.AnnotationDataDto;
+import org.fgai4h.ap.api.model.AnnotationTaskDto;
+import org.fgai4h.ap.api.model.TaskDto;
+import org.fgai4h.ap.domain.task.entity.AnnotationDataEntity;
+import org.fgai4h.ap.domain.task.entity.AnnotationEntity;
+import org.fgai4h.ap.domain.task.entity.AnnotationTaskEntity;
+import org.fgai4h.ap.domain.task.entity.TaskEntity;
+import org.fgai4h.ap.domain.task.mapper.*;
+import org.fgai4h.ap.domain.task.model.AnnotationModel;
+import org.fgai4h.ap.domain.task.model.AnnotationTaskModel;
+import org.fgai4h.ap.domain.task.model.SampleModel;
+import org.fgai4h.ap.domain.task.repository.AnnotationRepository;
+import org.fgai4h.ap.domain.task.repository.AnnotationTaskRepository;
+import org.fgai4h.ap.domain.task.repository.SampleRepository;
+import org.fgai4h.ap.domain.task.repository.TaskRepository;
+import org.fgai4h.ap.domain.task.service.TaskService;
+import org.fgai4h.ap.security.IAuthenticationFacade;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.security.Principal;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-public class TaskController {
+@RequiredArgsConstructor
+public class TaskController implements TaskApi {
+
+    @Autowired
+    private IAuthenticationFacade authenticationFacade;
 
     private final TaskRepository taskRepository;
     private final AnnotationRepository annotationRepository;
@@ -28,46 +53,53 @@ public class TaskController {
     private final AnnotationModelAssembler annotationModelAssembler;
     private final SampleModelAssembler sampleModelAssembler;
     private final AnnotationTaskModelAssembler annotationTaskModelAssembler;
-    ;
-
-    public TaskController(TaskRepository taskRepository, TaskModelAssembler taskModelAssembler,
-                          AnnotationRepository annotationRepository, AnnotationModelAssembler annotationModelAssembler,
-                          SampleRepository sampleRepository, SampleModelAssembler sampleModelAssembler,
-                          AnnotationTaskRepository annotationTaskRepository, AnnotationTaskModelAssembler annotationTaskModelAssembler) {
-        this.taskRepository = taskRepository;
-        this.taskModelAssembler = taskModelAssembler;
-        this.annotationRepository = annotationRepository;
-        this.annotationModelAssembler = annotationModelAssembler;
-        this.sampleRepository = sampleRepository;
-        this.sampleModelAssembler = sampleModelAssembler;
-        this.annotationTaskRepository = annotationTaskRepository;
-        this.annotationTaskModelAssembler = annotationTaskModelAssembler;
-    }
+    private final TaskService taskService;
+    private final TaskApiMapper taskApiMapper;
+    private final AnnotationTaskApiMapper annotationTaskApiMapper;
 
 
-    @GetMapping("/api/v1/tasks")
-    public ResponseEntity<CollectionModel<TaskModel>> getAllTasks() {
-        List<TaskEntity> taskEntities = taskRepository.findAll();
+    @Override
+    public ResponseEntity<List<TaskDto>> getAllTasks() {
         return new ResponseEntity<>(
-                taskModelAssembler.toCollectionModel(taskEntities),
+                taskService.getAllTasks().stream().map(taskApiMapper::toTaskDto).collect(Collectors.toList()),
                 HttpStatus.OK);
     }
 
-    @GetMapping("/api/v1/tasks/me")
-    public ResponseEntity<CollectionModel<TaskModel>> getMyTasks(Principal principal) {
-        List<TaskEntity> taskEntities = taskRepository.findMyTasks(principal.getName());
-        return new ResponseEntity<>(
-                taskModelAssembler.toCollectionModel(taskEntities),
-                HttpStatus.OK);
-    }
-
-    @GetMapping("/api/v1/tasks/{id}")
-    public ResponseEntity<TaskModel> getTaskById(@PathVariable("id") UUID id) {
-        return taskRepository.findById(id)
-                .map(taskModelAssembler::toModel)
+    @Override
+    public ResponseEntity<TaskDto> getTaskById(UUID taskId) {
+        return taskService.getTaskById(taskId)
+                .map(taskApiMapper::toTaskDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @Override
+    public ResponseEntity<List<AnnotationDataDto>> getAnnotationDataById(UUID annotationDataId) {
+        return TaskApi.super.getAnnotationDataById(annotationDataId);
+    }
+
+    @Override
+    public ResponseEntity<AnnotationTaskDto> getAnnotationTaskById(UUID annotationTaskId) {
+        return taskService.getAnnotationTaskById(annotationTaskId)
+                .map(annotationTaskApiMapper::toAnnotationTaskDto)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteTaskById(UUID taskId) {
+        taskService.deleteTaskById(taskId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<List<TaskDto>> getMyTasks() {
+        Authentication authentication = authenticationFacade.getAuthentication();
+        return new ResponseEntity<>(
+                taskService.getMyTasks(authentication.getName()).stream().map(taskApiMapper::toTaskDto).collect(Collectors.toList()),
+                HttpStatus.OK);
+    }
+
 
     @PutMapping("/api/v1/tasks/{id}")
     public ResponseEntity<?> updateTask(@RequestBody TaskEntity task, @PathVariable UUID id){
@@ -149,13 +181,5 @@ public class TaskController {
         return new ResponseEntity<>(
                 annotationTaskModelAssembler.toCollectionModel(annotationTaskEntities),
                 HttpStatus.OK);
-    }
-
-    @GetMapping("/api/v1/annotationtasks/{id}")
-    public ResponseEntity<AnnotationTaskModel> getAnnotationTaskById(@PathVariable("id") UUID id) {
-        return annotationTaskRepository.findById(id)
-                .map(annotationTaskModelAssembler::toModel)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
     }
 }

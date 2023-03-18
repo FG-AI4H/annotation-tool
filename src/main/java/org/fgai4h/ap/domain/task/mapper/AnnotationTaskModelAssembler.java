@@ -1,5 +1,8 @@
-package org.fgai4h.ap.domain.task;
+package org.fgai4h.ap.domain.task.mapper;
 
+import org.fgai4h.ap.domain.task.controller.TaskController;
+import org.fgai4h.ap.domain.task.entity.AnnotationTaskEntity;
+import org.fgai4h.ap.domain.task.model.AnnotationTaskModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 

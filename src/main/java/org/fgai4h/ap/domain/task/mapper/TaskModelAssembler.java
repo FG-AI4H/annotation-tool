@@ -1,6 +1,12 @@
-package org.fgai4h.ap.domain.task;
+package org.fgai4h.ap.domain.task.mapper;
 
 import org.fgai4h.ap.domain.campaign.mapper.CampaignModelAssembler;
+import org.fgai4h.ap.domain.task.controller.TaskController;
+import org.fgai4h.ap.domain.task.entity.SampleEntity;
+import org.fgai4h.ap.domain.task.entity.TaskEntity;
+import org.fgai4h.ap.domain.task.model.SampleModel;
+import org.fgai4h.ap.domain.task.model.TaskKind;
+import org.fgai4h.ap.domain.task.model.TaskModel;
 import org.fgai4h.ap.domain.user.mapper.UserModelAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
@@ -35,7 +41,7 @@ public class TaskModelAssembler extends RepresentationModelAssemblerSupport<Task
                 .withSelfRel());
 
         taskModel.setTaskUUID(entity.getTaskUUID());
-        taskModel.setKind(entity.getKind());
+        taskModel.setKind(TaskKind.valueOf(entity.getKind()));
         taskModel.setReadOnly(entity.getReadOnly());
         taskModel.setAnnotationTasks(annotationTaskModelAssembler.toAnnotationTaskModel(entity.getAnnotationTasks()));
         taskModel.setSamples(toSampleModel(entity.getSamples()));

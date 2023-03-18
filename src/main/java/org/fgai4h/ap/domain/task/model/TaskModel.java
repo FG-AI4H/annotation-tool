@@ -1,4 +1,4 @@
-package org.fgai4h.ap.domain.task;
+package org.fgai4h.ap.domain.task.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonRootName;
@@ -22,7 +22,7 @@ import java.util.UUID;
 public class TaskModel extends RepresentationModel<TaskModel> {
 
     private UUID taskUUID;
-    private String kind;
+    private TaskKind kind;
     private Boolean readOnly;
     private List<AnnotationTaskModel> annotationTasks;
     private List<SampleModel> samples;

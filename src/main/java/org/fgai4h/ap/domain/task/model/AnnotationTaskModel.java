@@ -1,4 +1,4 @@
-package org.fgai4h.ap.domain.task;
+package org.fgai4h.ap.domain.task.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonRootName;

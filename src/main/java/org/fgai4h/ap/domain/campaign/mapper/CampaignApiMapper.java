@@ -10,11 +10,17 @@ import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.UUID;
+
 @Mapper(componentModel = "spring", uses = {UserService.class,CampaignService.class, UserApiMapper.class, DatasetApiMapper.class})
 public interface CampaignApiMapper {
 
     @Mapping(source = "id", target = "campaignUUID")
     CampaignModel toCampaignModel(CampaignDto campaignDto);
+
+    default UUID map(CampaignModel value){
+        return  value.getCampaignUUID();
+    }
 
     @InheritInverseConfiguration
     CampaignDto toCampaignDto(final CampaignModel campaignModel);

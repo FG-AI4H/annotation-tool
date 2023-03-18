@@ -161,7 +161,7 @@ components:
         user_role:
           $ref: '#/components/schemas/UserRole'
     UserRole:
-      type: object
+      type: string
       enum:
         - OWNER
         - CONTRIBUTOR
@@ -283,8 +283,118 @@ components:
         id:
           type: string
           format: uuid
-
+    TaskDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        kind:
+          $ref: '#/components/schemas/TaskKind'
+        read_only:
+          type: boolean
+        assignee:
+          type: string
+          format: uuid
+        assignee_username:
+          type: string
+        campaign:
+          type: string
+          format: uuid
+        campaign_status:
+          $ref: '#/components/schemas/CampaignStatus'
+        campaign_task_kind:
+          type: string
+        annotation_tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnnotationTaskDto'
+        samples:
+          type: array
+          items:
+            $ref: '#/components/schemas/SampleDto'
+        annotations:
+          type: array
+          items:
+            type: string
+            format: uuid
+    AnnotationTaskDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        kind:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+    SampleDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        data_url:
+          type: string
+    AnnotationDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        task:
+          type: string
+          format: uuid
+        status:
+          type: string
+        data:
+          type: array
+          items:
+            type: string
+            format: uuid
+        submitted_at:
+          type: string
+    AnnotationDataDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        data:
+          type: string
+        annotation:
+          type: string
+          format: uuid
+    TaskKind:
+      type: string
+      enum:
+        - CREATE
+        - CORRECT
+        - REVIEW
 paths:
+  /admin/users:
+    get:
+      tags:
+        - Admin
+      summary: Get remote users
+      description: Returns the list of remote users
+      operationId: retrieveAllUsers
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserDto'
+        '404':
+          description: Current user doesn't exist
+          content: { }
   /users:
     get:
       tags:
@@ -705,4 +815,140 @@ paths:
           description: successful operation
         '404':
           description: Given Dataset ID doesn't exist
+          content: { }
+
+  /tasks:
+    get:
+      tags:
+        - Task
+      summary: Get all tasks
+      description: Returns the list of tasks
+      operationId: getAllTasks
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskDto'
+        '404':
+          description: Error
+          content: { }
+  /tasks/me:
+    get:
+      tags:
+        - Task
+      summary: Get my tasks
+      description: Returns the list of current user's tasks
+      operationId: getMyTasks
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskDto'
+        '404':
+          description: Error
+          content: { }
+  /tasks/{task_id}:
+    get:
+      tags:
+        - Task
+      summary: Returns task
+      description: Returns the task of given task_id
+      operationId: getTaskById
+      parameters:
+        - name: task_id
+          in: path
+          description: Task Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskDto'
+        '404':
+          description: Given task ID doesn't exist
+          content: { }
+    delete:
+      tags:
+        - Task
+      summary: Delete task
+      description: Delete the task of given task_id
+      operationId: deleteTaskById
+      parameters:
+        - name: task_id
+          in: path
+          description: Task Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: successful operation
+        '404':
+          description: Given task ID doesn't exist
+          content: { }
+  /annotation_tasks/{annotation_task_id}:
+    get:
+      tags:
+        - Task
+      summary: Returns annotation task
+      description: Returns the task of given annotation_task_id
+      operationId: getAnnotationTaskById
+      parameters:
+        - name: annotation_task_id
+          in: path
+          description: Annotation Task Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnnotationTaskDto'
+        '404':
+          description: Given annotation task ID doesn't exist
+          content: { }
+  /annoatation_data/{annotation_data_id}:
+    get:
+      tags:
+        - Task
+      summary: Get annotation data
+      description: Returns annotation data corresponding to the uuid
+      operationId: getAnnotationDataById
+      parameters:
+        - name: annotation_data_id
+          in: path
+          description: Annotation Data Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AnnotationDataDto'
+        '404':
+          description: Error
           content: { }

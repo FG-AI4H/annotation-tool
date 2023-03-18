@@ -26,8 +26,11 @@ public class UserModelAWSAssembler extends RepresentationModelAssemblerSupport<U
 
         for (AttributeType attribute : entity.attributes()) {
             switch (attribute.name()){
-                case "sub": userModel.setIdpID(attribute.value());
+                case "sub": userModel.setIdpId(attribute.value());
+                    break;
                 case "email": userModel.setEmail(attribute.value());
+                    break;
+                default: break;
             }
         }
 

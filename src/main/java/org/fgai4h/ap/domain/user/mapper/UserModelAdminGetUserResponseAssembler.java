@@ -21,7 +21,7 @@ public class UserModelAdminGetUserResponseAssembler extends RepresentationModelA
         for (AttributeType attribute : entity.userAttributes()) {
             switch (attribute.name()){
                 case "sub":
-                    userModel.setIdpID(attribute.value());
+                    userModel.setIdpId(attribute.value());
                     break;
                 case "email":
                     userModel.setEmail(attribute.value());

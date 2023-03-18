@@ -52,7 +52,12 @@ public class DatasetController implements DatasetApi {
         Authentication authentication = authenticationFacade.getAuthentication();
         DatasetModel datasetModel = datasetApiMapper.toDatasetModel(datasetDto);
         datasetModel = datasetService.addDataset(datasetModel, authentication.getName());
-        return new ResponseEntity<>(datasetApiMapper.toDatasetDto(datasetModel),HttpStatus.CREATED);
+
+        try {
+            return ResponseEntity.created(new URI(datasetModel.getDatasetUUID().toString())).build();
+        } catch (URISyntaxException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @Override

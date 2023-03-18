@@ -1,5 +1,10 @@
-package org.fgai4h.ap.domain.task;
+package org.fgai4h.ap.domain.task.mapper;
 
+import org.fgai4h.ap.domain.task.controller.TaskController;
+import org.fgai4h.ap.domain.task.entity.AnnotationDataEntity;
+import org.fgai4h.ap.domain.task.entity.AnnotationEntity;
+import org.fgai4h.ap.domain.task.model.AnnotationDataModel;
+import org.fgai4h.ap.domain.task.model.AnnotationModel;
 import org.fgai4h.ap.domain.user.mapper.UserModelAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;

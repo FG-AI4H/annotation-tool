@@ -1,4 +1,4 @@
-package org.fgai4h.ap.domain.task;
+package org.fgai4h.ap.domain.task.model;
 
 public enum AnnotationStatus {
     PENDING("P"),COMPLETED("C"), REJECTED("R");

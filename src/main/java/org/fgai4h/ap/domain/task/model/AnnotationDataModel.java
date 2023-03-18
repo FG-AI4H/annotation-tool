@@ -1,4 +1,4 @@
-package org.fgai4h.ap.domain.task;
+package org.fgai4h.ap.domain.task.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonRootName;
@@ -13,12 +13,12 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-@JsonRootName(value = "sample")
-@Relation(collectionRelation = "sample")
+@JsonRootName(value = "annotationData")
+@Relation(collectionRelation = "annotationData")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class SampleModel extends RepresentationModel<SampleModel> {
+public class AnnotationDataModel extends RepresentationModel<AnnotationModel> {
 
-    private UUID sampleUUID;
-    private String title;
+    private UUID annotationDataUUID;
     private String data;
+    private AnnotationModel annotationModel;
 }

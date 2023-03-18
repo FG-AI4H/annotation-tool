@@ -1,4 +1,4 @@
-package org.fgai4h.ap.domain.task;
+package org.fgai4h.ap.domain.task.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -32,14 +32,14 @@ public class TaskEntity implements Serializable {
     private String kind;
     private Boolean readOnly;
 
-    @ManyToMany(cascade=CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
             name = "task_annotation",
             joinColumns = @JoinColumn(name = "taskUUID"),
             inverseJoinColumns = @JoinColumn(name = "annotationTaskUUID"))
     private List<AnnotationTaskEntity> annotationTasks;
 
-    @OneToMany(mappedBy="task")
+    @OneToMany(mappedBy="task", cascade=CascadeType.ALL)
     private List<SampleEntity> samples;
 
     @OneToMany(mappedBy="task", cascade=CascadeType.ALL)

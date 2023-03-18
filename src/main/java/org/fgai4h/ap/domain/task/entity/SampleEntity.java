@@ -1,4 +1,4 @@
-package org.fgai4h.ap.domain.task;
+package org.fgai4h.ap.domain.task.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,8 +15,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="annoatationData")
-public class AnnotationDataEntity implements Serializable {
+@Table(name="sample")
+public class SampleEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -24,11 +24,15 @@ public class AnnotationDataEntity implements Serializable {
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(columnDefinition = "BINARY(16)")
-    private UUID annotationDataUUID;
+    private UUID sampleUUID;
+
+    private String title;
 
     @Lob
-    String data;
+    @Basic(fetch = FetchType.LAZY)
+    private String data;
 
     @ManyToOne
-    AnnotationEntity annotationEntity;
+    private TaskEntity task;
+
 }

@@ -1,4 +1,4 @@
-package org.fgai4h.ap.domain.task;
+package org.fgai4h.ap.domain.task.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

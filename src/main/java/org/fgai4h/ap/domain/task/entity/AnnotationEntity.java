@@ -1,10 +1,11 @@
-package org.fgai4h.ap.domain.task;
+package org.fgai4h.ap.domain.task.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.fgai4h.ap.domain.task.model.AnnotationStatus;
 import org.fgai4h.ap.domain.user.entity.UserEntity;
 import org.hibernate.annotations.GenericGenerator;
 
