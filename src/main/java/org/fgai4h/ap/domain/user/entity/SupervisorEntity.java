@@ -22,5 +22,8 @@ public class SupervisorEntity implements Serializable {
     @Column(columnDefinition = "BINARY(16)")
     private UUID supervisorUUID;
 
+    private Integer yearsInPractice;
+    private Integer selfAssessment;
+
 
 }

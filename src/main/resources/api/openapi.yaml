@@ -277,12 +277,32 @@ components:
         id:
           type: string
           format: uuid
+        years_in_practice:
+          description: Years in practice
+          type: integer
+          minimum: 0
+          maximum: 100
+        self_assessment:
+          description: Self assessment grade
+          type: integer
+          minimum: 0
+          maximum: 10
     SupervisorDto:
       type: object
       properties:
         id:
           type: string
           format: uuid
+        years_in_practice:
+          description: Years in practice
+          type: integer
+          minimum: 0
+          maximum: 100
+        self_assessment:
+          description: Self assessment grade
+          type: integer
+          minimum: 0
+          maximum: 10
     TaskDto:
       type: object
       properties:
