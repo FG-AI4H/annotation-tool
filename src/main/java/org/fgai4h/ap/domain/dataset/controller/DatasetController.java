@@ -3,11 +3,14 @@ package org.fgai4h.ap.domain.dataset.controller;
 import lombok.RequiredArgsConstructor;
 import org.fgai4h.ap.api.DatasetApi;
 import org.fgai4h.ap.api.model.DatasetDto;
+import org.fgai4h.ap.api.model.DatasetRoleDto;
 import org.fgai4h.ap.domain.dataset.mapper.DatasetApiMapper;
+import org.fgai4h.ap.domain.dataset.mapper.DatasetRoleApiMapper;
 import org.fgai4h.ap.domain.dataset.mapper.MetadataModelAssembler;
 import org.fgai4h.ap.domain.dataset.model.DatasetMetadataModel;
 import org.fgai4h.ap.domain.dataset.model.DatasetModel;
 import org.fgai4h.ap.domain.dataset.repository.MetadataRepository;
+import org.fgai4h.ap.domain.dataset.service.DatasetRoleService;
 import org.fgai4h.ap.domain.dataset.service.DatasetService;
 import org.fgai4h.ap.security.IAuthenticationFacade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +41,8 @@ public class DatasetController implements DatasetApi {
     private final MetadataModelAssembler metadataModelAssembler;
     private final DatasetService datasetService;
     private final DatasetApiMapper datasetApiMapper;
+    private final DatasetRoleService datasetRoleService;
+    private final DatasetRoleApiMapper datasetRoleApiMapper;
 
     @Override
     public ResponseEntity<List<DatasetDto>> getAllDatasets() {
@@ -86,6 +91,12 @@ public class DatasetController implements DatasetApi {
     public ResponseEntity<Void> deleteDatasetById(UUID datasetId) {
         datasetService.deleteCampaignById(datasetId);
         return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<List<DatasetRoleDto>> getDatasetPermissionsById(UUID datasetId) {
+        return new ResponseEntity<>(datasetRoleService.getDatasetRolesForDatasetId(datasetId).stream().map(datasetRoleApiMapper::toDatasetRoleDto).collect(Collectors.toList()),
+        HttpStatus.OK);
     }
 
     @GetMapping("/api/v1/metadata/{id}")
