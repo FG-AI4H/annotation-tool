@@ -10,6 +10,6 @@ import java.util.UUID;
 
 public interface TaskRepository extends JpaRepository<TaskEntity, UUID> {
 
-    @Query("select t from TaskEntity t where t.assignee.idpID = :idpID")
+    @Query("select t from TaskEntity t where t.assignee.idpId = :idpID")
     public List<TaskEntity> findMyTasks(@Param("idpID") String idpID);
 }

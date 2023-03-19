@@ -20,6 +20,6 @@ public class ReviewerModel extends RepresentationModel<ReviewerModel> {
 
     private UUID reviewerUUID;
 
-    private Integer yearsInPractice;
+    private Float expectedSalary;
     private Integer selfAssessment;
 }

@@ -107,26 +107,29 @@ public class CampaignService {
 
                 S3Object myValue = objects.get(i);
                 if(myValue.size() > 0){
-                    UserEntity assignee =  campaign.getAnnotators().get(i%campaign.getAnnotators().size());
 
-                    TaskEntity taskEntity = TaskEntity.builder()
-                            .campaign(campaign)
-                            .kind(TaskKind.CREATE.toString())
-                            .assignee(assignee)
-                            .annotationTasks(annotationTaskEntityList)
-                            .readOnly(false)
-                            .build();
+                    for (int j = 0; j < campaign.getMinAnnotation(); j++) {
+                        UserEntity assignee = campaign.getAnnotators().get((i+j) % campaign.getAnnotators().size());
 
-                    List<SampleEntity> samples = new ArrayList<>();
+                        TaskEntity taskEntity = TaskEntity.builder()
+                                .campaign(campaign)
+                                .kind(TaskKind.CREATE.toString())
+                                .assignee(assignee)
+                                .annotationTasks(annotationTaskEntityList)
+                                .readOnly(false)
+                                .build();
 
-                    samples.add(SampleEntity.builder()
-                            .task(taskEntity)
-                            .data(myValue.key())
-                            .title(myValue.key()+": "+myValue.eTag())
-                            .build());
+                        List<SampleEntity> samples = new ArrayList<>();
 
-                    taskEntity.setSamples(samples);
-                    taskRepository.save(taskEntity);
+                        samples.add(SampleEntity.builder()
+                                .task(taskEntity)
+                                .data(myValue.key())
+                                .title(myValue.key() + ": " + myValue.eTag())
+                                .build());
+
+                        taskEntity.setSamples(samples);
+                        taskRepository.save(taskEntity);
+                    }
                 }
             }
         });

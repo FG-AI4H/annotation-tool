@@ -54,6 +54,23 @@ components:
         email:
           description: Email of user
           type: string
+        expertise:
+          description: Expertise
+          type: string
+        work_country:
+          description: Working country
+          type: string
+        study_country:
+          description: Study country
+          type: string
+        degree:
+          description: Study degree
+          type: string
+        years_in_practice:
+          description: Years in practice
+          type: integer
+          minimum: 0
+          maximum: 100
         annotator_role:
           $ref: '#/components/schemas/AnnotatorDto'
         reviewer_role:
@@ -190,7 +207,7 @@ components:
           type: string
         annotation_instructions:
           type: string
-        quality_control:
+        quality_assurance:
           type: string
         is_instance_label:
           type: boolean
@@ -245,43 +262,26 @@ components:
           description: Id of the annotator
           type: string
           format: uuid
-        expertise:
-          description: Expertise
-          type: string
-        years_in_practice:
-          description: Years in practice
-          type: integer
-          minimum: 0
-          maximum: 100
         expected_salary:
           description: Expected salary
           type: number
           format: float
-        work_country:
-          description: Working country
-          type: string
-        study_country:
-          description: Study country
-          type: string
         self_assessment:
           description: Self assessment grade
           type: integer
           minimum: 0
           maximum: 10
-        degree:
-          description: Study degree
-          type: string
+
     ReviewerDto:
       type: object
       properties:
         id:
           type: string
           format: uuid
-        years_in_practice:
-          description: Years in practice
-          type: integer
-          minimum: 0
-          maximum: 100
+        expected_salary:
+          description: Expected salary
+          type: number
+          format: float
         self_assessment:
           description: Self assessment grade
           type: integer
@@ -293,11 +293,10 @@ components:
         id:
           type: string
           format: uuid
-        years_in_practice:
-          description: Years in practice
-          type: integer
-          minimum: 0
-          maximum: 100
+        expected_salary:
+          description: Expected salary
+          type: number
+          format: float
         self_assessment:
           description: Self assessment grade
           type: integer
@@ -761,10 +760,6 @@ paths:
       responses:
         '201':
           description: Dataset added successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DatasetDto'
   /datasets/{dataset_id}:
     get:
       tags:

@@ -19,4 +19,7 @@ import java.util.UUID;
 public class SupervisorModel extends RepresentationModel<SupervisorModel> {
 
     private UUID supervisorUUID;
+
+    private Float expectedSalary;
+    private Integer selfAssessment;
 }

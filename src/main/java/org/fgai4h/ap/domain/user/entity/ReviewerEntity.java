@@ -22,7 +22,7 @@ public class ReviewerEntity implements Serializable {
     @Column(columnDefinition = "BINARY(16)")
     private UUID reviewerUUID;
 
-    private Integer yearsInPractice;
+    private Float expectedSalary;
     private Integer selfAssessment;
 
 

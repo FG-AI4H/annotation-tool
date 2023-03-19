@@ -48,7 +48,7 @@ public class DatasetController implements DatasetApi {
     }
 
     @Override
-    public ResponseEntity<DatasetDto> addDataset(DatasetDto datasetDto) {
+    public ResponseEntity<Void> addDataset(DatasetDto datasetDto) {
         Authentication authentication = authenticationFacade.getAuthentication();
         DatasetModel datasetModel = datasetApiMapper.toDatasetModel(datasetDto);
         datasetModel = datasetService.addDataset(datasetModel, authentication.getName());

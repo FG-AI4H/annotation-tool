@@ -39,7 +39,7 @@ public class SecurityConfiguration {
                     Optional<UserEntity> user = userRepository.findByIdpId(jwt.getClaims().get("sub").toString());
                     if(!user.isPresent()){
                         UserEntity newUser = new UserEntity();
-                        newUser.setIdpID(jwt.getClaims().get("sub").toString());
+                        newUser.setIdpId(jwt.getClaims().get("sub").toString());
                         newUser.setUsername(jwt.getClaims().get("username").toString());
                         userRepository.save(newUser);
                     }

@@ -1,8 +1,6 @@
 package org.fgai4h.ap.domain.admin.service;
 
 import lombok.RequiredArgsConstructor;
-import org.fgai4h.ap.domain.error.DomainError;
-import org.fgai4h.ap.domain.exception.NotFoundException;
 import org.fgai4h.ap.domain.user.entity.UserEntity;
 import org.fgai4h.ap.domain.user.mapper.UserMapper;
 import org.fgai4h.ap.domain.user.mapper.UserModelAWSAssembler;
@@ -15,14 +13,10 @@ import org.springframework.stereotype.Service;
 import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
-import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminGetUserResponse;
-import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.UserType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -47,35 +41,12 @@ public class AdminService {
         for (UserModel next : userModelCollection) {
             UserEntity userEntity = userRepository.findByIdpId(next.getIdpId())
                     .orElseGet(() -> userRepository.save(userMapper.toUserEntity(next)));
-            userList.add(userModelAssembler.toModel(userEntity));
+            next.setUserUUID(userEntity.getUserUUID());
+            userList.add(next);
         }
 
         return userList;
 
     }
 
-    public Optional<UserModel> getUserById(final UUID userId) {
-        Optional<UserModel> userModel = Optional.ofNullable(userRepository
-                .findById(userId)
-                .map(userModelAssembler::toModel)
-                .orElseThrow(() -> new NotFoundException(DomainError.NOT_FOUND, "User", "id", userId)));
-
-        if(userModel.isPresent()) {
-            CognitoIdentityProviderClient cognitoClient = CognitoIdentityProviderClient.builder()
-                    .region(Region.EU_CENTRAL_1)
-                    .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
-                    .build();
-
-            AdminGetUserResponse awsUser = AWSCognito.getUserByUsername(cognitoClient, "eu-central-1_1cFVgcU36", userModel.get().getUsername());
-            cognitoClient.close();
-            for (AttributeType attribute : awsUser.userAttributes()) {
-                if (attribute.name().equals("email")) {
-                    userModel.get().setEmail(attribute.value());
-                }
-            }
-        }
-
-        return userModel;
-
-    }
 }

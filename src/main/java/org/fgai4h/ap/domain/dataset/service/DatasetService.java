@@ -11,7 +11,6 @@ import org.fgai4h.ap.domain.error.DomainError;
 import org.fgai4h.ap.domain.exception.NotFoundException;
 import org.fgai4h.ap.domain.user.model.UserModel;
 import org.fgai4h.ap.domain.user.model.UserRole;
-import org.fgai4h.ap.domain.user.repository.UserRepository;
 import org.fgai4h.ap.domain.user.service.UserService;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +26,6 @@ public class DatasetService {
     private final DatasetRepository datasetRepository;
     private final DatasetModelAssembler datasetModelAssembler;
     private final DatasetMapper datasetMapper;
-    private final UserRepository userRepository;
     private final DatasetRoleService datasetRoleService;
     private final UserService userService;
 
@@ -68,6 +66,7 @@ public class DatasetService {
     }
 
     public void deleteCampaignById(UUID datasetId) {
+        datasetRoleService.deleteRolesByDatasetId(datasetId);
         datasetRepository.deleteById(datasetId);
     }
 }

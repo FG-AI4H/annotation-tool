@@ -37,8 +37,13 @@ public class UserEntity implements Serializable {
     @JoinColumn(name = "supervisor_role_ID")
     private SupervisorEntity supervisorRole;
 
-    private String idpID;
+    private String idpId;
     private String username;
     private Date birthdate;
+    private String expertise;
+    private Integer yearsInPractice;
+    private String workCountry;
+    private String studyCountry;
+    private String degree;
 
 }

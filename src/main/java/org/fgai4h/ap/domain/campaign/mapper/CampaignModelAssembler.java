@@ -104,7 +104,7 @@ public class CampaignModelAssembler extends RepresentationModelAssemblerSupport<
                 .map(user-> UserModel.builder()
                         .userUUID(user.getUserUUID())
                         .username(user.getUsername())
-                        .idpId(user.getIdpID())
+                        .idpId(user.getIdpId())
                         .annotatorRole(annotatorModelAssembler.toModel(user.getAnnotatorRole()))
                         .supervisorRole(supervisorModelAssembler.toModel(user.getSupervisorRole()))
                         .reviewerRole(reviewerModelAssembler.toModel(user.getReviewerRole()))

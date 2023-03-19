@@ -24,13 +24,8 @@ public class AnnotatorEntity implements Serializable {
     @Column(columnDefinition = "BINARY(16)")
     private UUID annotatorUUID;
 
-    private String expertise;
-    private Integer yearsInPractice;
     private Float expectedSalary;
-    private String workCountry;
-    private String studyCountry;
     private Integer selfAssessment;
-    private String degree;
 
     @OneToMany(mappedBy = "annotatorEntity")
     private List<QualificationEntity> qualifications = new java.util.ArrayList<>();
