@@ -23,6 +23,9 @@ public class DatasetModel extends RepresentationModel<DatasetModel> {
     private String name;
     private String description;
     private String storageLocation;
+    private Boolean linked;
+    private String catalogLocation;
+    private String catalogAuthType;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private DatasetMetadataModel metadata;

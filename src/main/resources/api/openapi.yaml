@@ -24,6 +24,8 @@ tags:
     description: Operation about annotation tasks
   - name: User
     description: Operations about users
+  - name : Tool
+    description: operations about tools
 
 components:
   securitySchemes:
@@ -89,6 +91,12 @@ components:
         description:
           type: string
         storage_location:
+          type: string
+        linked:
+          type: boolean
+        catalog_location:
+          type: string
+        catalog_auth_type:
           type: string
         created_at:
           type: string
@@ -396,6 +404,22 @@ components:
         - CREATE
         - CORRECT
         - REVIEW
+    AnnotationToolDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        editor:
+          type: string
+        annotation_tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnnotationTaskDto'
 paths:
   /admin/users:
     get:
@@ -995,3 +1019,63 @@ paths:
         '404':
           description: Error
           content: { }
+  /annotation_tools:
+    get:
+      tags:
+        - Tool
+      summary: Get annotation tools
+      description: Returns the list of annotation tools
+      operationId: getAnotationTools
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AnnotationToolDto'
+        '404':
+          description: Error
+          content: { }
+    post:
+      tags:
+        - Tool
+      summary: Creates a new annotation tool for the given tool request
+      description: Creates a new annotation tool for the given tool request
+      operationId: addAnnotationTool
+      requestBody:
+        description: New Tool Request object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnnotationToolDto'
+      responses:
+        '201':
+          description: Tool added successfully
+  /annotation_tools/{annotation_tool_id}:
+    get:
+      tags:
+        - Tool
+      summary: Get annotation tool
+      description: Returns annotation tool corresponding to the uuid
+      operationId: getAnnotationToolById
+      parameters:
+        - name: annotation_tool_id
+          in: path
+          description: Annotation Tool Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnnotationToolDto'
+        '404':
+          description: Error
+          content: { }
+
