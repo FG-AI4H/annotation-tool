@@ -26,6 +26,8 @@ tags:
     description: Operations about users
   - name : Tool
     description: operations about tools
+  - name: Catalog
+    description: operations about data catalogs
 
 components:
   securitySchemes:
@@ -420,6 +422,20 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AnnotationTaskDto'
+    DataCatalogDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        provider:
+          type: string
+        provider_catalog_id:
+          type: string
 paths:
   /admin/users:
     get:
@@ -1098,3 +1114,62 @@ paths:
           description: Error
           content: { }
 
+  /data_catalogs:
+    get:
+      tags:
+        - Catalog
+      summary: Get data catalogs
+      description: Returns the list of adata catalogs
+      operationId: getDataCatalogs
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DataCatalogDto'
+        '404':
+          description: Error
+          content: { }
+    post:
+      tags:
+        - Catalog
+      summary: Creates a new data catalog for the given request
+      description: Creates a new data catalog for the given request
+      operationId: addDataCatalog
+      requestBody:
+        description: New Catalog Request object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataCatalogDto'
+      responses:
+        '201':
+          description: Catalog added successfully
+  /data_catalogs/{data_catalog_id}:
+    get:
+      tags:
+        - Catalog
+      summary: Get data catalog
+      description: Returns data catalog corresponding to the uuid
+      operationId: getDataCatalogById
+      parameters:
+        - name: data_catalog_id
+          in: path
+          description: Data Cataliog Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataCatalogDto'
+        '404':
+          description: Error
+          content: { }
