@@ -786,6 +786,25 @@ paths:
       responses:
         '201':
           description: Dataset added successfully
+  /datasets/catalog:
+    get:
+      tags:
+        - Dataset
+      summary: List all the datasets from all catalog
+      description: List all the datasets from all catalog
+      operationId: getCatalogDatasets
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DatasetDto'
+        '404':
+          description: Error occured
+          content: { }
   /datasets/{dataset_id}:
     get:
       tags:

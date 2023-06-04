@@ -108,4 +108,12 @@ public class DatasetController implements DatasetApi {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @Override
+    public ResponseEntity<List<DatasetDto>> getCatalogDatasets() {
+        Authentication authentication = authenticationFacade.getAuthentication();
+        return new ResponseEntity<>(
+                datasetService.getCatalogDatasets(authentication.getName()).stream().map(datasetApiMapper::toDatasetDto).collect(Collectors.toList()),
+                HttpStatus.OK);
+    }
+
 }

@@ -12,6 +12,7 @@ import org.fgai4h.ap.domain.exception.NotFoundException;
 import org.fgai4h.ap.domain.user.model.UserModel;
 import org.fgai4h.ap.domain.user.model.UserRole;
 import org.fgai4h.ap.domain.user.service.UserService;
+import org.fgai4h.ap.helpers.AWSGlue;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -68,5 +69,10 @@ public class DatasetService {
     public void deleteCampaignById(UUID datasetId) {
         datasetRoleService.deleteRolesByDatasetId(datasetId);
         datasetRepository.deleteById(datasetId);
+    }
+
+    public List<DatasetModel> getCatalogDatasets(String _userUUID){
+
+        return AWSGlue.getAllDatabases();
     }
 }
