@@ -29,7 +29,6 @@ public class AWSGlue {
         List<DatasetModel> databasesModel = new ArrayList<>();
         try {
             GetDatabasesRequest databasesRequest = GetDatabasesRequest.builder()
-                    .maxResults(10)
                     .build();
 
             GetDatabasesResponse response = glueClient.getDatabases(databasesRequest);
@@ -39,9 +38,9 @@ public class AWSGlue {
                         .name(database.name())
                         .description(database.description())
                         .linked(true)
-                                .catalogLocation(database.locationUri())
-                                .storageLocation(database.locationUri())
-                                .createdAt(LocalDateTime.ofInstant(database.createTime(), ZoneId.of("Europe/Berlin")))
+                        .catalogLocation("AWS: "+ Region.EU_CENTRAL_1.toString())
+                        .storageLocation(database.locationUri())
+                        .createdAt(LocalDateTime.ofInstant(database.createTime(), ZoneId.of("Europe/Berlin")))
                         .build());
             }
 

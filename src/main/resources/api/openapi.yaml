@@ -436,6 +436,12 @@ components:
           type: string
         provider_catalog_id:
           type: string
+        location:
+          type: string
+        database_name:
+          type: string
+        aws_region:
+          type: string
 paths:
   /admin/users:
     get:
@@ -1172,4 +1178,50 @@ paths:
                 $ref: '#/components/schemas/DataCatalogDto'
         '404':
           description: Error
+          content: { }
+    put:
+      tags:
+        - Catalog
+      summary: Update the data catalog
+      description: Update the given data catalog
+      operationId: updateDataCatalog
+      parameters:
+        - name: data_catalog_id
+          in: path
+          description: DataCatalog Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: New DataCatalog object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataCatalogDto'
+      responses:
+        '204':
+          description: DataCatalog updated successfully
+        '500':
+          description: Given DataCatalog ID doesn't exist
+          content: { }
+    delete:
+      tags:
+        - Catalog
+      summary: Delete a DataCatalog
+      description: Delete the DataCatalog of given id
+      operationId: deleteDataCatalogById
+      parameters:
+        - name: data_catalog_id
+          in: path
+          description: DataCatalog Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: successful operation
+        '404':
+          description: Given DataCatalog ID doesn't exist
           content: { }

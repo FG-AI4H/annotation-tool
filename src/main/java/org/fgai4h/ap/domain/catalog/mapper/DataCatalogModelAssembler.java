@@ -30,6 +30,8 @@ public class DataCatalogModelAssembler extends RepresentationModelAssemblerSuppo
         taskModel.setDescription(entity.getDescription());
         taskModel.setProvider(entity.getProvider());
         taskModel.setProviderCatalogId(entity.getProviderCatalogId());
+        taskModel.setAwsRegion(entity.getAwsRegion());
+        taskModel.setDatabaseName(entity.getDatabaseName());
 
         return taskModel;
     }

@@ -25,7 +25,7 @@ public class DataCatalogService {
     private final DataCatalogModelAssembler dataCatalogModelAssembler;
     private final DataCatalogMapper dataCatalogMapper;
 
-    public List<DataCatalogModel> getAnotationTools() {
+    public List<DataCatalogModel> getDataCatalogs() {
         return dataCatalogRepository.findAll().stream()
                 .map(dataCatalogModelAssembler::toModel).collect(Collectors.toList());
     }
@@ -41,4 +41,13 @@ public class DataCatalogService {
                 .map(dataCatalogModelAssembler::toModel)
                 .orElseThrow(() -> new NotFoundException(DomainError.NOT_FOUND, DOMAIN_NAME, "id", catalogId)));
     }
+
+    public void updateDataCatalog(DataCatalogModel dataCatalogModel) {
+        dataCatalogRepository.save(dataCatalogMapper.toDataCatalogEntity(dataCatalogModel));
+    }
+
+    public void deleteDataCatalogById(UUID dataCatalogId) {
+        dataCatalogRepository.deleteById(dataCatalogId);
+    }
+
 }
