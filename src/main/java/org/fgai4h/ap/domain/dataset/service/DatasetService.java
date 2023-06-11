@@ -1,6 +1,8 @@
 package org.fgai4h.ap.domain.dataset.service;
 
 import lombok.RequiredArgsConstructor;
+import org.fgai4h.ap.domain.catalog.model.DataCatalogModel;
+import org.fgai4h.ap.domain.catalog.service.DataCatalogService;
 import org.fgai4h.ap.domain.dataset.entity.DatasetEntity;
 import org.fgai4h.ap.domain.dataset.mapper.DatasetMapper;
 import org.fgai4h.ap.domain.dataset.mapper.DatasetModelAssembler;
@@ -15,9 +17,7 @@ import org.fgai4h.ap.domain.user.service.UserService;
 import org.fgai4h.ap.helpers.AWSGlue;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +29,7 @@ public class DatasetService {
     private final DatasetMapper datasetMapper;
     private final DatasetRoleService datasetRoleService;
     private final UserService userService;
+    private final DataCatalogService dataCatalogService;
 
     public List<DatasetModel> getAllDatasets(String userUUID) {
         return datasetRepository.findAllByUserId(userUUID)
@@ -72,7 +73,10 @@ public class DatasetService {
     }
 
     public List<DatasetModel> getCatalogDatasets(String _userUUID){
+        List<DataCatalogModel> allCatalogs = dataCatalogService.getDataCatalogs();
+        List<DatasetModel> datasetModelList = new ArrayList<>();
+        allCatalogs.stream().forEach(e-> datasetModelList.addAll(AWSGlue.getAllTables(e)));
 
-        return AWSGlue.getAllDatabases();
+        return datasetModelList;
     }
 }
