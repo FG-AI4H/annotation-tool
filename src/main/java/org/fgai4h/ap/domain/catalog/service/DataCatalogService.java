@@ -25,7 +25,7 @@ public class DataCatalogService {
     private final DataCatalogModelAssembler dataCatalogModelAssembler;
     private final DataCatalogMapper dataCatalogMapper;
 
-    public List<DataCatalogModel> getDataCatalogs() {
+    public List<DataCatalogModel> getDataCatalogs(String userUUID) {
         return dataCatalogRepository.findAll().stream()
                 .map(dataCatalogModelAssembler::toModel).collect(Collectors.toList());
     }

@@ -1,8 +1,10 @@
 package org.fgai4h.ap.helpers;
 
-import lombok.AllArgsConstructor;
 import org.fgai4h.ap.domain.catalog.model.DataCatalogModel;
+import org.fgai4h.ap.domain.catalog.model.TableModel;
 import org.fgai4h.ap.domain.dataset.model.DatasetModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.glue.GlueClient;
@@ -10,12 +12,18 @@ import software.amazon.awssdk.services.glue.model.*;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-@AllArgsConstructor
 public class AWSGlue {
 
+    private AWSGlue() {
+        throw new IllegalStateException("Utility class");
+    }
+
+    static Logger logger = LoggerFactory.getLogger(AWSGlue.class);
 
     public static List<DatasetModel> getAllDatabases(DataCatalogModel dataCatalogModel) {
 
@@ -43,8 +51,7 @@ public class AWSGlue {
             }
 
         } catch (GlueException e) {
-            System.err.println(e.awsErrorDetails().errorMessage());
-            System.exit(1);
+            logger.info(e.awsErrorDetails().errorMessage());
         }
 
         glueClient.close();
@@ -67,23 +74,56 @@ public class AWSGlue {
             GetTablesResponse response = glueClient.getTables(tablesRequest);
             List<Table> tables = response.tableList();
             for (Table table: tables) {
-                databasesModel.add(DatasetModel.builder()
-                        .name(table.name())
-                        .description(table.description())
-                        .linked(true)
-                        .catalogLocation("AWS: "+ dataCatalogModel.getAwsRegion())
-                        .storageLocation(table.storageDescriptor().location())
-                        .createdAt(LocalDateTime.ofInstant(table.createTime(), ZoneId.of("Europe/Berlin")))
-                        .build());
+
+                if(table.parameters().get("DEPRECATED_BY_CRAWLER") == null) {
+                    databasesModel.add(DatasetModel.builder()
+                            .name(table.name())
+                            .description(table.description())
+                            .linked(true)
+                            .dataCatalogId(dataCatalogModel.getDataCatalogUUID())
+                            .catalogLocation("AWS: " + dataCatalogModel.getAwsRegion())
+                            .storageLocation(table.storageDescriptor().location())
+                            .createdAt(LocalDateTime.ofInstant(table.createTime(), ZoneOffset.UTC))
+                            .build());
+                }
             }
 
         } catch (GlueException e) {
-            System.err.println(e.awsErrorDetails().errorMessage());
-            System.exit(1);
+            logger.info(e.awsErrorDetails().errorMessage());
         }
 
         glueClient.close();
         return databasesModel;
+    }
+
+    public static Optional<TableModel> getGlueTable(DataCatalogModel dataCatalogModel, String tableName ) {
+
+        GlueClient glueClient = GlueClient.builder()
+                .region(Region.of(dataCatalogModel.getAwsRegion()))
+                .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
+                .build();
+
+        Optional<TableModel> result = Optional.empty();
+
+        try {
+            GetTableRequest tableRequest = GetTableRequest.builder()
+                    .databaseName(dataCatalogModel.getDatabaseName())
+                    .name(tableName)
+                    .build();
+
+            GetTableResponse tableResponse = glueClient.getTable(tableRequest);
+            TableModel tableModel = TableModel.builder()
+                    .name(tableResponse.table().name())
+                    .description(tableResponse.table().description())
+                    .build();
+            result = Optional.of(tableModel);
+
+        } catch (GlueException e) {
+            logger.info(e.awsErrorDetails().errorMessage());
+        }
+
+        glueClient.close();
+        return result;
     }
 
 }

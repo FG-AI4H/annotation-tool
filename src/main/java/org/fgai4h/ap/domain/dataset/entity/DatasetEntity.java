@@ -35,6 +35,7 @@ public class DatasetEntity implements Serializable
     private String catalogAuthType;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private UUID dataCatalogId;
 
     private String visibility;
 

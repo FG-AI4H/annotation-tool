@@ -104,6 +104,9 @@ components:
           type: string
         updated_at:
           type: string
+        data_catalog_id:
+          type: string
+          format: uuid
         metadata:
           $ref: '#/components/schemas/DatasetMetadataDto'
         visibility:
@@ -441,6 +444,16 @@ components:
         database_name:
           type: string
         aws_region:
+          type: string
+    TableDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
           type: string
 paths:
   /admin/users:
@@ -1224,4 +1237,35 @@ paths:
           description: successful operation
         '404':
           description: Given DataCatalog ID doesn't exist
+          content: { }
+  /data_catalogs/{data_catalog_id}/{table_name}:
+    get:
+      tags:
+        - Catalog
+      summary: Get table from data catalog
+      description: Returns the table from data catalog corresponding to the uuid
+      operationId: getTableFromDataCatalog
+      parameters:
+        - name: data_catalog_id
+          in: path
+          description: Data Cataliog Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: table_name
+          in: path
+          description: Table name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableDto'
+        '404':
+          description: Error
           content: { }

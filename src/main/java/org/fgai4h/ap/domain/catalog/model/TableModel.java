@@ -1,8 +1,9 @@
-package org.fgai4h.ap.domain.dataset.model;
+package org.fgai4h.ap.domain.catalog.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.*;
+import org.fgai4h.ap.domain.dataset.model.DatasetMetadataModel;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 
@@ -17,18 +18,14 @@ import java.util.UUID;
 @JsonRootName(value = "dataset")
 @Relation(collectionRelation = "dataset")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class DatasetModel extends RepresentationModel<DatasetModel> {
+public class TableModel extends RepresentationModel<TableModel> {
 
-    private UUID datasetUUID;
+    private UUID tableUUID;
     private String name;
     private String description;
     private String storageLocation;
     private Boolean linked;
-    private String catalogLocation;
-    private String catalogAuthType;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private DatasetMetadataModel metadata;
-    private DatasetVisibility visibility;
-    private UUID dataCatalogId;
 }

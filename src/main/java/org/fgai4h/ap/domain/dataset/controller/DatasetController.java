@@ -115,5 +115,4 @@ public class DatasetController implements DatasetApi {
                 datasetService.getCatalogDatasets(authentication.getName()).stream().map(datasetApiMapper::toDatasetDto).collect(Collectors.toList()),
                 HttpStatus.OK);
     }
-
 }

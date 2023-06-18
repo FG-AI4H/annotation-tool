@@ -17,7 +17,10 @@ import org.fgai4h.ap.domain.user.service.UserService;
 import org.fgai4h.ap.helpers.AWSGlue;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,10 +75,10 @@ public class DatasetService {
         datasetRepository.deleteById(datasetId);
     }
 
-    public List<DatasetModel> getCatalogDatasets(String _userUUID){
-        List<DataCatalogModel> allCatalogs = dataCatalogService.getDataCatalogs();
+    public List<DatasetModel> getCatalogDatasets(String userUUID){
+        List<DataCatalogModel> allCatalogs = dataCatalogService.getDataCatalogs(userUUID);
         List<DatasetModel> datasetModelList = new ArrayList<>();
-        allCatalogs.stream().forEach(e-> datasetModelList.addAll(AWSGlue.getAllTables(e)));
+        allCatalogs.forEach(e-> datasetModelList.addAll(AWSGlue.getAllTables(e)));
 
         return datasetModelList;
     }
