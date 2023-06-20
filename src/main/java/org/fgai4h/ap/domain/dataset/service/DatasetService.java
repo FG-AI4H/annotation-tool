@@ -1,6 +1,11 @@
 package org.fgai4h.ap.domain.dataset.service;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.fgai4h.ap.api.model.DatasetDto;
+import org.fgai4h.ap.api.model.DatasetMetadataDto;
 import org.fgai4h.ap.domain.catalog.model.DataCatalogModel;
 import org.fgai4h.ap.domain.catalog.service.DataCatalogService;
 import org.fgai4h.ap.domain.dataset.entity.DatasetEntity;
@@ -15,8 +20,12 @@ import org.fgai4h.ap.domain.user.model.UserModel;
 import org.fgai4h.ap.domain.user.model.UserRole;
 import org.fgai4h.ap.domain.user.service.UserService;
 import org.fgai4h.ap.helpers.AWSGlue;
+import org.fgai4h.ap.helpers.AWSS3;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +35,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class DatasetService {
+
+    static Logger logger = LoggerFactory.getLogger(DatasetService.class);
 
     private final DatasetRepository datasetRepository;
     private final DatasetModelAssembler datasetModelAssembler;
@@ -81,5 +92,30 @@ public class DatasetService {
         allCatalogs.forEach(e-> datasetModelList.addAll(AWSGlue.getAllTables(e)));
 
         return datasetModelList;
+    }
+
+    private String metatdataObjectToJson(DatasetMetadataDto datasetMetadataDto){
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
+        try {
+            return objectMapper.writeValueAsString(datasetMetadataDto);
+        } catch (JsonProcessingException e) {
+            logger.info(e.getMessage());
+            return null;
+        }
+    }
+
+    public void writeMetadataToCatalog(DatasetDto datasetDto) {
+        //Write Metatdata to data catalog
+        if (datasetDto.getDataCatalogId() != null) {
+            DataCatalogModel dataCatalogModel = dataCatalogService.getDataCatalogById(datasetDto.getDataCatalogId()).get();
+            AWSS3.signBucket(
+                    dataCatalogModel,
+                    "text/plain",
+                    datasetDto.getName(),
+                    metatdataObjectToJson(datasetDto.getMetadata()).getBytes(StandardCharsets.UTF_8));
+
+            AWSGlue.startSpecificCrawler(dataCatalogModel,"fgai4h-oci-data-hub-"+dataCatalogModel.getAwsRegion()+"-crawler");
+        }
     }
 }

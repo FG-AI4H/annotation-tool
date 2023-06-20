@@ -26,4 +26,5 @@ public class DataCatalogModel extends RepresentationModel<DataCatalogModel> {
     private String location;
     private String databaseName;
     private String awsRegion;
+    private String bucketName;
 }

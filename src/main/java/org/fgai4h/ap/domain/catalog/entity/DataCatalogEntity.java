@@ -32,4 +32,5 @@ public class DataCatalogEntity implements Serializable {
     private String location;
     private String databaseName;
     private String awsRegion;
+    private String bucketName;
 }

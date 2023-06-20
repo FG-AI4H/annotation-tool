@@ -57,7 +57,7 @@ public class DatasetController implements DatasetApi {
         Authentication authentication = authenticationFacade.getAuthentication();
         DatasetModel datasetModel = datasetApiMapper.toDatasetModel(datasetDto);
         datasetModel = datasetService.addDataset(datasetModel, authentication.getName());
-
+        datasetService.writeMetadataToCatalog(datasetDto);
         try {
             return ResponseEntity.created(new URI(datasetModel.getDatasetUUID().toString())).build();
         } catch (URISyntaxException e) {
@@ -77,7 +77,7 @@ public class DatasetController implements DatasetApi {
     public ResponseEntity<Void> updateDatatset(UUID datasetId, DatasetDto datasetDto) {
         DatasetModel datasetModel = datasetApiMapper.toDatasetModel(datasetDto);
         datasetService.updateDataset(datasetModel);
-
+        datasetService.writeMetadataToCatalog(datasetDto);
         Link newlyCreatedLink = linkTo(methodOn(DatasetController.class).getDatasetById(datasetId)).withSelfRel();
 
         try {

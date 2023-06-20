@@ -445,6 +445,8 @@ components:
           type: string
         aws_region:
           type: string
+        bucket_name:
+          type: string
     TableDto:
       type: object
       properties:

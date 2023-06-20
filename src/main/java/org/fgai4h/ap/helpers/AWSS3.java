@@ -1,5 +1,7 @@
 package org.fgai4h.ap.helpers;
 
+import org.fgai4h.ap.domain.catalog.model.DataCatalogModel;
+import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
@@ -20,17 +22,18 @@ public class AWSS3 {
     private AWSS3() {
     }
 
-    public static void signBucket(String fileType, byte[] filecontent) {
+    public static void signBucket(DataCatalogModel dataCatalogModel, String fileType, String keyName, byte[] filecontent) {
 
         try {
 
             S3Presigner presigner = S3Presigner.builder()
-                    .region(Region.EU_CENTRAL_1)
+                    .region(Region.of(dataCatalogModel.getAwsRegion()))
+                    .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
                     .build();
 
             PutObjectRequest objectRequest = PutObjectRequest.builder()
-                    .bucket("bucketName")
-                    .key("keyName")
+                    .bucket(dataCatalogModel.getBucketName())
+                    .key(keyName)
                     .contentType(fileType)
                     .build();
 

@@ -126,4 +126,23 @@ public class AWSGlue {
         return result;
     }
 
+    public static void startSpecificCrawler(DataCatalogModel dataCatalogModel, String crawlerName) {
+
+        GlueClient glueClient = GlueClient.builder()
+                .region(Region.of(dataCatalogModel.getAwsRegion()))
+                .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
+                .build();
+
+        try {
+            StartCrawlerRequest crawlerRequest = StartCrawlerRequest.builder()
+                    .name(crawlerName)
+                    .build();
+
+            glueClient.startCrawler(crawlerRequest);
+
+        } catch (GlueException e) {
+                System.err.println(e.awsErrorDetails().errorMessage());
+        }
+    }
+
 }
