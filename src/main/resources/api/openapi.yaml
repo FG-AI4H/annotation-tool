@@ -1271,3 +1271,28 @@ paths:
         '404':
           description: Error
           content: { }
+  /data_catalog_metadata/{data_catalog_id}:
+    get:
+      tags:
+        - Catalog
+      summary: Get Metadata from data catalog
+      description: Returns the Metadata from data catalog corresponding to the uuid
+      operationId: getMetadataDataCatalog
+      parameters:
+        - name: data_catalog_id
+          in: path
+          description: Data Cataliog Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetMetadataDto'
+        '404':
+          description: Error
+          content: { }

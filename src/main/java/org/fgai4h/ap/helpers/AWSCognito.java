@@ -7,8 +7,11 @@ import software.amazon.awssdk.services.cognitoidentityprovider.model.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
 public class AWSCognito {
+
+    private AWSCognito() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static void listAllUserPools(CognitoIdentityProviderClient cognitoClient ) {
 

@@ -49,5 +49,4 @@ public class DataCatalogService {
     public void deleteDataCatalogById(UUID dataCatalogId) {
         dataCatalogRepository.deleteById(dataCatalogId);
     }
-
 }

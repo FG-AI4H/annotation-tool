@@ -19,6 +19,7 @@ import org.fgai4h.ap.domain.exception.NotFoundException;
 import org.fgai4h.ap.domain.user.model.UserModel;
 import org.fgai4h.ap.domain.user.model.UserRole;
 import org.fgai4h.ap.domain.user.service.UserService;
+import org.fgai4h.ap.helpers.AWSAthena;
 import org.fgai4h.ap.helpers.AWSGlue;
 import org.fgai4h.ap.helpers.AWSS3;
 import org.slf4j.Logger;
@@ -89,7 +90,7 @@ public class DatasetService {
     public List<DatasetModel> getCatalogDatasets(String userUUID){
         List<DataCatalogModel> allCatalogs = dataCatalogService.getDataCatalogs(userUUID);
         List<DatasetModel> datasetModelList = new ArrayList<>();
-        allCatalogs.forEach(e-> datasetModelList.addAll(AWSGlue.getAllTables(e)));
+        allCatalogs.forEach(e-> datasetModelList.addAll(AWSAthena.getCatalogDatasets(e)));
 
         return datasetModelList;
     }
@@ -109,7 +110,7 @@ public class DatasetService {
         //Write Metatdata to data catalog
         if (datasetDto.getDataCatalogId() != null) {
             DataCatalogModel dataCatalogModel = dataCatalogService.getDataCatalogById(datasetDto.getDataCatalogId()).get();
-            AWSS3.signBucket(
+            AWSS3.putObject(
                     dataCatalogModel,
                     "text/plain",
                     datasetDto.getName(),

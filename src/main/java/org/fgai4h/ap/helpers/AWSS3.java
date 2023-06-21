@@ -6,10 +6,13 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
+import software.amazon.awssdk.utils.IoUtils;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.Duration;
@@ -20,9 +23,10 @@ public class AWSS3 {
 
 
     private AWSS3() {
+        throw new IllegalStateException("Utility class");
     }
 
-    public static void signBucket(DataCatalogModel dataCatalogModel, String fileType, String keyName, byte[] filecontent) {
+    public static void putObject(DataCatalogModel dataCatalogModel, String fileType, String keyName, byte[] filecontent) {
 
         try {
 
@@ -58,6 +62,60 @@ public class AWSS3 {
         } catch (S3Exception | IOException e) {
             e.getStackTrace();
         }
+    }
+
+    public static String getJsonFromBucket(DataCatalogModel dataCatalogModel) {
+
+        String json = "";
+        try {
+
+            S3Presigner presigner = S3Presigner.builder()
+                    .region(Region.of(dataCatalogModel.getAwsRegion()))
+                    .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
+                    .build();
+
+            GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                    .bucket(dataCatalogModel.getBucketName())
+                    .key(dataCatalogModel.getName())
+                    .build();
+
+            GetObjectPresignRequest getObjectPresignRequest = GetObjectPresignRequest.builder()
+                    .signatureDuration(Duration.ofMinutes(60))
+                    .getObjectRequest(getObjectRequest)
+                    .build();
+
+            PresignedGetObjectRequest presignedGetObjectRequest = presigner.presignGetObject(getObjectPresignRequest);
+            String theUrl = presignedGetObjectRequest.url().toString();
+            HttpURLConnection connection = (HttpURLConnection) presignedGetObjectRequest.url().openConnection();
+            presignedGetObjectRequest.httpRequest().headers().forEach((header, values) -> {
+                values.forEach(value -> {
+                    connection.addRequestProperty(header, value);
+                });
+            });
+
+            // Send any request payload that the service needs (not needed when isBrowserExecutable is true).
+            if (presignedGetObjectRequest.signedPayload().isPresent()) {
+                connection.setDoOutput(true);
+
+                try (InputStream signedPayload = presignedGetObjectRequest.signedPayload().get().asInputStream();
+                     OutputStream httpOutputStream = connection.getOutputStream()) {
+                    IoUtils.copy(signedPayload, httpOutputStream);
+                }
+            }
+
+            // Download the result of executing the request.
+            try (BufferedReader content  = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                String inputLine;
+                while ((inputLine = content.readLine()) != null) {
+                    json += inputLine;
+                }
+            }
+
+        } catch (S3Exception | IOException e) {
+            e.getStackTrace();
+        }
+
+        return json;
     }
 
     public static List<S3Object> listBucketObjects(S3Client s3, String bucketName, String prefix ) {
