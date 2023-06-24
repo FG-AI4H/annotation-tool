@@ -1,8 +1,8 @@
 package org.fgai4h.ap.helpers;
 
+import org.fgai4h.ap.api.model.DatasetDto;
+import org.fgai4h.ap.api.model.DatasetMetadataDto;
 import org.fgai4h.ap.domain.catalog.model.DataCatalogModel;
-import org.fgai4h.ap.domain.dataset.model.DatasetMetadataModel;
-import org.fgai4h.ap.domain.dataset.model.DatasetModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.regions.Region;
@@ -12,24 +12,21 @@ import software.amazon.awssdk.services.athena.paginators.GetQueryResultsIterable
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
 
 public class AWSAthena {
-
     private static final Logger logger = LoggerFactory.getLogger(AWSAthena.class);
     private static final long SLEEP_AMOUNT_IN_MS = 1000;
 
-    private AWSAthena() {
-        throw new IllegalStateException("Utility class");
-    }
-
-    public static List<DatasetModel> getCatalogDatasets(DataCatalogModel dataCatalogModel){
+    public static List<DatasetDto> getCatalogDatasets(DataCatalogModel dataCatalogModel){
         AthenaClient athenaClient = AthenaClientFactory.createClient(Region.of(dataCatalogModel.getAwsRegion()));
 
-        String queryExecutionId = submitAthenaQuery(athenaClient,dataCatalogModel);
-
-        logger.info("Query submitted: " + System.currentTimeMillis());
-
         try {
+            String queryExecutionId = submitAthenaQuery(athenaClient,dataCatalogModel);
+
+            logger.info("Query submitted: " + System.currentTimeMillis());
+
             waitForQueryToComplete(athenaClient, queryExecutionId);
             logger.info("Query finished: " + System.currentTimeMillis());
 
@@ -89,9 +86,9 @@ public class AWSAthena {
         }
     }
 
-    private static List<DatasetModel> processResultRows(AthenaClient athenaClient, String queryExecutionId, DataCatalogModel dataCatalogModel) {
+    private static List<DatasetDto> processResultRows(AthenaClient athenaClient, String queryExecutionId, DataCatalogModel dataCatalogModel) {
 
-        List<DatasetModel> datasetModelList = new ArrayList<>();
+        List<DatasetDto> datasetModelList = new ArrayList<>();
         GetQueryResultsRequest getQueryResultsRequest = GetQueryResultsRequest.builder()
                 .queryExecutionId(queryExecutionId).build();
 
@@ -103,43 +100,62 @@ public class AWSAthena {
 
             for (Row myRow : rows.subList(1, rows.size())) { // skip first row – column names
                 List<Datum> allData = myRow.data();
-                DatasetModel datasetModel = new DatasetModel();
-                DatasetMetadataModel datasetMetadataModel = new DatasetMetadataModel();
+                DatasetDto datasetModel = new DatasetDto();
+                DatasetMetadataDto datasetMetadataDto = new DatasetMetadataDto();
 
                 datasetModel.setName(allData.get(22).varCharValue());
                 datasetModel.setCatalogLocation(dataCatalogModel.getAwsRegion());
+                datasetModel.setDataCatalogId(dataCatalogModel.getDataCatalogUUID());
 
-                datasetMetadataModel.setDataAcquisitionSensingModality(allData.get(6).varCharValue());
-                datasetMetadataModel.setDataAcceptanceStandardsCompliance("");
-                datasetMetadataModel.setDataAcquisitionSensingDeviceType("");
-                datasetMetadataModel.setDataAcquisitionSensingModality("");
-                datasetMetadataModel.setDataAnnotationProcessTool("");
-                datasetMetadataModel.setDataAssumptionsConstraintsDependencies("");
-                datasetMetadataModel.setDataBiasAndVarianceMinimization("");
-                datasetMetadataModel.setDataCollectionFundingAgency("");
-                datasetMetadataModel.setDataDimension("");
-                datasetMetadataModel.setDataCollectionPeriod("");
-                datasetMetadataModel.setDataCollectionPlace("");
-                datasetMetadataModel.setDataOwner(allData.get(14).varCharValue());
-                datasetMetadataModel.setDataExclusionCriteria("");
-                datasetMetadataModel.setDataRegistryURL("");
-                datasetMetadataModel.setVersion("");
-                datasetMetadataModel.setDataPreprocessingTechniques("");
-                datasetMetadataModel.setDataPrivacyDeIdentificationProtocol("");
-                datasetMetadataModel.setDataResolutionPrecision("");
-                datasetMetadataModel.setDataSafetySecurityProtocol("");
-                datasetMetadataModel.setDataSampleSize("");
-                datasetMetadataModel.setDataSource(allData.get(22).varCharValue());
-                datasetMetadataModel.setDataUpdateVersion("");
-                datasetMetadataModel.setTrainTuningEvalDatasetPartitioningRatio("");
-                datasetMetadataModel.setDataType(allData.get(23).varCharValue());
-                datasetMetadataModel.setDataSamplingRate("");
+                datasetMetadataDto.setDataAcquisitionSensingModality(allData.get(6).varCharValue());
+                datasetMetadataDto.setDataAcceptanceStandardsCompliance("");
+                datasetMetadataDto.setDataAcquisitionSensingDeviceType("");
+                datasetMetadataDto.setDataAcquisitionSensingModality("");
+                datasetMetadataDto.setDataAnnotationProcessTool("");
+                datasetMetadataDto.setDataAssumptionsConstraintsDependencies("");
+                datasetMetadataDto.setDataBiasAndVarianceMinimization("");
+                datasetMetadataDto.setDataCollectionFundingAgency("");
+                datasetMetadataDto.setDataDimension("");
+                datasetMetadataDto.setDataCollectionPeriod("");
+                datasetMetadataDto.setDataCollectionPlace("");
+                datasetMetadataDto.setDataOwnerId(UUID.fromString(allData.get(14).varCharValue()));
 
-                datasetModel.setMetadata(datasetMetadataModel);
+                datasetMetadataDto.setDataExclusionCriteria("");
+                datasetMetadataDto.setDataRegistryUrl("");
+                datasetMetadataDto.setVersion("");
+                datasetMetadataDto.setDataPreprocessingTechniques("");
+                datasetMetadataDto.setDataPrivacyDeIdentificationProtocol("");
+                datasetMetadataDto.setDataResolutionPrecision("");
+                datasetMetadataDto.setDataSafetySecurityProtocol("");
+                datasetMetadataDto.setDataSampleSize("");
+                datasetMetadataDto.setDataSource(allData.get(22).varCharValue());
+                datasetMetadataDto.setDataUpdateVersion("");
+                datasetMetadataDto.setTrainTuningEvalDatasetPartitioningRatio("");
+                datasetMetadataDto.setDataType(allData.get(23).varCharValue());
+                datasetMetadataDto.setDataSamplingRate("");
+
+                datasetModel.setMetadata(datasetMetadataDto);
                 datasetModelList.add(datasetModel);
             }
         }
 
         return datasetModelList;
+    }
+
+    public static void listDataCatalogs(DataCatalogModel dataCatalogModel) {
+        try{
+            AthenaClient athenaClient = AthenaClientFactory.createClient(Region.of(dataCatalogModel.getAwsRegion()));
+
+            ListDataCatalogsRequest listDataCatalogsRequest = ListDataCatalogsRequest.builder()
+                    .build();
+
+            ListDataCatalogsResponse listDataCatalogsResponse = athenaClient.listDataCatalogs(listDataCatalogsRequest);
+            System.out.println(listDataCatalogsResponse.dataCatalogsSummary().toString());
+
+
+        } catch (AthenaException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 }

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.fgai4h.ap.domain.user.entity.UserEntity;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
@@ -37,7 +38,8 @@ public class DatasetMetadataEntity implements Serializable {
     private String dataCollectionPlace;
     private String dataDimension;
     private String dataExclusionCriteria;
-    private String dataOwner;
+    @OneToOne
+    private UserEntity dataOwner;
     private String dataPreprocessingTechniques;
     private String dataPrivacyDeIdentificationProtocol;
     private String dataRegistryURL;

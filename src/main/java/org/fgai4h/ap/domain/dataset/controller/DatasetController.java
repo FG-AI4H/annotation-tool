@@ -7,13 +7,13 @@ import org.fgai4h.ap.api.model.DatasetRoleDto;
 import org.fgai4h.ap.domain.dataset.mapper.DatasetApiMapper;
 import org.fgai4h.ap.domain.dataset.mapper.DatasetRoleApiMapper;
 import org.fgai4h.ap.domain.dataset.mapper.MetadataModelAssembler;
+import org.fgai4h.ap.domain.dataset.model.DatasetCatalogRequestStatusModel;
 import org.fgai4h.ap.domain.dataset.model.DatasetMetadataModel;
 import org.fgai4h.ap.domain.dataset.model.DatasetModel;
 import org.fgai4h.ap.domain.dataset.repository.MetadataRepository;
 import org.fgai4h.ap.domain.dataset.service.DatasetRoleService;
 import org.fgai4h.ap.domain.dataset.service.DatasetService;
 import org.fgai4h.ap.security.IAuthenticationFacade;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -35,8 +36,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequiredArgsConstructor
 public class DatasetController implements DatasetApi {
 
-    @Autowired
-    private IAuthenticationFacade authenticationFacade;
+    private final IAuthenticationFacade authenticationFacade;
     private final MetadataRepository metadataRepository;
     private final MetadataModelAssembler metadataModelAssembler;
     private final DatasetService datasetService;
@@ -56,6 +56,7 @@ public class DatasetController implements DatasetApi {
     public ResponseEntity<Void> addDataset(DatasetDto datasetDto) {
         Authentication authentication = authenticationFacade.getAuthentication();
         DatasetModel datasetModel = datasetApiMapper.toDatasetModel(datasetDto);
+        datasetModel.setLinked(true);
         datasetModel = datasetService.addDataset(datasetModel, authentication.getName());
         datasetService.writeMetadataToCatalog(datasetDto);
         try {
@@ -112,7 +113,22 @@ public class DatasetController implements DatasetApi {
     public ResponseEntity<List<DatasetDto>> getCatalogDatasets() {
         Authentication authentication = authenticationFacade.getAuthentication();
         return new ResponseEntity<>(
-                datasetService.getCatalogDatasets(authentication.getName()).stream().map(datasetApiMapper::toDatasetDto).collect(Collectors.toList()),
+                datasetService.getCatalogDatasets(authentication.getName()),
                 HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Void> requestAccessToCatalogDataset(DatasetDto datasetDto) {
+        Authentication authentication = authenticationFacade.getAuthentication();
+        DatasetModel datasetModel = datasetApiMapper.toDatasetModel(datasetDto);
+        datasetModel.setRequestStatus(DatasetCatalogRequestStatusModel.PENDING);
+        datasetModel.setLinked(true);
+        datasetModel.setCreatedAt(LocalDateTime.now());
+        datasetModel = datasetService.addDataset(datasetModel, authentication.getName());
+        try {
+            return ResponseEntity.created(new URI(datasetModel.getDatasetUUID().toString())).build();
+        } catch (URISyntaxException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

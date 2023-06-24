@@ -31,4 +31,5 @@ public class DatasetModel extends RepresentationModel<DatasetModel> {
     private DatasetMetadataModel metadata;
     private DatasetVisibility visibility;
     private UUID dataCatalogId;
+    private DatasetCatalogRequestStatusModel requestStatus;
 }

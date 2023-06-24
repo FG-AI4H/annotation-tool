@@ -87,12 +87,17 @@ public class DatasetService {
         datasetRepository.deleteById(datasetId);
     }
 
-    public List<DatasetModel> getCatalogDatasets(String userUUID){
+    public List<DatasetDto> getCatalogDatasets(String userUUID){
         List<DataCatalogModel> allCatalogs = dataCatalogService.getDataCatalogs(userUUID);
-        List<DatasetModel> datasetModelList = new ArrayList<>();
-        allCatalogs.forEach(e-> datasetModelList.addAll(AWSAthena.getCatalogDatasets(e)));
+        List<DatasetDto> datasetDtoList = new ArrayList<>();
+        allCatalogs.forEach(e-> {
+                    List<DatasetDto> datasetDtos = AWSAthena.getCatalogDatasets(e);
+                    datasetDtos.forEach(c->
+                            userService.getUserById(c.getMetadata().getDataOwnerId()).ifPresent(u -> c.getMetadata().setDataOwnerName(u.getUsername())));
+                    datasetDtoList.addAll(datasetDtos);
+                });
 
-        return datasetModelList;
+        return datasetDtoList;
     }
 
     private String metatdataObjectToJson(DatasetMetadataDto datasetMetadataDto){

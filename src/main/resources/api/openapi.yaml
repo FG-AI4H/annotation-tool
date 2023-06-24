@@ -111,6 +111,8 @@ components:
           $ref: '#/components/schemas/DatasetMetadataDto'
         visibility:
           $ref: '#/components/schemas/DatasetVisibility'
+        request_status:
+          $ref: '#/components/schemas/DatasetCatalogRequestStatusDto'
     DatasetMetadataDto:
       type: object
       properties: 
@@ -141,7 +143,10 @@ components:
           type: string
         data_exclusion_criteria:
           type: string
-        data_owner:
+        data_owner_id:
+          type: string
+          format: uuid
+        data_owner_name:
           type: string
         data_preprocessing_techniques:
           type: string
@@ -192,6 +197,13 @@ components:
           type: string
         user_role:
           $ref: '#/components/schemas/UserRole'
+    DatasetCatalogRequestStatusDto:
+      type: string
+      enum:
+        - PENDING
+        - APPROVED
+        - REJECTED
+        - DEPRECATED
     UserRole:
       type: string
       enum:
@@ -842,6 +854,22 @@ paths:
         '404':
           description: Error occured
           content: { }
+  /datasets/catalog/request:
+    post:
+      tags:
+        - Dataset
+      summary: Creates request to link dataset to dataset owner
+      description: Creates request to link dataset to dataset owner
+      operationId: requestAccessToCatalogDataset
+      requestBody:
+        description: Dataset catalog Request object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatasetDto'
+      responses:
+        '201':
+          description: Request created successfully
   /datasets/{dataset_id}:
     get:
       tags:

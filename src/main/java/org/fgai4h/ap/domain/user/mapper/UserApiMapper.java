@@ -16,7 +16,12 @@ public interface UserApiMapper {
     UserModel toUserModel(UserDto userDto);
 
     default UUID map(UserModel userModel){
-        return userModel.getUserUUID();
+        if(userModel != null){
+            return userModel.getUserUUID();
+        }
+        else{
+            return null;
+        }
     }
 
     @InheritInverseConfiguration
