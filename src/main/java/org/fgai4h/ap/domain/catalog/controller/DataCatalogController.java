@@ -2,9 +2,11 @@ package org.fgai4h.ap.domain.catalog.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.fgai4h.ap.api.CatalogApi;
+import org.fgai4h.ap.api.model.DataAccessRequestDto;
 import org.fgai4h.ap.api.model.DataCatalogDto;
 import org.fgai4h.ap.api.model.TableDto;
 import org.fgai4h.ap.domain.catalog.mapper.DataCatalogApiMapper;
+import org.fgai4h.ap.domain.catalog.model.DataAccessRequestModel;
 import org.fgai4h.ap.domain.catalog.model.DataCatalogModel;
 import org.fgai4h.ap.domain.catalog.model.TableModel;
 import org.fgai4h.ap.domain.catalog.service.DataCatalogService;
@@ -46,6 +48,14 @@ public class DataCatalogController implements CatalogApi {
     public ResponseEntity<DataCatalogDto> getDataCatalogById(UUID dataCatalogId) {
         return dataCatalogService.getDataCatalogById(dataCatalogId)
                 .map(dataCatalogApiMapper::toDataCatalogDto)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @Override
+    public ResponseEntity<DataAccessRequestDto> getDataAccessRequestById(UUID dataAccessRequestId) {
+        return dataCatalogService.getDataAccessRequestById(dataAccessRequestId)
+                .map(dataCatalogApiMapper::toDataAccessRequestDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -93,6 +103,41 @@ public class DataCatalogController implements CatalogApi {
         return tableModel.map(dataCatalogApiMapper::toTableDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @Override
+    public ResponseEntity<List<DataAccessRequestDto>> getOwnerDataAccessRequests() {
+        Authentication authentication = authenticationFacade.getAuthentication();
+        return new ResponseEntity<>(
+                dataCatalogService.getOwnerDataAccessRequests(authentication.getName()).stream().map(dataCatalogApiMapper::toDataAccessRequestDto).collect(Collectors.toList()),
+                HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<List<DataAccessRequestDto>> getRequesterDataAccessRequests() {
+        Authentication authentication = authenticationFacade.getAuthentication();
+        return new ResponseEntity<>(
+                dataCatalogService.getRequesterDataAccessRequests(authentication.getName()).stream().map(dataCatalogApiMapper::toDataAccessRequestDto).collect(Collectors.toList()),
+                HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteDataAccessRequestById(UUID dataAccessRequestId) {
+        dataCatalogService.deleteDataAccessRequestById(dataAccessRequestId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> updateDataAccessRequest(UUID dataAccessRequestId, DataAccessRequestDto dataAccessRequestDto) {
+        DataAccessRequestModel dataAccessRequestModel = dataCatalogApiMapper.toDataAccessRequestModel(dataAccessRequestDto);
+        dataCatalogService.updateDataAccessRequest(dataAccessRequestModel);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> updateDataAccessRequestStatus(UUID dataAccessRequestId, String status) {
+        dataCatalogService.updateDataAccessRequestStatus(dataAccessRequestId, status);
+        return ResponseEntity.noContent().build();
     }
 }
 

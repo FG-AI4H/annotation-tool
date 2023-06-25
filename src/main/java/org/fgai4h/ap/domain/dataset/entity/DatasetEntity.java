@@ -38,7 +38,6 @@ public class DatasetEntity implements Serializable
     private UUID dataCatalogId;
 
     private String visibility;
-    private String requestStatus;
 
     @OneToOne(cascade = {CascadeType.ALL})
     private DatasetMetadataEntity metadata;

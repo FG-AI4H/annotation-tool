@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.fgai4h.ap.api.DatasetApi;
 import org.fgai4h.ap.api.model.DatasetDto;
 import org.fgai4h.ap.api.model.DatasetRoleDto;
+import org.fgai4h.ap.domain.catalog.model.DataAccessRequestModel;
 import org.fgai4h.ap.domain.dataset.mapper.DatasetApiMapper;
 import org.fgai4h.ap.domain.dataset.mapper.DatasetRoleApiMapper;
 import org.fgai4h.ap.domain.dataset.mapper.MetadataModelAssembler;
@@ -13,6 +14,7 @@ import org.fgai4h.ap.domain.dataset.model.DatasetModel;
 import org.fgai4h.ap.domain.dataset.repository.MetadataRepository;
 import org.fgai4h.ap.domain.dataset.service.DatasetRoleService;
 import org.fgai4h.ap.domain.dataset.service.DatasetService;
+import org.fgai4h.ap.domain.user.service.UserService;
 import org.fgai4h.ap.security.IAuthenticationFacade;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
@@ -40,6 +42,7 @@ public class DatasetController implements DatasetApi {
     private final MetadataRepository metadataRepository;
     private final MetadataModelAssembler metadataModelAssembler;
     private final DatasetService datasetService;
+    private final UserService userService;
     private final DatasetApiMapper datasetApiMapper;
     private final DatasetRoleService datasetRoleService;
     private final DatasetRoleApiMapper datasetRoleApiMapper;
@@ -121,10 +124,18 @@ public class DatasetController implements DatasetApi {
     public ResponseEntity<Void> requestAccessToCatalogDataset(DatasetDto datasetDto) {
         Authentication authentication = authenticationFacade.getAuthentication();
         DatasetModel datasetModel = datasetApiMapper.toDatasetModel(datasetDto);
-        datasetModel.setRequestStatus(DatasetCatalogRequestStatusModel.PENDING);
         datasetModel.setLinked(true);
         datasetModel.setCreatedAt(LocalDateTime.now());
         datasetModel = datasetService.addDataset(datasetModel, authentication.getName());
+
+        DataAccessRequestModel dataAccessRequestModel = DataAccessRequestModel.builder()
+                .requestStatus(DatasetCatalogRequestStatusModel.PENDING)
+                .requestDate(LocalDateTime.now())
+                .dataset(datasetModel)
+                .requester(userService.getUserByIdpId(authentication.getName()).orElse(null))
+                .dataOwner(datasetModel.getMetadata().getDataOwner())
+                .build();
+        datasetService.addDataAccessRequest(dataAccessRequestModel);
         try {
             return ResponseEntity.created(new URI(datasetModel.getDatasetUUID().toString())).build();
         } catch (URISyntaxException e) {

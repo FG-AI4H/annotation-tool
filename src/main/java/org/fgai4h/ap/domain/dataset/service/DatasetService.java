@@ -6,11 +6,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.fgai4h.ap.api.model.DatasetDto;
 import org.fgai4h.ap.api.model.DatasetMetadataDto;
+import org.fgai4h.ap.domain.catalog.entity.DataAccessRequestEntity;
+import org.fgai4h.ap.domain.catalog.mapper.DataAccessRequestMapper;
+import org.fgai4h.ap.domain.catalog.model.DataAccessRequestModel;
 import org.fgai4h.ap.domain.catalog.model.DataCatalogModel;
+import org.fgai4h.ap.domain.catalog.repository.DataAccessRequestRepository;
 import org.fgai4h.ap.domain.catalog.service.DataCatalogService;
 import org.fgai4h.ap.domain.dataset.entity.DatasetEntity;
 import org.fgai4h.ap.domain.dataset.mapper.DatasetMapper;
 import org.fgai4h.ap.domain.dataset.mapper.DatasetModelAssembler;
+import org.fgai4h.ap.domain.dataset.model.DatasetCatalogRequestStatusModel;
 import org.fgai4h.ap.domain.dataset.model.DatasetModel;
 import org.fgai4h.ap.domain.dataset.model.DatasetRoleModel;
 import org.fgai4h.ap.domain.dataset.repository.DatasetRepository;
@@ -40,16 +45,25 @@ public class DatasetService {
     static Logger logger = LoggerFactory.getLogger(DatasetService.class);
 
     private final DatasetRepository datasetRepository;
+    private final DataAccessRequestRepository dataAccessRequestRepository;
     private final DatasetModelAssembler datasetModelAssembler;
     private final DatasetMapper datasetMapper;
+    private final DataAccessRequestMapper dataAccessRequestMapper;
     private final DatasetRoleService datasetRoleService;
     private final UserService userService;
     private final DataCatalogService dataCatalogService;
 
     public List<DatasetModel> getAllDatasets(String userUUID) {
-        return datasetRepository.findAllByUserId(userUUID)
-                .stream()
+        List<DatasetModel> allDatasets = datasetRepository.findAllByUserId(userUUID).stream()
                 .map(datasetModelAssembler::toModel).collect(Collectors.toList());
+        allDatasets.forEach(e-> {
+            DataAccessRequestEntity dataAccessRequestEntity = dataAccessRequestRepository.findByDatasetId(e.getDatasetUUID());
+            if(dataAccessRequestEntity != null) {
+                e.setRequestStatus(DatasetCatalogRequestStatusModel.valueOf(dataAccessRequestEntity.getRequestStatus()));
+            }
+        });
+
+        return allDatasets;
     }
 
     public DatasetModel addDataset(DatasetModel datasetModel, String userIdpId) {
@@ -123,5 +137,9 @@ public class DatasetService {
 
             AWSGlue.startSpecificCrawler(dataCatalogModel,"fgai4h-oci-data-hub-"+dataCatalogModel.getAwsRegion()+"-crawler");
         }
+    }
+
+    public DataAccessRequestEntity addDataAccessRequest(DataAccessRequestModel dataAccessRequestModel) {
+        return dataAccessRequestRepository.save(dataAccessRequestMapper.toDataAccessRequestEntity(dataAccessRequestModel));
     }
 }

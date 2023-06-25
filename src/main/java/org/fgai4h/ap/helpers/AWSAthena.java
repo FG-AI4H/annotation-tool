@@ -103,7 +103,7 @@ public class AWSAthena {
                 DatasetDto datasetModel = new DatasetDto();
                 DatasetMetadataDto datasetMetadataDto = new DatasetMetadataDto();
 
-                datasetModel.setName(allData.get(22).varCharValue());
+                datasetModel.setName(allData.get(23).varCharValue());
                 datasetModel.setCatalogLocation(dataCatalogModel.getAwsRegion());
                 datasetModel.setDataCatalogId(dataCatalogModel.getDataCatalogUUID());
 
@@ -128,7 +128,7 @@ public class AWSAthena {
                 datasetMetadataDto.setDataResolutionPrecision("");
                 datasetMetadataDto.setDataSafetySecurityProtocol("");
                 datasetMetadataDto.setDataSampleSize("");
-                datasetMetadataDto.setDataSource(allData.get(22).varCharValue());
+                datasetMetadataDto.setDataSource(allData.get(23).varCharValue());
                 datasetMetadataDto.setDataUpdateVersion("");
                 datasetMetadataDto.setTrainTuningEvalDatasetPartitioningRatio("");
                 datasetMetadataDto.setDataType(allData.get(23).varCharValue());

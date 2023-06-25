@@ -2,7 +2,6 @@ package org.fgai4h.ap.domain.dataset.mapper;
 
 import org.fgai4h.ap.domain.dataset.controller.DatasetController;
 import org.fgai4h.ap.domain.dataset.entity.DatasetEntity;
-import org.fgai4h.ap.domain.dataset.model.DatasetCatalogRequestStatusModel;
 import org.fgai4h.ap.domain.dataset.model.DatasetModel;
 import org.fgai4h.ap.domain.dataset.model.DatasetVisibility;
 import org.springframework.hateoas.CollectionModel;
@@ -49,7 +48,7 @@ public class DatasetModelAssembler extends RepresentationModelAssemblerSupport<D
         datasetModel.setCatalogLocation(entity.getCatalogLocation());
         datasetModel.setCatalogAuthType(entity.getCatalogAuthType());
         datasetModel.setDataCatalogId(entity.getDataCatalogId());
-        datasetModel.setRequestStatus(entity.getRequestStatus() != null ? DatasetCatalogRequestStatusModel.valueOf(entity.getRequestStatus()):null);
+
 
         return datasetModel;
     }
