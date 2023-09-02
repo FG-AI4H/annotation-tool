@@ -5,7 +5,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    database: mysql
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
 
   security:
     oauth2:
