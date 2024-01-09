@@ -48,7 +48,7 @@ public class CampaignModelAssembler extends RepresentationModelAssemblerSupport<
         campaignModel.setCampaignUUID(entity.getCampaignUUID());
         campaignModel.setName(entity.getName());
         campaignModel.setDescription(entity.getDescription());
-        campaignModel.setStatus(CampaignStatusModel.valueOf(entity.getStatus()));
+        campaignModel.setStatus((entity.getStatus() != null) ? CampaignStatusModel.valueOf(entity.getStatus()) : null);
         campaignModel.setDatasets(toDatasetModel(entity.getDatasets()));
         campaignModel.setAnnotators(toUserModel(entity.getAnnotators()));
         campaignModel.setReviewers(toUserModel(entity.getReviewers()));

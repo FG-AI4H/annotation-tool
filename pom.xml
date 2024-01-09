@@ -196,7 +196,7 @@
                                 <useOptional>true</useOptional>
                                 <useSpringController>true</useSpringController>
                                 <interfaceOnly>true</interfaceOnly>
-                                <hateoas>true</hateoas>
+                                <hateoas>false</hateoas>
                                 <openApiNullable>false</openApiNullable>
                             </configOptions>
                         </configuration>
