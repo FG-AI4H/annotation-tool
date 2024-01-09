@@ -34,12 +34,17 @@ public class UserModelAssembler extends RepresentationModelAssemblerSupport<User
                 .withSelfRel());
 
         userModel.setUserUUID(entity.getUserUUID());
-        userModel.setIdpID(entity.getIdpID());
+        userModel.setIdpId(entity.getIdpId());
         userModel.setUsername(entity.getUsername());
         userModel.setBirthdate(entity.getBirthdate());
         userModel.setAnnotatorRole(annotatorModelAssembler.toModel(entity.getAnnotatorRole()));
         userModel.setSupervisorRole(supervisorModelAssembler.toModel(entity.getSupervisorRole()));
         userModel.setReviewerRole(reviewerModelAssembler.toModel(entity.getReviewerRole()));
+        userModel.setExpertise(entity.getExpertise());
+        userModel.setStudyCountry(entity.getStudyCountry());
+        userModel.setWorkCountry(entity.getWorkCountry());
+        userModel.setYearsInPractice(entity.getYearsInPractice());
+        userModel.setDegree(entity.getDegree());
 
         return userModel;
     }

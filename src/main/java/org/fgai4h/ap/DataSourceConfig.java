@@ -19,7 +19,6 @@ public class DataSourceConfig {
         @Bean
         public DataSource getDataSource() {
                 DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
-                dataSourceBuilder.driverClassName("com.mysql.jdbc.Driver");
                 dataSourceBuilder.url("jdbc:mysql://fg-ai4h-db.cluster-cllejqtoj5fh.eu-central-1.rds.amazonaws.com:3306/fg_ai4h");
                 String secret = getSecret();
                 ObjectMapper objectMapper  =  new  ObjectMapper();

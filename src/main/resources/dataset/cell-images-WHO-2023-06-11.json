@@ -1,0 +1,24 @@
+{
+  "name": "CellImageDataset-SA-EAST-1",
+  "format": "json",
+  "location": "s3://fgai4h-oci-data-hub-sa-east-1/cell-Images-WHO-2023-06-11/",
+  "schema": {
+    "columns": [
+      {
+        "name": "image_id",
+        "type": "string"
+      },
+      {
+        "name": "image_url",
+        "type": "string"
+      },
+      {
+        "name": "timestamp",
+        "type": "timestamp"
+      }
+    ]
+  },
+  "configuration": {
+    "Version": 1.0
+  }
+}

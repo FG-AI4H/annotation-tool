@@ -3,6 +3,7 @@ package org.fgai4h.ap.domain.dataset.mapper;
 import org.fgai4h.ap.domain.dataset.controller.DatasetController;
 import org.fgai4h.ap.domain.dataset.entity.DatasetMetadataEntity;
 import org.fgai4h.ap.domain.dataset.model.DatasetMetadataModel;
+import org.fgai4h.ap.domain.user.mapper.UserModelAssembler;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +22,7 @@ public class MetadataModelAssembler extends RepresentationModelAssemblerSupport<
     public DatasetMetadataModel toModel(DatasetMetadataEntity entity)
     {
         DatasetMetadataModel datasetMetadataModel = instantiateModel(entity);
+        UserModelAssembler userModelAssembler = new UserModelAssembler();
 
         if (isNull(entity))
             return datasetMetadataModel;
@@ -44,7 +46,7 @@ public class MetadataModelAssembler extends RepresentationModelAssemblerSupport<
         datasetMetadataModel.setDataDimension(entity.getDataDimension());
         datasetMetadataModel.setDataCollectionPeriod(entity.getDataCollectionPeriod());
         datasetMetadataModel.setDataCollectionPlace(entity.getDataCollectionPlace());
-        datasetMetadataModel.setDataOwner(entity.getDataOwner());
+        datasetMetadataModel.setDataOwner(userModelAssembler.toModel(entity.getDataOwner()));
         datasetMetadataModel.setDataExclusionCriteria(entity.getDataExclusionCriteria());
         datasetMetadataModel.setDataRegistryURL(entity.getDataRegistryURL());
         datasetMetadataModel.setVersion(entity.getVersion());

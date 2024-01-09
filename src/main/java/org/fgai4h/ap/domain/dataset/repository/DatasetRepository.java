@@ -11,6 +11,6 @@ import java.util.UUID;
 public interface DatasetRepository extends JpaRepository<DatasetEntity, UUID> {
 
 
-    @Query("SELECT r.dataset FROM DatasetRoleEntity r WHERE r.user.idpID = :userId")
+    @Query("SELECT r.dataset FROM DatasetRoleEntity r WHERE r.user.idpId = :userId")
     List<DatasetEntity> findAllByUserId(@Param("userId") String userId);
 }

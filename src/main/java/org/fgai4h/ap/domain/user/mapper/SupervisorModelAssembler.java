@@ -6,10 +6,6 @@ import org.fgai4h.ap.domain.user.model.SupervisorModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static java.util.Objects.isNull;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -34,25 +30,12 @@ public class SupervisorModelAssembler extends RepresentationModelAssemblerSuppor
                         .getSupervisorById(entity.getSupervisorUUID()))
                 .withSelfRel());
 
+        supervisorModel.setSupervisorUUID(entity.getSupervisorUUID());
+        supervisorModel.setExpectedSalary(entity.getExpectedSalary());
+        supervisorModel.setSelfAssessment(entity.getSelfAssessment());
+
 
         return supervisorModel;
     }
 
-    public List<SupervisorModel> toSupervisorModel(List<SupervisorEntity> supervisors) {
-        if (supervisors.isEmpty())
-            return Collections.emptyList();
-
-        return supervisors.stream()
-                .map(supervisor-> SupervisorModel.builder()
-                        .supervisorUUID(supervisor.getSupervisorUUID())
-                        .build())
-                .collect(Collectors.toList());
-    }
-
-    public SupervisorEntity toEntity(SupervisorModel supervisorModel) {
-        SupervisorEntity entity = new SupervisorEntity();
-        entity.setSupervisorUUID(supervisorModel.getSupervisorUUID());
-
-        return entity;
-    }
 }

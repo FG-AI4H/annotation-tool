@@ -19,4 +19,7 @@ import java.util.UUID;
 public class ReviewerModel extends RepresentationModel<ReviewerModel> {
 
     private UUID reviewerUUID;
+
+    private Float expectedSalary;
+    private Integer selfAssessment;
 }

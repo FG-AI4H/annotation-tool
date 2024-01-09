@@ -19,13 +19,18 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserModel extends RepresentationModel<UserModel> {
     private UUID userUUID;
-    private String idpID;
+    private String idpId;
 
     //retrieved from IPD
     private String username;
     private Date birthdate;
     private String timezone;
     private String email;
+    private String expertise;
+    private Integer yearsInPractice;
+    private String workCountry;
+    private String studyCountry;
+    private String degree;
 
     private AnnotatorModel annotatorRole;
     private ReviewerModel reviewerRole;

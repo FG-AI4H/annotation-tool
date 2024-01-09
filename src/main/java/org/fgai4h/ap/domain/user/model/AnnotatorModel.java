@@ -19,12 +19,7 @@ import java.util.UUID;
 public class AnnotatorModel extends RepresentationModel<AnnotatorModel> {
 
     private UUID annotatorUUID;
-
-    private String expertise;
-    private Integer yearsInPractice;
+    
     private Float expectedSalary;
-    private String workCountry;
-    private String studyCountry;
     private Integer selfAssessment;
-    private String degree;
 }

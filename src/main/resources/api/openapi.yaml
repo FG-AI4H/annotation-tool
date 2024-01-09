@@ -24,6 +24,10 @@ tags:
     description: Operation about annotation tasks
   - name: User
     description: Operations about users
+  - name : Tool
+    description: operations about tools
+  - name: Catalog
+    description: operations about data catalogs
 
 components:
   securitySchemes:
@@ -54,6 +58,23 @@ components:
         email:
           description: Email of user
           type: string
+        expertise:
+          description: Expertise
+          type: string
+        work_country:
+          description: Working country
+          type: string
+        study_country:
+          description: Study country
+          type: string
+        degree:
+          description: Study degree
+          type: string
+        years_in_practice:
+          description: Years in practice
+          type: integer
+          minimum: 0
+          maximum: 100
         annotator_role:
           $ref: '#/components/schemas/AnnotatorDto'
         reviewer_role:
@@ -73,14 +94,25 @@ components:
           type: string
         storage_location:
           type: string
+        linked:
+          type: boolean
+        catalog_location:
+          type: string
+        catalog_auth_type:
+          type: string
         created_at:
           type: string
         updated_at:
           type: string
+        data_catalog_id:
+          type: string
+          format: uuid
         metadata:
           $ref: '#/components/schemas/DatasetMetadataDto'
         visibility:
           $ref: '#/components/schemas/DatasetVisibility'
+        request_status:
+          $ref: '#/components/schemas/DatasetCatalogRequestStatusDto'
     DatasetMetadataDto:
       type: object
       properties: 
@@ -111,7 +143,10 @@ components:
           type: string
         data_exclusion_criteria:
           type: string
-        data_owner:
+        data_owner_id:
+          type: string
+          format: uuid
+        data_owner_name:
           type: string
         data_preprocessing_techniques:
           type: string
@@ -158,10 +193,19 @@ components:
         user:
           type: string
           format: uuid
+        username:
+          type: string
         user_role:
           $ref: '#/components/schemas/UserRole'
+    DatasetCatalogRequestStatusDto:
+      type: string
+      enum:
+        - PENDING
+        - APPROVED
+        - REJECTED
+        - DEPRECATED
     UserRole:
-      type: object
+      type: string
       enum:
         - OWNER
         - CONTRIBUTOR
@@ -190,7 +234,7 @@ components:
           type: string
         annotation_instructions:
           type: string
-        quality_control:
+        quality_assurance:
           type: string
         is_instance_label:
           type: boolean
@@ -245,46 +289,235 @@ components:
           description: Id of the annotator
           type: string
           format: uuid
-        expertise:
-          description: Expertise
-          type: string
-        years_in_practice:
-          description: Years in practice
-          type: integer
-          minimum: 0
-          maximum: 100
         expected_salary:
           description: Expected salary
           type: number
           format: float
-        work_country:
-          description: Working country
-          type: string
-        study_country:
-          description: Study country
-          type: string
         self_assessment:
           description: Self assessment grade
           type: integer
           minimum: 0
           maximum: 10
-        degree:
-          description: Study degree
-          type: string
+
     ReviewerDto:
       type: object
       properties:
         id:
           type: string
           format: uuid
+        expected_salary:
+          description: Expected salary
+          type: number
+          format: float
+        self_assessment:
+          description: Self assessment grade
+          type: integer
+          minimum: 0
+          maximum: 10
     SupervisorDto:
       type: object
       properties:
         id:
           type: string
           format: uuid
-
+        expected_salary:
+          description: Expected salary
+          type: number
+          format: float
+        self_assessment:
+          description: Self assessment grade
+          type: integer
+          minimum: 0
+          maximum: 10
+    TaskDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        kind:
+          $ref: '#/components/schemas/TaskKind'
+        read_only:
+          type: boolean
+        assignee:
+          type: string
+          format: uuid
+        assignee_username:
+          type: string
+        campaign:
+          type: string
+          format: uuid
+        campaign_status:
+          $ref: '#/components/schemas/CampaignStatus'
+        campaign_task_kind:
+          type: string
+        annotation_tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnnotationTaskDto'
+        samples:
+          type: array
+          items:
+            $ref: '#/components/schemas/SampleDto'
+        annotations:
+          type: array
+          items:
+            type: string
+            format: uuid
+    AnnotationTaskDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        kind:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+    SampleDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        data_url:
+          type: string
+    AnnotationDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        task:
+          type: string
+          format: uuid
+        status:
+          type: string
+        data:
+          type: array
+          items:
+            type: string
+            format: uuid
+        submitted_at:
+          type: string
+    AnnotationDataDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        data:
+          type: string
+        annotation:
+          type: string
+          format: uuid
+    TaskKind:
+      type: string
+      enum:
+        - CREATE
+        - CORRECT
+        - REVIEW
+    AnnotationToolDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        editor:
+          type: string
+        annotation_tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnnotationTaskDto'
+    DataCatalogDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        provider:
+          type: string
+        provider_catalog_id:
+          type: string
+        location:
+          type: string
+        database_name:
+          type: string
+        aws_region:
+          type: string
+        bucket_name:
+          type: string
+    TableDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+    DataAccessRequestDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        request_date:
+          type: string
+        request_status:
+          $ref: '#/components/schemas/DatasetCatalogRequestStatusDto'
+        request_status_date:
+          type: string
+        motivation:
+          type: string
+        requester_id:
+          type: string
+          format: uuid
+        requester_name:
+          type: string
+        data_owner_id:
+          type: string
+          format: uuid
+        data_owner_name:
+          type: string
+        dataset_name:
+          type: string
+        dataset_id:
+          type: string
+          format: uuid
 paths:
+  /admin/users:
+    get:
+      tags:
+        - Admin
+      summary: Get remote users
+      description: Returns the list of remote users
+      operationId: retrieveAllUsers
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserDto'
+        '404':
+          description: Current user doesn't exist
+          content: { }
   /users:
     get:
       tags:
@@ -631,10 +864,41 @@ paths:
       responses:
         '201':
           description: Dataset added successfully
+  /datasets/catalog:
+    get:
+      tags:
+        - Dataset
+      summary: List all the datasets from all catalog
+      description: List all the datasets from all catalog
+      operationId: getCatalogDatasets
+      responses:
+        '200':
+          description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DatasetDto'
+                type: array
+                items:
+                  $ref: '#/components/schemas/DatasetDto'
+        '404':
+          description: Error occured
+          content: { }
+  /datasets/catalog/request:
+    post:
+      tags:
+        - Dataset
+      summary: Creates request to link dataset to dataset owner
+      description: Creates request to link dataset to dataset owner
+      operationId: requestAccessToCatalogDataset
+      requestBody:
+        description: Dataset catalog Request object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatasetDto'
+      responses:
+        '201':
+          description: Request created successfully
   /datasets/{dataset_id}:
     get:
       tags:
@@ -706,3 +970,520 @@ paths:
         '404':
           description: Given Dataset ID doesn't exist
           content: { }
+  /datasets/{dataset_id}/permissions:
+    get:
+      tags:
+        - Dataset
+      summary: Returns a dataset permissions
+      description: Returns the dataset permissions of given datasetId
+      operationId: getDatasetPermissionsById
+      parameters:
+        - name: dataset_id
+          in: path
+          description: Dataset Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DatasetRoleDto'
+        '404':
+          description: Given Dataset ID doesn't exist
+          content: { }
+  /tasks:
+    get:
+      tags:
+        - Task
+      summary: Get all tasks
+      description: Returns the list of tasks
+      operationId: getAllTasks
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskDto'
+        '404':
+          description: Error
+          content: { }
+  /tasks/me:
+    get:
+      tags:
+        - Task
+      summary: Get my tasks
+      description: Returns the list of current user's tasks
+      operationId: getMyTasks
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskDto'
+        '404':
+          description: Error
+          content: { }
+  /tasks/{task_id}:
+    get:
+      tags:
+        - Task
+      summary: Returns task
+      description: Returns the task of given task_id
+      operationId: getTaskById
+      parameters:
+        - name: task_id
+          in: path
+          description: Task Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskDto'
+        '404':
+          description: Given task ID doesn't exist
+          content: { }
+    delete:
+      tags:
+        - Task
+      summary: Delete task
+      description: Delete the task of given task_id
+      operationId: deleteTaskById
+      parameters:
+        - name: task_id
+          in: path
+          description: Task Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: successful operation
+        '404':
+          description: Given task ID doesn't exist
+          content: { }
+  /annotation_tasks/{annotation_task_id}:
+    get:
+      tags:
+        - Task
+      summary: Returns annotation task
+      description: Returns the task of given annotation_task_id
+      operationId: getAnnotationTaskById
+      parameters:
+        - name: annotation_task_id
+          in: path
+          description: Annotation Task Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnnotationTaskDto'
+        '404':
+          description: Given annotation task ID doesn't exist
+          content: { }
+  /annoatation_data/{annotation_data_id}:
+    get:
+      tags:
+        - Task
+      summary: Get annotation data
+      description: Returns annotation data corresponding to the uuid
+      operationId: getAnnotationDataById
+      parameters:
+        - name: annotation_data_id
+          in: path
+          description: Annotation Data Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AnnotationDataDto'
+        '404':
+          description: Error
+          content: { }
+  /annotation_tools:
+    get:
+      tags:
+        - Tool
+      summary: Get annotation tools
+      description: Returns the list of annotation tools
+      operationId: getAnotationTools
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AnnotationToolDto'
+        '404':
+          description: Error
+          content: { }
+    post:
+      tags:
+        - Tool
+      summary: Creates a new annotation tool for the given tool request
+      description: Creates a new annotation tool for the given tool request
+      operationId: addAnnotationTool
+      requestBody:
+        description: New Tool Request object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnnotationToolDto'
+      responses:
+        '201':
+          description: Tool added successfully
+  /annotation_tools/{annotation_tool_id}:
+    get:
+      tags:
+        - Tool
+      summary: Get annotation tool
+      description: Returns annotation tool corresponding to the uuid
+      operationId: getAnnotationToolById
+      parameters:
+        - name: annotation_tool_id
+          in: path
+          description: Annotation Tool Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnnotationToolDto'
+        '404':
+          description: Error
+          content: { }
+
+  /data_catalogs:
+    get:
+      tags:
+        - Catalog
+      summary: Get data catalogs
+      description: Returns the list of adata catalogs
+      operationId: getDataCatalogs
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DataCatalogDto'
+        '404':
+          description: Error
+          content: { }
+    post:
+      tags:
+        - Catalog
+      summary: Creates a new data catalog for the given request
+      description: Creates a new data catalog for the given request
+      operationId: addDataCatalog
+      requestBody:
+        description: New Catalog Request object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataCatalogDto'
+      responses:
+        '201':
+          description: Catalog added successfully
+  /data_catalogs/{data_catalog_id}:
+    get:
+      tags:
+        - Catalog
+      summary: Get data catalog
+      description: Returns data catalog corresponding to the uuid
+      operationId: getDataCatalogById
+      parameters:
+        - name: data_catalog_id
+          in: path
+          description: Data Cataliog Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataCatalogDto'
+        '404':
+          description: Error
+          content: { }
+    put:
+      tags:
+        - Catalog
+      summary: Update the data catalog
+      description: Update the given data catalog
+      operationId: updateDataCatalog
+      parameters:
+        - name: data_catalog_id
+          in: path
+          description: DataCatalog Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: New DataCatalog object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataCatalogDto'
+      responses:
+        '204':
+          description: DataCatalog updated successfully
+        '500':
+          description: Given DataCatalog ID doesn't exist
+          content: { }
+    delete:
+      tags:
+        - Catalog
+      summary: Delete a DataCatalog
+      description: Delete the DataCatalog of given id
+      operationId: deleteDataCatalogById
+      parameters:
+        - name: data_catalog_id
+          in: path
+          description: DataCatalog Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: successful operation
+        '404':
+          description: Given DataCatalog ID doesn't exist
+          content: { }
+  /data_catalogs/{data_catalog_id}/{table_name}:
+    get:
+      tags:
+        - Catalog
+      summary: Get table from data catalog
+      description: Returns the table from data catalog corresponding to the uuid
+      operationId: getTableFromDataCatalog
+      parameters:
+        - name: data_catalog_id
+          in: path
+          description: Data Cataliog Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: table_name
+          in: path
+          description: Table name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableDto'
+        '404':
+          description: Error
+          content: { }
+  /data_catalog_metadata/{data_catalog_id}:
+    get:
+      tags:
+        - Catalog
+      summary: Get Metadata from data catalog
+      description: Returns the Metadata from data catalog corresponding to the uuid
+      operationId: getMetadataDataCatalog
+      parameters:
+        - name: data_catalog_id
+          in: path
+          description: Data Cataliog Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetMetadataDto'
+        '404':
+          description: Error
+          content: { }
+  /data_access_request/owner:
+    get:
+      tags:
+        - Catalog
+      summary: Get all data request access for current user
+      description: Returns the list of data request access
+      operationId: getOwnerDataAccessRequests
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DataAccessRequestDto'
+        '404':
+          description: Error
+          content: { }
+  /data_access_request/requester:
+    get:
+      tags:
+        - Catalog
+      summary: Get all data request access for current user
+      description: Returns the list of data request access
+      operationId: getRequesterDataAccessRequests
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DataAccessRequestDto'
+        '404':
+          description: Error
+          content: { }
+  /data_access_request/{data_access_request_id}:
+    get:
+      tags:
+        - Catalog
+      summary: Get data request access
+      description: Returns the data request access corresponding to the uuid
+      operationId: getDataAccessRequestById
+      parameters:
+        - name: data_access_request_id
+          in: path
+          description: Data Access Request Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataAccessRequestDto'
+        '404':
+          description: Error
+          content: { }
+    put:
+      tags:
+        - Catalog
+      summary: Update the data request access
+      description: Update the given data request access
+      operationId: updateDataAccessRequest
+      parameters:
+        - name: data_access_request_id
+          in: path
+          description: Data request access Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: New Data request access object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataAccessRequestDto'
+      responses:
+        '204':
+          description: Data request access updated successfully
+        '500':
+          description: Given data request access ID doesn't exist
+          content: { }
+    delete:
+      tags:
+        - Catalog
+      summary: Delete a data request access
+      description: Delete the data request access of given data_access_request_id
+      operationId: deleteDataAccessRequestById
+      parameters:
+        - name: data_access_request_id
+          in: path
+          description: Data request access Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: successful operation
+        '404':
+          description: Given Dataset ID doesn't exist
+          content: { }
+  /data_access_request/{data_access_request_id}/update_status/{status}:
+    get:
+      tags:
+        - Catalog
+      summary: Update the status of the data access request
+      description: Update the status of the data access request
+      operationId: updateDataAccessRequestStatus
+      parameters:
+        - name: data_access_request_id
+          in: path
+          description: Data request access Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: status
+          in: path
+          description: Data request access status
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Data request access updated successfully
+

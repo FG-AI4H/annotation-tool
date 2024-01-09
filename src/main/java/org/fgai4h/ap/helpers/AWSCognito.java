@@ -1,11 +1,17 @@
 package org.fgai4h.ap.helpers;
 
+import lombok.AllArgsConstructor;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AWSCognito {
+
+    private AWSCognito() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static void listAllUserPools(CognitoIdentityProviderClient cognitoClient ) {
 
@@ -21,8 +27,7 @@ public class AWSCognito {
             );
 
         } catch (CognitoIdentityProviderException e){
-            System.err.println(e.awsErrorDetails().errorMessage());
-            System.exit(1);
+            e.getStackTrace();
         }
     }
 
@@ -38,10 +43,9 @@ public class AWSCognito {
             return response.users();
 
         } catch (CognitoIdentityProviderException e){
-            System.err.println(e.awsErrorDetails().errorMessage());
-            System.exit(1);
+            e.getStackTrace();
         }
-        return null;
+        return new ArrayList<>();
     }
 
     // Shows how to list users by using a filter.
@@ -53,8 +57,7 @@ public class AWSCognito {
             return cognitoClient.adminGetUser(adminGetUserRequest);
 
         } catch (CognitoIdentityProviderException e){
-            System.err.println(e.awsErrorDetails().errorMessage());
-            System.exit(1);
+            e.getStackTrace();
         }
         return null;
     }

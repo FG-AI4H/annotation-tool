@@ -30,8 +30,12 @@ public class DatasetEntity implements Serializable
     private String name;
     private String description;
     private String storageLocation;
+    private Boolean linked;
+    private String catalogLocation;
+    private String catalogAuthType;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private UUID dataCatalogId;
 
     private String visibility;
 
