@@ -91,7 +91,7 @@ public class CampaignService {
             //Get sample reference
             S3Client s3lient = S3Client.builder()
                     .region(Region.EU_CENTRAL_1)
-                    .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
+                    //.credentialsProvider(EnvironmentVariableCredentialsProvider.create())
                     .build();
 
             List<S3Object> objects = AWSS3.listBucketObjects(s3lient,"fhir-service-dev-fhirbinarybucket-yjeth32swz5m",datasetEntity.getStorageLocation().replaceAll("fhir-service-dev-fhirbinarybucket-yjeth32swz5m.s3.eu-central-1.amazonaws.com/", ""));
