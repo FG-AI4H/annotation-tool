@@ -33,6 +33,7 @@ public class AWSAthena {
             return processResultRows(athenaClient, queryExecutionId, dataCatalogModel);
         } catch (Exception e) {
             logger.error(e.getMessage());
+            Thread.currentThread().interrupt();
         }
 
         return new ArrayList<>();
@@ -49,7 +50,7 @@ public class AWSAthena {
                 .outputLocation("s3://fgai4h-oci-athena-query-result-"+dataCatalogModel.getAwsRegion()).build();
 
         StartQueryExecutionRequest startQueryExecutionRequest = StartQueryExecutionRequest.builder()
-                .queryString("SELECT * FROM \""+dataCatalogModel.getBucketName().replaceAll("-","_")+"\";")
+                .queryString("SELECT * FROM \""+dataCatalogModel.getBucketName().replace("-","_")+"\";")
                 .queryExecutionContext(queryExecutionContext)
                 .resultConfiguration(resultConfiguration).build();
 
@@ -151,7 +152,7 @@ public class AWSAthena {
 
             ListDataCatalogsResponse listDataCatalogsResponse = athenaClient.listDataCatalogs(listDataCatalogsRequest);
             System.out.println(listDataCatalogsResponse.dataCatalogsSummary().toString());
-
+            athenaClient.close();
 
         } catch (AthenaException e) {
             e.printStackTrace();
