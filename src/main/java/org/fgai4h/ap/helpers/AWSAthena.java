@@ -151,11 +151,11 @@ public class AWSAthena {
                     .build();
 
             ListDataCatalogsResponse listDataCatalogsResponse = athenaClient.listDataCatalogs(listDataCatalogsRequest);
-            System.out.println(listDataCatalogsResponse.dataCatalogsSummary().toString());
+            logger.info(listDataCatalogsResponse.dataCatalogsSummary().toString());
             athenaClient.close();
 
         } catch (AthenaException e) {
-            e.printStackTrace();
+            logger.error(e.getLocalizedMessage());
             System.exit(1);
         }
     }
