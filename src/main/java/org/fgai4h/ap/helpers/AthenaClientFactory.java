@@ -8,7 +8,7 @@ class AthenaClientFactory {
     static AthenaClient createClient(Region awsRegion) {
         return AthenaClient.builder()
                 .region(awsRegion)
-                .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
+                //.credentialsProvider(EnvironmentVariableCredentialsProvider.create())
                 .build();
     }
 }

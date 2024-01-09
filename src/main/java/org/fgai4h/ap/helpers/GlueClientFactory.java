@@ -9,7 +9,7 @@ public class GlueClientFactory {
     static GlueClient createClient(Region awsRegion) {
         return GlueClient.builder()
                 .region(awsRegion)
-                .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
+                //.credentialsProvider(EnvironmentVariableCredentialsProvider.create())
                 .build();
     }
 }

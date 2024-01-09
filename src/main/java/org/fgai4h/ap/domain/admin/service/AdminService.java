@@ -30,7 +30,7 @@ public class AdminService {
     public List<UserModel> retrieveAllUsers() {
         CognitoIdentityProviderClient cognitoClient = CognitoIdentityProviderClient.builder()
                 .region(Region.EU_CENTRAL_1)
-                .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
+                //.credentialsProvider(EnvironmentVariableCredentialsProvider.create())
                 .build();
 
         List<UserType> awsUsers = AWSCognito.getAllUsers(cognitoClient,"eu-central-1_1cFVgcU36") ;

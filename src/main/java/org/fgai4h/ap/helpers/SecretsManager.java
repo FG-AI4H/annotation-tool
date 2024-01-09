@@ -21,7 +21,7 @@ public class SecretsManager {
         // Create a Secrets Manager client
         SecretsManagerClient client = SecretsManagerClient.builder()
                 .region(region)
-                .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
+                //.credentialsProvider(EnvironmentVariableCredentialsProvider.create())
                 .build();
 
         // In this sample we only handle the specific exceptions for the 'GetSecretValue' API.

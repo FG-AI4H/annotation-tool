@@ -32,7 +32,7 @@ public class AWSS3 {
 
             S3Presigner presigner = S3Presigner.builder()
                     .region(Region.of(dataCatalogModel.getAwsRegion()))
-                    .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
+                    //.credentialsProvider(EnvironmentVariableCredentialsProvider.create())
                     .build();
 
             PutObjectRequest objectRequest = PutObjectRequest.builder()
@@ -71,7 +71,7 @@ public class AWSS3 {
 
             S3Presigner presigner = S3Presigner.builder()
                     .region(Region.of(dataCatalogModel.getAwsRegion()))
-                    .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
+                    //.credentialsProvider(EnvironmentVariableCredentialsProvider.create())
                     .build();
 
             GetObjectRequest getObjectRequest = GetObjectRequest.builder()

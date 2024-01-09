@@ -51,7 +51,7 @@ public class UserService {
         if(userModel.isPresent()) {
             CognitoIdentityProviderClient cognitoClient = CognitoIdentityProviderClient.builder()
                     .region(Region.EU_CENTRAL_1)
-                    .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
+                    //.credentialsProvider(EnvironmentVariableCredentialsProvider.create())
                     .build();
 
             AdminGetUserResponse awsUser = AWSCognito.getUserByUsername(cognitoClient, "eu-central-1_1cFVgcU36", userModel.get().getUsername());
