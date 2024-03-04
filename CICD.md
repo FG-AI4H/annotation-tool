@@ -77,3 +77,15 @@ Optionally you can add -Dsonar.qualitygate.wait=true to make the job wait for th
 Programmatic user arn:aws:iam::601883093460:user/amplify_prog_user is MFA enabled which should be removed
 
 We are using a MySQL database and associated a security group (sg-0a783f9a234401c53) and opened port 3306 to be reachable for dev
+
+#Local development with AWS resources
+initiate AWS sessions from local terminal
+- aws s3 ls --profile ai4h
+
+Get session ID from .aws/cli/cache
+Get values from the latest cache file:
+- AccessKeyId
+- SecretAccessKey
+- SessionToken
+
+Add the value in the env variables
