@@ -7,11 +7,38 @@ This annotation module is built according to FG-AI4H-DEL5.3 (Proposed Standard f
 # Scope
 The scope of this annotation tool is to provide a platform for annotators to annotate data points in the context of health. The tool is supporting the following features:
 - Annotator registration and login
-- Campaign creation, management, and monitoring
-- Data point annotation
+- [Campaign creation, management, and monitoring](Campaign-management.md)
+- [Dataset management](Dataset-management.md)
+- [Data point annotation](Data-point-annotation.md)
 - Review of annotations
 - Quality control checks
 - Data export
 - User management
 - Continuous learning
 - Panel decision
+
+# Definitions
+- **Data Annotation**: The process of labeling data points with metadata to provide context and meaning to the data.
+- **Data Point**: A single unit of data that is annotated.
+- **Dataset**: A collection of data points that are annotated together.
+- **Annotation**: The metadata that is added to a data point.
+- **Annotator**: A user who provides annotations.
+- **Reviewer**: A user who reviews and modifies existing annotations.
+- **Supervisor**: A user who oversees the annotation process and ensures quality and consistency.
+- **Manager**: A user who sets up, starts, and closes campaigns, and monitors the progress.
+- **Data Steward**: A user who ensures the quality and integrity of the data points.
+- **Preset**: A pre-annotation provided to accelerate the annotation process.
+- **Data Scientist**: A user who works with the annotated data to develop AI models.
+- **User**: A person who interacts with the annotation tool.
+- **Campaign**: A set of tasks that need to be annotated by annotators.
+- **Task**: A specific annotation task that needs to be completed by annotators.
+- **Quality Control**: The process of checking the quality of annotations.
+- **Panel Decision**: A discussion among users to make informed decisions on hard diagnostic cases.
+- **Continuous Learning**: The process of learning from the annotations to improve the quality of future annotations.
+- **Data Export**: The process of exporting annotated data for further analysis or usage.
+- **Metadata**: Additional information about the data point or data set that is not part of the annotation.
+- **Health Metadata**: Metadata specific to health data that provides additional context to the annotations.
+- **FHIR**: Fast Healthcare Interoperability Resources, a standard for exchanging healthcare information electronically.
+- **HL7**: Health Level Seven International, a standard for exchanging healthcare information electronically.
+
+Additional definitions about entities can be found in the [Entities](Entities.md).
