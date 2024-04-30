@@ -52,23 +52,9 @@ To build the application, use the following command:
 mvn clean install
 ```
 
-## Contributing
-
-When contributing to this project, please use the following process:
-
-1. Create a new branch for your feature or bug fix.
-2. Make your changes and write tests if necessary.
-3. Commit your changes using the Conventional Commits standard.
-4. Push your changes to your fork.
-5. Open a pull request against the main repository.
-
-Please note that this project uses SonarCloud for code quality checks, and AWS CodePipeline for continuous integration and deployment. Make sure your changes pass all checks before opening a pull request.
-
-## Deployment
-
-The project is deployed to AWS Elastic Beanstalk using AWS CodePipeline. The pipeline is triggered by a webhook on merge to the master branch. The pipeline tests the code, builds the artifact, and deploys it to Elastic Beanstalk.
-
 ## Local Development with AWS Resources
+
+This project relies on several AWS services. You 
 
 To initiate AWS sessions from the local terminal, use the following command:
 
@@ -78,4 +64,8 @@ aws s3 ls --profile ai4h
 
 ## Further Information
 
-For more detailed information about the project, please refer to the `CICD.md` file in the repository.
+For more detailed information about the project, please refer to the [Data annotation](Data-annotation.md).
+
+## Contributing
+
+If you wish to contribute or fork this project, please read the [documentation](./documentation/Contributing.md).

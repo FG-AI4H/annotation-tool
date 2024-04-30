@@ -2,6 +2,42 @@
 
 Thank you for your interest in contributing to the Open Code Initiative! We appreciate your effort and to make the process as smooth as possible, we've outlined a few guidelines below.
 
+## Prerequisites
+
+This project relies on several AWS services. You will need the following prerequisites to contribute to the project:
+1. Get a GitHub and AWS account following the guidelines defined in this [documentation](https://github.com/FG-AI4H/Documentation/tree/wikiMaster/Onboarding).
+
+In this project, we want to secure access to AWS Cloud and make sure that long lived credentials are protected with Multifactor authentication. This is the reason that your user will have MFA enabled. This comes with some additional settings that you need to be aware of.
+
+2. Set up your AWS credentials in the credentials file:
+First in the ~/.aws/credentials add your user access key and the secret key
+```bash
+[default]
+Aws_access_key_id = xxx
+Aws_secret_access_key = xxx
+```
+3. Then the ~/.aws/config would look something like:
+```bash
+[default]
+Region = eu-west-1
+
+[profile ai4h]
+role_arn = arn:aws:iam::<accout_id>:role/<your_new_role_name>
+mfa_serial = arn:aws:iam::<accout_id>:mfa/<your_user_name>
+source_profile = default
+region = eu-central-1
+duration_seconds = 43200
+```
+
+4. To initiate AWS sessions from the local terminal, use the following command:
+
+```bash
+aws s3 ls --profile ai4h
+```
+5. Get session ID from ~/.aws/cli/cache/<latest-file>
+Use the value from AccessKeyId, SecretAccessKey and SessionToken and set them in the environment variables.
+
+
 ## Getting Started
 
 1. **Fork the Repository**: Start by forking the repository to your own GitHub account. This allows you to propose changes without access to the main codebase.
