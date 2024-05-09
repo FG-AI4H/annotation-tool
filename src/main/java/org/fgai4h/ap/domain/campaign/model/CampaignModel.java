@@ -3,6 +3,7 @@ package org.fgai4h.ap.domain.campaign.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.*;
+
 import org.fgai4h.ap.domain.dataset.model.DatasetModel;
 import org.fgai4h.ap.domain.user.model.UserModel;
 import org.springframework.hateoas.RepresentationModel;
@@ -31,11 +32,15 @@ public class CampaignModel extends RepresentationModel<CampaignModel> {
     private List<UserModel> reviewers;
     private List<UserModel> supervisors;
     private List<ClassLabelModel> classLabels;
+
     private String annotationKind;
+
     private String annotationTool;
     private String preAnnotationTool;
     private String preAnnotationModel;
+
     private String annotationMethod;
+
     private String annotationInstructions;
     private String qualityAssurance;
     private Boolean isInstanceLabel;

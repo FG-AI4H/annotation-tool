@@ -101,7 +101,7 @@ public class CampaignService {
             List<AnnotationTaskEntity> annotationTaskEntityList = new ArrayList<>();
             annotationTaskEntityList.add(annotationTaskRepository.save(AnnotationTaskEntity.builder()
                     .kind(campaign.getAnnotationKind())
-                    .title(campaign.getAnnotationKind())
+                    .title(String.valueOf(campaign.getAnnotationKind()))
                     .build()));
 
             for (int i = 0; i < objects.size(); i++) {

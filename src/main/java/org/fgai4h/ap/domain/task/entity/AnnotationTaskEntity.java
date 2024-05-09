@@ -27,6 +27,7 @@ public class AnnotationTaskEntity implements Serializable {
     private UUID annotationTaskUUID;
 
     private String kind;
+
     private String title;
     private String description;
 }

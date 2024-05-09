@@ -214,24 +214,30 @@ components:
       type: object
       properties:
         id:
+          description: Id of the campaign
           type: string
           format: uuid
         name:
+          description: Name of the campaign
           type: string
         description:
+          description: Description of the campaign
           type: string
         status:
           $ref: '#/components/schemas/CampaignStatus'
         annotation_kind:
-          type: string
+          $ref: '#/components/schemas/AnnotationKind'
         annotation_tool:
+          description: The annotation tool selected for the campaign (UI tool)
           type: string
         pre_annotation_tool:
+          description: The pre-annotation tool selected to pre-process the annotations
           type: string
         pre_annotation_model:
+          description: The model selected for the pre-annotation tool
           type: string
         annotation_method:
-          type: string
+          $ref: '#/components/schemas/AnnotationMethod'
         annotation_instructions:
           type: string
         quality_assurance:
@@ -242,6 +248,7 @@ components:
         min_annotation:
           type: integer
         class_label:
+          description: A list of possible classes for classification tasks
           type: array
           items:
             $ref: '#/components/schemas/ClassLabelDto'
@@ -262,7 +269,31 @@ components:
           items:
             type: string
             format: uuid
+    AnnotationKind:
+      description: Kind of annotation as defined in FG-AI4H-DEL5.3
+      type: string
+      enum:
+        - SEMANTIC_SEGMENTATION
+        - IMAGE_CLASSIFICATION
+        - OBJECT_DETECTION
+        - POSE_ESTIMATION
+        - SYNTHETIC_CASE
+    AnnotationMethod:
+      description: Method of annotation as defined in FG-AI4H-DEL5.3
+      type: string
+      enum:
+        - FULL_IMAGE
+        - BOUNDING_BOX
+        - POLYGONS
+        - KEYPOINT
+        - POLYLINES
+        - ELISPE_CIRCLE
+        - CUBOID
+        - STRAIGHT_LINES
+        - QUADRATIC_CURVES
+        - SYNTHETIC_CASE
     CampaignStatus:
+      description: Status of the campaign
       type: string
       enum:
         - DRAFT
@@ -371,7 +402,7 @@ components:
           type: string
           format: uuid
         kind:
-          type: string
+          $ref: '#/components/schemas/AnnotationKind'
         title:
           type: string
         description:

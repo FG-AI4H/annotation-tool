@@ -39,53 +39,64 @@ public class CampaignEntity implements Serializable {
      * The name for the campaign.
      */
     private String name;
+
     /**
      * The description for the campaign.
      */
     private String description;
+
     /**
      * The status of the campaign.
      */
     private String status;
+
     /**
      * The kind of annotation that is to be performed in the campaign.
      */
     private String annotationKind;
+
     /**
      * The tool that is to be used for annotation.
      */
     private String annotationTool;
+
     /**
-     * The model that is to be used for annotation.
+     * The pre annotation tool used to pre-process the annotations.
      */
     private String preAnnotationTool;
+
     /**
      * The model that is to be used for annotation.
      */
     private String preAnnotationModel;
+
     /**
      * The method that is to be used for annotation.
      */
     private String annotationMethod;
+
     /**
      * The instructions for annotation.
      */
     private String annotationInstructions;
+
     /**
      * The quality assurance for annotation.
      */
     private String qualityAssurance;
+
     /**
      * The kind of quality assurance that is to be performed in the campaign.
      */
     private Boolean isInstanceLabel;
+
     /**
      * The kind of quality assurance that is to be performed in the campaign.
      */
     private Integer minAnnotation;
 
     /**
-     * The class labels for the campaign.
+     * The annotation class labels for the campaign.
      */
     @OneToMany(mappedBy = "campaignEntity")
     private List<ClassLabelEntity> classLabels = new java.util.ArrayList<>();

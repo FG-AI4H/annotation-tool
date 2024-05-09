@@ -19,7 +19,9 @@ import java.util.UUID;
 public class AnnotationTaskModel extends RepresentationModel<AnnotationTaskModel> {
 
     private UUID annotationTaskUUID;
+
     private String kind;
+
     private String title;
     private String description;
 }
