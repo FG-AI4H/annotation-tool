@@ -52,6 +52,21 @@ git clone https://github.com/<your-username>/open-code-initiative.git
 
 1. **Create a Branch**: Always create a new branch for your changes. This keeps the project history clean and your changes isolated.
 
+**Branching strategy**
+
+In order to standardize the branching strategy and leverage automation, we decided to implement Trunk based development on all projects.
+
+**Branch naming convention**
+
+We have defined a naming convention for tagging branches and artifact versioning, consistent branch naming promotes clarity and organization. OWT follows these naming conventions:
+
+- Main branch: master
+- Feature branches: feature/branch-name
+- Development branch (default branch for Git-flow): develop
+- Release branches: release/branch-name
+- Bug fix branches: bugfix/branch-name
+- Hotfix branches: hotfix/branch-name
+
 ```bash
 git checkout -b <branch-name>
 ```
