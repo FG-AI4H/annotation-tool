@@ -17,6 +17,13 @@ The scope of this annotation tool is to provide a platform for annotators to ann
 - Continuous learning
 - Panel decision
 
+# Annotation UI
+Annotation UIs are not developed by the FG-AI4H OCI team itself, but are provided by third-party vendors. The FG-AI4H OCI team is responsible for integrating the annotation UIs into the platform and ensuring that they meet the requirements of the FG-AI4H-DEL5.3 standard.
+
+The Annotation Platform is providing an integration layer for data annotation UI tools: This feature establishes a flexible integration layer, allowing for the seamless incorporation of various data annotation user interface (UI) tools into the platform, catering to diverse user preferences and requirements.
+
+For example, integration with Visian, a student project from HPI Potsdam, offers a flexible human-in-the-loop AI solution tailored for effortless utilization of ML models on medical image data. It also facilitates comfortable project management for data and model versioning, enhancing overall workflow efficiency and collaboration.
+
 # Definitions
 - **Data Annotation**: The process of labeling data points with metadata to provide context and meaning to the data.
 - **Data Point**: A single unit of data that is annotated.
@@ -42,3 +49,5 @@ The scope of this annotation tool is to provide a platform for annotators to ann
 - **HL7**: Health Level Seven International, a standard for exchanging healthcare information electronically.
 
 Additional definitions about entities can be found in the [Entities](Entities.md).
+
+

@@ -18,6 +18,7 @@ import org.fgai4h.ap.domain.task.repository.AnnotationTaskRepository;
 import org.fgai4h.ap.domain.task.repository.TaskRepository;
 import org.fgai4h.ap.domain.user.entity.UserEntity;
 import org.fgai4h.ap.helpers.AWSS3;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
@@ -48,7 +49,7 @@ public class CampaignService {
                 .map(campaignModelAssembler::toModel).collect(Collectors.toList());
     }
 
-    public CampaignModel addCampaign(CampaignModel campaignModel) {
+    public CampaignModel addCampaign(@NotNull CampaignModel campaignModel) {
         campaignModel.setStatus(CampaignStatusModel.DRAFT);
         CampaignEntity newCampaign = campaignRepository.save(campaignMapper.toCampaignEntity(campaignModel));
         return campaignModelAssembler.toModel(newCampaign);
@@ -89,13 +90,13 @@ public class CampaignService {
 
         campaign.getDatasets().forEach(datasetEntity -> {
             //Get sample reference
-            S3Client s3lient = S3Client.builder()
+            S3Client s3client = S3Client.builder()
                     .region(Region.EU_CENTRAL_1)
                     //.credentialsProvider(EnvironmentVariableCredentialsProvider.create())
                     .build();
 
-            List<S3Object> objects = AWSS3.listBucketObjects(s3lient,"fhir-service-dev-fhirbinarybucket-yjeth32swz5m",datasetEntity.getStorageLocation().replaceAll("fhir-service-dev-fhirbinarybucket-yjeth32swz5m.s3.eu-central-1.amazonaws.com/", ""));
-            s3lient.close();
+            List<S3Object> objects = AWSS3.listBucketObjects(s3client,"fhir-service-dev-fhirbinarybucket-yjeth32swz5m",datasetEntity.getStorageLocation().replaceAll("fhir-service-dev-fhirbinarybucket-yjeth32swz5m.s3.eu-central-1.amazonaws.com/", ""));
+            s3client.close();
 
             List<AnnotationTaskEntity> annotationTaskEntityList = new ArrayList<>();
             annotationTaskEntityList.add(annotationTaskRepository.save(AnnotationTaskEntity.builder()
