@@ -26,7 +26,7 @@ public class AnnotationDataEntity implements Serializable {
     @Column(columnDefinition = "BINARY(16)")
     private UUID annotationDataUUID;
 
-    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     String data;
 
     @ManyToOne

@@ -28,7 +28,7 @@ public class SampleEntity implements Serializable {
 
     private String title;
 
-    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     @Basic(fetch = FetchType.LAZY)
     private String data;
 

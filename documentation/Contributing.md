@@ -36,7 +36,10 @@ aws s3 ls --profile ai4h
 ```
 5. Get session ID from ~/.aws/cli/cache/<latest-file>
 Use the value from AccessKeyId, SecretAccessKey and SessionToken and set them in the environment variables.
-
+- AWS_ACCESS_KEY_ID=[AccessKeyId];
+- AWS_REGION=eu-central-1;
+- AWS_SECRET_ACCESS_KEY=[SecretAccessKey];
+- AWS_SESSION_TOKEN=[SessionToken];
 
 ## Getting Started
 
