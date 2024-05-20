@@ -9,6 +9,7 @@ import org.fgai4h.ap.domain.campaign.entity.CampaignEntity;
 import org.fgai4h.ap.domain.user.entity.UserEntity;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
@@ -21,12 +22,13 @@ import java.util.UUID;
 @Table(name="task")
 public class TaskEntity implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(columnDefinition = "BINARY(16)")
+    
     private UUID taskUUID;
 
     private String kind;

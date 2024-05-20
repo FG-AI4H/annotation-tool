@@ -3,6 +3,7 @@ package org.fgai4h.ap.domain.task.mapper;
 import org.fgai4h.ap.domain.task.controller.TaskController;
 import org.fgai4h.ap.domain.task.entity.SampleEntity;
 import org.fgai4h.ap.domain.task.model.SampleModel;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +18,7 @@ public class SampleModelAssembler extends RepresentationModelAssemblerSupport<Sa
     }
 
     @Override
-    public SampleModel toModel(SampleEntity entity) {
+    public @NotNull SampleModel toModel(@NotNull SampleEntity entity) {
         SampleModel sampleModel = instantiateModel(entity);
 
         sampleModel.add(linkTo(

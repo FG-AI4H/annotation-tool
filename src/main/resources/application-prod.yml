@@ -8,6 +8,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
+        transaction.jta.platform: none
 
   security:
     oauth2:

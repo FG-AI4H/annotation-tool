@@ -26,7 +26,7 @@ public class AWSS3 {
         throw new IllegalStateException("Utility class");
     }
 
-    public static void putObject(DataCatalogModel dataCatalogModel, String fileType, String keyName, byte[] filecontent) {
+    public static void putObject(DataCatalogModel dataCatalogModel, String fileType, String keyName, byte[] fileContent) {
 
         try {
 
@@ -56,7 +56,7 @@ public class AWSS3 {
             connection.setDoOutput(true);
             connection.setRequestProperty("Content-Type",fileType);
             connection.setRequestMethod("PUT");
-            connection.getOutputStream().write(filecontent);
+            connection.getOutputStream().write(fileContent);
             connection.getResponseCode();
 
         } catch (S3Exception | IOException e) {
@@ -97,9 +97,10 @@ public class AWSS3 {
             if (presignedGetObjectRequest.signedPayload().isPresent()) {
                 connection.setDoOutput(true);
 
-                try (InputStream signedPayload = presignedGetObjectRequest.signedPayload().get().asInputStream();
-                     OutputStream httpOutputStream = connection.getOutputStream()) {
-                    IoUtils.copy(signedPayload, httpOutputStream);
+                try (InputStream signedPayload = presignedGetObjectRequest.signedPayload().get().asInputStream()) {
+                    try (OutputStream httpOutputStream = connection.getOutputStream()) {
+                        IoUtils.copy(signedPayload, httpOutputStream);
+                    }
                 }
             }
 

@@ -6,6 +6,7 @@ import org.fgai4h.ap.domain.task.entity.AnnotationEntity;
 import org.fgai4h.ap.domain.task.model.AnnotationDataModel;
 import org.fgai4h.ap.domain.task.model.AnnotationModel;
 import org.fgai4h.ap.domain.user.mapper.UserModelAssembler;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
@@ -25,7 +26,7 @@ public class AnnotationModelAssembler extends RepresentationModelAssemblerSuppor
     }
 
     @Override
-    public AnnotationModel toModel(AnnotationEntity entity) {
+    public @NotNull AnnotationModel toModel(@NotNull AnnotationEntity entity) {
         AnnotationTaskModelAssembler annotationTaskModelAssembler = new AnnotationTaskModelAssembler();
         UserModelAssembler userModelAssembler = new UserModelAssembler();
 
@@ -46,7 +47,7 @@ public class AnnotationModelAssembler extends RepresentationModelAssemblerSuppor
     }
 
     @Override
-    public CollectionModel<AnnotationModel> toCollectionModel(Iterable<? extends AnnotationEntity> entities)
+    public @NotNull CollectionModel<AnnotationModel> toCollectionModel(@NotNull Iterable<? extends AnnotationEntity> entities)
     {
         CollectionModel<AnnotationModel> annotationModels = super.toCollectionModel(entities);
 

@@ -23,7 +23,7 @@ public class DatasetMetadataEntity implements Serializable {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(columnDefinition = "BINARY(16)")
+    
     private UUID metadataUUID;
 
     private String datCollectionAuthorsAgency;
