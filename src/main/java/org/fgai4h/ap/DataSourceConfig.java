@@ -3,6 +3,8 @@ package org.fgai4h.ap;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +17,8 @@ import static org.fgai4h.ap.helpers.SecretsManager.getSecret;
 @Configuration
 @Profile("prod")
 public class DataSourceConfig {
+
+        private static final Logger LOGGER = LoggerFactory.getLogger(DataSourceConfig.class);
 
         @Bean
         public DataSource getDataSource() {
@@ -29,7 +33,7 @@ public class DataSourceConfig {
                         dataSourceBuilder.password(secretsJson.get("password").textValue());
 
                 } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        LOGGER.error("Error processing JSON", e);
                 }
 
                 return dataSourceBuilder.build();

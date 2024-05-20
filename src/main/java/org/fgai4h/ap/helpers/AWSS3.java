@@ -97,9 +97,10 @@ public class AWSS3 {
             if (presignedGetObjectRequest.signedPayload().isPresent()) {
                 connection.setDoOutput(true);
 
-                try (InputStream signedPayload = presignedGetObjectRequest.signedPayload().get().asInputStream();
-                     OutputStream httpOutputStream = connection.getOutputStream()) {
-                    IoUtils.copy(signedPayload, httpOutputStream);
+                try (InputStream signedPayload = presignedGetObjectRequest.signedPayload().get().asInputStream()) {
+                    try (OutputStream httpOutputStream = connection.getOutputStream()) {
+                        IoUtils.copy(signedPayload, httpOutputStream);
+                    }
                 }
             }
 
