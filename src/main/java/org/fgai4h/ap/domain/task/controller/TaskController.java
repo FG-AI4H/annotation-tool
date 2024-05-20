@@ -18,6 +18,7 @@ import org.fgai4h.ap.domain.task.repository.AnnotationTaskRepository;
 import org.fgai4h.ap.domain.task.repository.SampleRepository;
 import org.fgai4h.ap.domain.task.repository.TaskRepository;
 import org.fgai4h.ap.domain.task.service.TaskService;
+import org.fgai4h.ap.helpers.AWSS3;
 import org.fgai4h.ap.security.IAuthenticationFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -103,45 +105,52 @@ public class TaskController implements TaskApi {
 
     @PutMapping("/api/v1/tasks/{id}")
     public ResponseEntity<?> updateTask(@RequestBody TaskEntity task, @PathVariable UUID id){
-        TaskEntity taskToUpdate = task;
-        taskToUpdate.setTaskUUID(id);
-        taskRepository.save(taskToUpdate);
+        task.setTaskUUID(id);
+        taskRepository.save(task);
 
         Link newlyCreatedLink = linkTo(methodOn(TaskController.class).getTaskById(id)).withSelfRel();
 
         try {
             return ResponseEntity.noContent().location(new URI(newlyCreatedLink.getHref())).build();
         } catch (URISyntaxException e) {
-            return ResponseEntity.badRequest().body("Unable to update " + taskToUpdate);
+            return ResponseEntity.badRequest().body("Unable to update " + task);
         }
     }
 
     @PutMapping("/api/v1/tasks/{id}/next")
     public ResponseEntity<?> updateTaskNext(@RequestBody TaskEntity task, @PathVariable UUID id){
-        TaskEntity taskToUpdate = task;
-        taskToUpdate.setSamples(null);
+        task.setSamples(null);
 
-        for (Iterator<AnnotationEntity> it = task.getAnnotations().iterator(); it.hasNext(); ) {
-            AnnotationEntity annotationEntity = it.next();
+        for (AnnotationEntity annotationEntity : task.getAnnotations()) {
             annotationEntity.setAnnotationTask(null);
             annotationEntity.setTask(task);
 
-            for (Iterator<AnnotationDataEntity> itd = annotationEntity.getAnnotationDataList().iterator(); itd.hasNext(); ) {
-                AnnotationDataEntity annotationDataEntity = itd.next();
+            for (AnnotationDataEntity annotationDataEntity : annotationEntity.getAnnotationDataList()) {
                 annotationDataEntity.setAnnotationEntity(annotationEntity);
+
+                // extract the annotation data and save it as a file in the S3 bucket
+                String annotationData = annotationDataEntity.getData(); // assuming the data is a String
+                byte[] annotationDataBytes = annotationData.getBytes(StandardCharsets.UTF_8);
+
+                // assuming you have a DataCatalogModel instance named dataCatalogModel
+                // and fileType and keyName are defined
+
+                //AWSS3.putObject(dataCatalogModel, fileType, keyName, annotationDataBytes);
+
             }
         }
 
-        taskToUpdate.setTaskUUID(id);
-        taskRepository.save(taskToUpdate);
+        task.setTaskUUID(id);
+        taskRepository.save(task);
 
+        // TODO: This is a dummy UUID, replace it with the actual next task UUID
         UUID nextTaskId = UUID.fromString("b4009387-4d48-49b6-be2a-8ad50df03307");
         Link newlyCreatedLink = linkTo(methodOn(TaskController.class).getTaskById(nextTaskId)).withSelfRel();
 
         try {
             return ResponseEntity.noContent().location(new URI(newlyCreatedLink.getHref())).build();
         } catch (URISyntaxException e) {
-            return ResponseEntity.badRequest().body("Unable to update " + taskToUpdate);
+            return ResponseEntity.badRequest().body("Unable to update " + task);
         }
     }
 

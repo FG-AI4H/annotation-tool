@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -15,15 +16,16 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="annoatationData")
+@Table(name="annotationData")
 public class AnnotationDataEntity implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(columnDefinition = "BINARY(16)")
+    
     private UUID annotationDataUUID;
 
     @Column(columnDefinition = "LONGTEXT")

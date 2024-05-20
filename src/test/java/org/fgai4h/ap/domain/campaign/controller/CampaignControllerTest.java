@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles(value = "prod")
+@ActiveProfiles(value = "test")
 class CampaignControllerTest {
 
     @Autowired

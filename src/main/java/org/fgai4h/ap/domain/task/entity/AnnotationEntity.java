@@ -9,6 +9,7 @@ import org.fgai4h.ap.domain.task.model.AnnotationStatus;
 import org.fgai4h.ap.domain.user.entity.UserEntity;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,15 +20,16 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="annoatation")
+@Table(name= "annotation")
 public class AnnotationEntity implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(columnDefinition = "BINARY(16)")
+    
     private UUID annotationUUID;
 
     @OneToOne
@@ -41,7 +43,6 @@ public class AnnotationEntity implements Serializable {
     @OneToOne
     private UserEntity annotator;
 
-    @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime submittedAt;
 
     @ManyToOne
