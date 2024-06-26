@@ -1,10 +1,15 @@
 package org.fgai4h.ap.domain.dataset.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.fgai4h.ap.api.DatasetRoleApi;
+import org.fgai4h.ap.api.model.DatasetRoleDto;
 import org.fgai4h.ap.domain.dataset.entity.DatasetRoleEntity;
+import org.fgai4h.ap.domain.dataset.mapper.DatasetRoleApiMapper;
 import org.fgai4h.ap.domain.dataset.mapper.DatasetRoleModelAssembler;
+import org.fgai4h.ap.domain.dataset.model.DatasetModel;
 import org.fgai4h.ap.domain.dataset.model.DatasetRoleModel;
 import org.fgai4h.ap.domain.dataset.repository.DatasetRoleRepository;
+import org.fgai4h.ap.domain.dataset.service.DatasetRoleService;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
@@ -21,56 +26,53 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequiredArgsConstructor
-public class DatasetRoleController {
+public class DatasetRoleController implements DatasetRoleApi {
 
-    private final DatasetRoleRepository datasetRoleRepository;
-    private final DatasetRoleModelAssembler datasetRoleModelAssembler;
+    private final DatasetRoleApiMapper datasetRoleApiMapper;
+    private final DatasetRoleService datasetRoleService;
 
-    @GetMapping("/api/v1/datasets/{id}/roles")
-    public ResponseEntity<CollectionModel<DatasetRoleModel>> getAllDatasetRolesByDatasetId(@PathVariable("id") UUID id)
+    @Override
+    public ResponseEntity<DatasetRoleDto> getDatasetRoleById(UUID id)
     {
-        List<DatasetRoleEntity> datasetRoleEntities = datasetRoleRepository.findRolesByDatasetId(id);
-        return new ResponseEntity<>(
-                datasetRoleModelAssembler.toCollectionModel(datasetRoleEntities),
-                HttpStatus.OK);
-    }
-
-    @GetMapping("/api/v1/dataset_roles/{id}")
-    public ResponseEntity<DatasetRoleModel> getDatasetRoleById(@PathVariable("id") UUID id)
-    {
-        return datasetRoleRepository.findById(id)
-                .map(datasetRoleModelAssembler::toModel)
+        return datasetRoleService.getDatasetRoleById(id)
+                .map(datasetRoleApiMapper::toDatasetRoleDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/api/v1/dataset_roles/{id}")
-    public ResponseEntity<?> updateDataset(@RequestBody DatasetRoleEntity datasetRole, @PathVariable UUID id){
-        DatasetRoleEntity datasetRoleToUpdate = datasetRole;
-        datasetRoleToUpdate.setDatasetRoleUUID(id);
-        datasetRoleRepository.save(datasetRoleToUpdate);
+    @Override
+    public ResponseEntity<Void> updateDatasetRole(UUID id, DatasetRoleDto datasetRoleDto){
+        DatasetRoleModel datasetRoleModel = datasetRoleApiMapper.toDatasetRoleModel(datasetRoleDto);
+        datasetRoleService.updateDatasetRole(datasetRoleModel);
 
         Link newlyCreatedLink = linkTo(methodOn(DatasetRoleController.class).getDatasetRoleById(id)).withSelfRel();
 
         try {
             return ResponseEntity.noContent().location(new URI(newlyCreatedLink.getHref())).build();
         } catch (URISyntaxException e) {
-            return ResponseEntity.badRequest().body("Unable to update " + datasetRoleToUpdate);
+            return ResponseEntity.badRequest().build();
         }
     }
 
-    @PostMapping("/api/v1/dataset_roles")
-    public ResponseEntity<?> addDataset(@RequestBody DatasetRoleEntity newDatasetRole){
+    @Override
+    public ResponseEntity<Void> addDatasetRole(DatasetRoleDto datasetRoleDto){
 
-        newDatasetRole = datasetRoleRepository.save(newDatasetRole);
+        DatasetRoleModel datasetRoleModel = datasetRoleApiMapper.toDatasetRoleModel(datasetRoleDto);
+        datasetRoleModel = datasetRoleService.addDatasetRole(datasetRoleModel);
 
-        Link newlyCreatedLink = linkTo(methodOn(DatasetController.class).getDatasetById(newDatasetRole.getDatasetRoleUUID())).withSelfRel();
+        Link newlyCreatedLink = linkTo(methodOn(DatasetController.class).getDatasetById(datasetRoleModel.getDatasetRoleUUID())).withSelfRel();
 
         try {
             return ResponseEntity.noContent().location(new URI(newlyCreatedLink.getHref())).build();
         } catch (URISyntaxException e) {
-            return ResponseEntity.badRequest().body("Unable to add " + newDatasetRole);
+            return ResponseEntity.badRequest().build();
         }
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteDatasetRoleById(UUID datasetRoleId) {
+        datasetRoleService.deleteDatasetRoleById(datasetRoleId);
+        return ResponseEntity.noContent().build();
     }
 
 

@@ -20,6 +20,8 @@ tags:
     description: Everything about annotation campaign
   - name: Dataset
     description: Operation about dataset management
+  - name: DatasetRole
+    description: Operation about dataset role management
   - name: Task
     description: Operation about annotation tasks
   - name: User
@@ -1028,6 +1030,95 @@ paths:
         '404':
           description: Given Dataset ID doesn't exist
           content: { }
+
+  /datasetRoles:
+    post:
+      tags:
+        - DatasetRole
+      summary: Creates a new dataset role for the given dataset and user request
+      description: Creates a new dataset role for the given dataset request.
+      operationId: addDatasetRole
+      requestBody:
+        description: New datasetRole Request object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatasetRoleDto'
+      responses:
+        '201':
+          description: DatasetRole added successfully
+
+  /datasetRoles/{dataset_role_id}:
+    get:
+      tags:
+        - DatasetRole
+      summary: Returns a dataset role
+      description: Returns the dataset role of given datasetRoleId
+      operationId: getDatasetRoleById
+      parameters:
+        - name: dataset_role_id
+          in: path
+          description: DatasetRole Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetRoleDto'
+        '404':
+          description: Given Dataset Role ID doesn't exist
+          content: { }
+    put:
+      tags:
+        - DatasetRole
+      summary: Update the dataset role
+      description: Update the given dataset role
+      operationId: updateDatasetRole
+      parameters:
+        - name: dataset_role_id
+          in: path
+          description: Dataset Role Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: New DatasetRole object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatasetRoleDto'
+      responses:
+        '204':
+          description: DatsetRole updated successfully
+        '500':
+          description: Given datasetRole ID doesn't exist
+          content: { }
+    delete:
+      tags:
+        - DatasetRole
+      summary: Delete a datasetRole
+      description: Delete the datasetRole of given datasetRoleId
+      operationId: deleteDatasetRoleById
+      parameters:
+        - name: dataset_role_id
+          in: path
+          description: DatasetRole Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: successful operation
+        '404':
+          description: Given DatasetRole ID doesn't exist
+          content: { }
   /tasks:
     get:
       tags:
@@ -1136,7 +1227,7 @@ paths:
         '404':
           description: Given annotation task ID doesn't exist
           content: { }
-  /annoatation_data/{annotation_data_id}:
+  /annotation_data/{annotation_data_id}:
     get:
       tags:
         - Task
