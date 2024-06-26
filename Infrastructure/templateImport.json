@@ -1,0 +1,14 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Import test",
+  "Resources": {
+    "ApplicationBackend": {
+      "Type": "AWS::ElasticBeanstalk::Application",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "Description": "ApplicationBackend",
+        "ApplicationName": "fgai4h-oci-annotation-backend"
+      }
+    }
+  }
+}

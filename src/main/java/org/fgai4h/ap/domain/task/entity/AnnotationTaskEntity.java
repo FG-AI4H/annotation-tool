@@ -15,7 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="annoatationTask")
+@Table(name="annotationTask")
 public class AnnotationTaskEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
