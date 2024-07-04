@@ -14,6 +14,8 @@ import org.fgai4h.ap.domain.user.repository.ReviewerRepository;
 import org.fgai4h.ap.domain.user.repository.SupervisorRepository;
 import org.fgai4h.ap.domain.user.repository.UserRepository;
 import org.fgai4h.ap.helpers.AWSCognito;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
@@ -134,5 +136,16 @@ public class UserService {
     public SupervisorModel findSupervisorById(final UUID userId) {
         return getSupervisorById(userId).orElseThrow(() -> new NotFoundException(DomainError.NOT_FOUND, "Supervisor", "id", userId));
 
+    }
+
+    public Optional<UserModel> getCurrentUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof Jwt) {
+            Jwt jwt = (Jwt) principal;
+            String idpId = jwt.getClaim("sub");
+            return Optional.ofNullable(getUserByIdpId(idpId).orElseThrow(() -> new NotFoundException(DomainError.NOT_FOUND, "User", "idpId", idpId)));
+        } else {
+            throw new NotFoundException(DomainError.NOT_FOUND, "User", "idpId", "null");
+        }
     }
 }

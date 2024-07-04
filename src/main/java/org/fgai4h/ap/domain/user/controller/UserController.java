@@ -78,4 +78,11 @@ public class UserController implements UserApi {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @Override
+    public ResponseEntity<UserDto> getCurrentUser() {
+        return userService.getCurrentUser()
+                .map(userApiMapper::toUserDto)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 }
