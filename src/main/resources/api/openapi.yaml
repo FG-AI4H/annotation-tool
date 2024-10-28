@@ -1157,6 +1157,33 @@ paths:
         '404':
           description: Error
           content: { }
+  /tasks/campaign/{campaign_id}:
+    get:
+      tags:
+        - Task
+      summary: Get tasks by campaign UUID
+      description: Returns the list of tasks by campaign UUID
+      operationId: getTasksByCampaignId
+      parameters:
+        - name: campaign_id
+          in: path
+          description: Campaign Identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskDto'
+        '404':
+          description: Error
+          content: { }
   /tasks/{task_id}:
     get:
       tags:
