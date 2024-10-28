@@ -303,6 +303,15 @@ components:
         - RUNNING
         - COMPLETED
         - ARCHIVED
+    TaskStatus:
+      description: Status of the task
+      type: string
+      enum:
+        - INITIALIZED
+        - IN_PROGRESS
+        - COMPLETED
+        - ABANDONED
+        - ARCHIVED
     ClassLabelDto:
       type: object
       description: A class label
@@ -392,6 +401,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SampleDto'
+        task_status:
+          $ref: '#/components/schemas/TaskStatus'
         annotations:
           type: array
           items:

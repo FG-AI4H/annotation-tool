@@ -1,9 +1,11 @@
 package org.fgai4h.ap.domain.task.mapper;
 
+import org.fgai4h.ap.api.model.TaskStatus;
 import org.fgai4h.ap.domain.campaign.mapper.CampaignModelAssembler;
 import org.fgai4h.ap.domain.task.controller.TaskController;
 import org.fgai4h.ap.domain.task.entity.SampleEntity;
 import org.fgai4h.ap.domain.task.entity.TaskEntity;
+import org.fgai4h.ap.domain.task.model.AnnotationStatus;
 import org.fgai4h.ap.domain.task.model.SampleModel;
 import org.fgai4h.ap.domain.task.model.TaskKind;
 import org.fgai4h.ap.domain.task.model.TaskModel;
@@ -48,6 +50,12 @@ public class TaskModelAssembler extends RepresentationModelAssemblerSupport<Task
         taskModel.setAnnotations(annotationModelAssembler.toAnnotationModel(entity.getAnnotations()));
         taskModel.setAssignee(userModelAssembler.toModel(entity.getAssignee()));
         taskModel.setCampaign(campaignModelAssembler.toModel(entity.getCampaign()));
+
+        taskModel.setTaskStatus(TaskStatus.INITIALIZED);
+        //Check if all annotation tasks are completed
+        if (entity.getAnnotations().stream().allMatch(annotation -> annotation.getStatus().equals(AnnotationStatus.COMPLETED))) {
+            taskModel.setTaskStatus(TaskStatus.COMPLETED);
+        }
         return taskModel;
     }
 
