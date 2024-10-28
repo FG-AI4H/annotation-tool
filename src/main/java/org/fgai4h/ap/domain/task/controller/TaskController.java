@@ -13,6 +13,7 @@ import org.fgai4h.ap.domain.task.mapper.*;
 import org.fgai4h.ap.domain.task.model.AnnotationModel;
 import org.fgai4h.ap.domain.task.model.AnnotationTaskModel;
 import org.fgai4h.ap.domain.task.model.SampleModel;
+import org.fgai4h.ap.domain.task.model.TaskModel;
 import org.fgai4h.ap.domain.task.repository.AnnotationRepository;
 import org.fgai4h.ap.domain.task.repository.AnnotationTaskRepository;
 import org.fgai4h.ap.domain.task.repository.SampleRepository;
@@ -78,6 +79,12 @@ public class TaskController implements TaskApi {
     @Override
     public ResponseEntity<List<AnnotationDataDto>> getAnnotationDataById(UUID annotationDataId) {
         return TaskApi.super.getAnnotationDataById(annotationDataId);
+    }
+    @Override
+    public ResponseEntity<List<TaskDto>> getTasksByCampaignId(@PathVariable UUID campaignId) {
+        return new ResponseEntity<>(
+                taskService.getTasksByCampaignId(campaignId).stream().map(taskApiMapper::toTaskDto).collect(Collectors.toList()),
+                HttpStatus.OK);
     }
 
     @Override

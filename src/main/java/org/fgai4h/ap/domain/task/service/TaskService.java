@@ -47,6 +47,12 @@ public class TaskService {
                 .orElseThrow(() -> new NotFoundException(DomainError.NOT_FOUND, "Annotation Task", "id", id)));
     }
 
+    public List<TaskModel> getTasksByCampaignId(UUID campaignId) {
+        return taskRepository.findByCampaignId(campaignId).stream()
+                .map(taskModelAssembler::toModel)
+                .collect(Collectors.toList());
+    }
+
     public AnnotationTaskModel findAnnotationTaskById(UUID id){
         return getAnnotationTaskById(id).orElseThrow(() -> new NotFoundException(DomainError.NOT_FOUND, "Annotation Task", "id", id));
     }
