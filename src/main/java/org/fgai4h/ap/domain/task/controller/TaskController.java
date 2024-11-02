@@ -81,7 +81,7 @@ public class TaskController implements TaskApi {
         return TaskApi.super.getAnnotationDataById(annotationDataId);
     }
     @Override
-    public ResponseEntity<List<TaskDto>> getTasksByCampaignId(@PathVariable UUID campaignId) {
+    public ResponseEntity<List<TaskDto>> getTasksByCampaignId(UUID campaignId) {
         return new ResponseEntity<>(
                 taskService.getTasksByCampaignId(campaignId).stream().map(taskApiMapper::toTaskDto).collect(Collectors.toList()),
                 HttpStatus.OK);
