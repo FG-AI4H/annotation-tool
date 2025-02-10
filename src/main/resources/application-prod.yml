@@ -1,3 +1,5 @@
+server:
+  port: 5000
 spring:
   data:
     rest:
